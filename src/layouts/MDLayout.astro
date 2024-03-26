@@ -1,0 +1,36 @@
+---
+export const prerender = true;
+import Container from "@components/container.astro";
+import Sectionhead from "@components/sectionhead.astro";
+import Layout from "./Layout.astro";
+
+const { frontmatter } = Astro.props;
+---
+
+<Layout title={frontmatter.title}>
+  <Container>
+    <Sectionhead>
+      <Fragment slot="title">{frontmatter.title}</Fragment>
+      {frontmatter.date && (
+        // add astro transition
+        <Fragment slot="desc"  >
+          Last updated on {frontmatter.date}
+        </Fragment>
+      )}
+    </Sectionhead>
+
+    <div class="mx-auto prose mt-10">
+      <slot />
+    </div>
+  </Container>
+</Layout>
+
+<style is:global>
+  @media screen {
+    .printonly { display: none !important; }
+  }
+  @media print {
+    .printonly { display: block !important; }
+    .noprint { display: none !important; }
+  }
+</style>

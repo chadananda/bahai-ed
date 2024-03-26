@@ -1,0 +1,94 @@
+---
+export const prerender = true;
+
+import { getCollection, getEntry } from "astro:content";
+import { filterTopics } from "@utils/dataUtils.astro";
+import Layout from "@layouts/Article.astro";
+import Container from "@components/container.astro";
+import { Picture } from 'astro:assets';
+
+import TLDR from "@components/article/TLDR.astro";
+import PodcastPlayer from "@components/article/PodcastPlayer.astro";
+import PostComments from "@components/article/PostComments.astro";
+import AuthorBio from "@components/article/authorCard.astro";
+
+export async function getStaticPaths() {
+  const isPublished = ({data}) => (!data.draft && data.datePublished <= new Date());
+  const isDev = import.meta.env.APP_ENV === 'dev';
+  const posts = (await getCollection("posts", (ar) => isPublished(ar) || isDev)).filter(Boolean);
+  return posts.map((entry) => {
+    return { params: { slug: entry.data?.url }, props: { entry } };
+  });
+}
+
+const { entry } = Astro.props; // Get the entry directly from the prop on render
+const { Content, headings } = await entry.render();
+const author = await getEntry('team', entry.data.author.id);
+const category = await getEntry('categories', entry.data.category.id);
+const topics = await filterTopics(entry.data.topics); // because not all topics are created yet
+---
+
+<Layout meta={Astro.props} headings={headings}>
+  <Container>
+    <div class="mx-auto max-w-3xl text-center mt-3">
+      <span class="text-blue-500 uppercase tracking-wider text-sm font-medium">
+        <a href={`/categories/${category.id}`} aria-label={category.data.category}>{category.data.category}</a>
+      </span>
+      <h1 class="text-3xl lg:text-4xl font-bold lg:tracking-tight mt-1 lg:leading-tight"> {entry.data.title} </h1>
+
+      <div class="flex gap-2 mt-3 items-center justify-center text-sm flex-wrap">
+
+        <div class="name-date">
+          <span class="text-slate-500">
+            <a href={`/authors/${author.id}`} aria-label={author.data.name}> {author.data.name} </a>
+          </span>
+          <span class="text-slate-500">•</span>
+          <time class="text-slate-500" datetime={entry.data.datePublished.toISOString()}>
+            {entry.data.datePublished.toDateString()}
+          </time>
+        </div>
+
+        <div class="w-full md:w-auto flex flex-wrap justify-center gap-1 p-0 m-0 !line-clamp-2">
+          {topics && topics.map((topic) => (
+              <span class="text-sm text-slate-500">
+                #<a href={`/topics/${topic.id}`} aria-label={topic.data.topic}>{topic.data.topic}</a>
+              </span>
+          ))}
+        </div>
+      </div>
+     </div>
+
+     <div class="mx-auto max-w-10xl">
+      <div class="relative pt-[40%] rounded-xl mt-6 overflow-hidden shadow-xl border border-gray-200">
+        <Picture class="cover-image absolute top-0 left-0 w-full h-full object-cover"
+          formats={["webp", "jpg"]}
+          src={entry.data.image.src}
+          alt={entry.data.image.alt}
+          width="760" quality="low"
+          transition:name={`post-img-${entry.slug}`}
+          widths={[120, 188, 300, 372, 788, 1000, 1280]}
+         />
+      </div>
+     </div>
+
+     <div class="max-w-3xl mx-auto">
+       <TLDR meta={entry.data}  />
+     </div>
+
+     <div class="max-w-3xl mx-auto">
+       {!!entry.data.audio && <PodcastPlayer meta={entry.data} slug={entry.data?.url} />  }
+     </div>
+
+     <div class="mx-auto prose mt-6 max-w-3xl prose-headings:mb-2 prose-headings:mt-8"
+     ><Content meta={entry.data} /></div>
+
+     <div class="max-w-3xl mx-auto">
+       <AuthorBio slug={entry.data.author.id} size="bio" />
+     </div>
+
+     <Container class="!max-w-2xl">
+       <PostComments slug={entry.data?.url} />
+     </Container>
+
+  </Container>
+</Layout>

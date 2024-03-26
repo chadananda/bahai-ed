@@ -1,0 +1,132 @@
+---
+import Badge from "@components/ui/badge.astro";
+import { Picture } from "astro:assets";
+import BuildAssetsImg from "../assets/features/build-assets.png";
+import ContentPyramidImg from "../assets/features/content-pyramid.png";
+//import { Icon } from 'astro-icon/components'
+import Link from "@components/ui/link.astro";
+
+const { nomargin } = Astro.props;
+---
+
+<div
+  class:list={[
+    "max-w-4xl mx-auto flex flex-col items-center justify-center",
+    !nomargin && "mt-24",
+  ]}>
+  <!-- <Badge color="purple">AI Assisted Research and Editing</Badge> -->
+  <h2 class="text-4xl lg:text-5xl font-bold lg:tracking-tight mt-4 text-center">
+    But what does Quality Content Mean?
+  </h2>
+  <p class="text-lg mt-4 text-slate-600 text-center [text-wrap:pretty]">
+    <i>Quality content is about swiftly and thoroughly answering the user's query.</i> Followed by an in-depth exploration tailored to the reader's interest. It should go beyond mere answers to provide on-page tools and discussion, ensuring each topic is fully addressed with overwhelming information and support. Our new SEO mantra is to <b>craft pages worthy of bookmarking</b>, making every page a valuable resource.
+  </p>
+
+
+
+<div class="grid md:grid-cols-2 py-10">
+  <div class="grid place-items-center pr-5">
+    <Picture
+      src={BuildAssetsImg}
+      alt="Build Assets Image"
+      formats={["webp"]}
+      loading="lazy"
+      widths={[120, 188, 300, 372, 788, 1000, 1280]}
+    />
+  </div>
+
+
+  <!-- <p class="text-lg mt-4 text-slate-600 text-center [text-wrap:pretty]">
+    To do this, we muster AI tools to focus on finding value adds for each piece of content -- from researching and fact-checking with RAG retreival (ie. no hallucination) to writing-style coaching, to expert content comparison analysis which points out areas for improvement as you write! To quality re-writes of every post into all top languages. Rather than replace the writer, the idea is to replace the writer's entire support staff of editors, translators, researchers and fact-checkers.  </p>
+
+    <p class="text-lg mt-4 text-slate-600 text-center [text-wrap:pretty]">
+     Once the writing is complete, the team of AI experts sets about building extras -- extracting sharable breakout quotes, Q&As, FAQs, Quizes and Surveys, graphics, infographics and memes to share. And that process is repeated across multiple languages, not translation but language re-writes using the tone and voice of popular bloggers in each target language.   </p>
+    </div> -->
+
+
+  <div class="grid place-items-center mt-5">
+    <div class="max-w-lg">
+      <Badge color="purple" class="-ml-px">Forget a personal assistant. Get an entire AI Team</Badge>
+      <h3 class="text-2xl font-medium mt-4 [text-wrap:balance]">
+        How to Build a Resource Suite for Every Page?
+      </h3>
+      <p class="mt-4 text-slate-600 [text-wrap:balance]">
+        Easy, you just need a vast team: editors, researchers, designers, social media experts, and more. However, the reality is a significant investment of time and money.
+      </p>
+      <p class="mt-4 text-slate-600 [text-wrap:balance]">
+        The alternative? Focus on crafting stellar content and let an AI-powered virtual team handle the rest: from editing and fact-checking to creating podcasts, FAQs, and strategic social media plans. This approach streamlines the process, ensuring every article is a masterpiece.
+      </p>
+      <p class="mt-4 text-slate-600 [text-wrap:balance]">
+        It's all about enabling writers to concentrate solely on quality.
+      </p>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="grid md:grid-cols-2 py-10">
+  <div class="grid place-items-center pb-10 md:pb-0 md:order-2">
+    <Picture
+      src={ContentPyramidImg}
+      alt="Feature Image"
+      formats={["webp", "jpg"]}
+      loading="lazy"
+      widths={[120, 188, 300, 372, 788, 1000, 1280]}
+    />
+  </div>
+
+  <div class="grid place-items-center">
+    <div class="max-w-lg">
+      <Badge color="purple" class="-ml-px"> Value-Add with AI Assets</Badge>
+      <h3 class="text-2xl font-medium mt-4 [text-wrap:balance]">
+        Now that you have a gem, let's add value!
+      </h3>
+      <p class="mt-4 text-slate-600 [text-wrap:balance]">
+        Our bots will analyze competing content as you write -- and tell you exactly where you need to step up your game. Then, harness the potential of AI-driven asset generation to create useful value add which assists and engages your reader. From FAQ's to editor Q&A, you're no longer writing alone. Breakout quotes, images, videos, infographics, interview scripts, audio readings and podcasts -- all generated from your killer copy.
+      </p>
+      <p class="mt-4 text-slate-600 [text-wrap:balance]">
+        Now rinse and repeat across several languages and your content is king. Our expert promotion bots will then proceed to build you a social media promotional plan. Marketing teams are great, but sometimes you just don't feel like burning money.
+      </p>
+
+      <ul class="grid mt-6 text-left gap-y-4">
+        <li class="flex items-center gap-3 text-neutral-800">
+          <Icon name="ph:check-circle-fill" class="w-5 h-5" />
+
+          <span class="text-sm">Smart "RAG" Research AI and Fact-Checking</span>
+        </li>
+        <li class="flex items-center gap-3 text-neutral-800">
+          <Icon name="ph:check-circle-fill" class="w-5 h-5" />
+
+          <span class="text-sm">Live competitor analysis -- real usefulness comparison</span>
+        </li>
+        <li class="flex items-center gap-3 text-neutral-800">
+          <Icon name="ph:check-circle-fill" class="w-5 h-5" />
+
+          <span class="text-sm">Custom promotional plan generation for every piece</span>
+        </li>
+      </ul>
+      <!-- <div class="flex items-center gap-4 mt-6">
+        <Link href="/login" size="sm" class="inline-flex items-center group gap-px">
+          <span>Get started free</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            class="w-4 h-4 mt-px group-hover:translate-x-1 transition-transform">
+            <path
+              fill-rule="evenodd"
+              d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
+              clip-rule="evenodd"></path>
+          </svg>
+        </Link>
+        <a
+          href="/contact"
+          class="text-sm px-2 transition py-1 text-slate-600 hover:text-indigo-600 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500 focus-visible:outline-none focus-visible:shadow-outline-indigo rounded-full"
+          >Contact us</a
+        >
+      </div> -->
+    </div>
+  </div>
+</div>

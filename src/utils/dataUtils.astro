@@ -1,0 +1,20 @@
+---
+// @utils/dataUtile.astro -- functions for processing data collections
+
+import { getEntry } from 'astro:content';
+
+export async function filterTopics(topics) {
+  // Filter the topics array based on whether each topic exists in the 'topics' collection
+  const filteredTopics = await Promise.all(
+    topics.map(async (topic) => {
+      try {
+        let entry = await getEntry('topics', topic);
+        return entry;
+      } catch (error) { return false; }
+    })
+  );
+  return filteredTopics.filter(Boolean);
+  // Return the filtered topics or the nonexistent topics based on the 'exists' parameter
+  // return exists ? existingTopics : topics.filter(topic => !existingTopics.includes(topic));
+}
+---

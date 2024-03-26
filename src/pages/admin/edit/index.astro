@@ -1,0 +1,23 @@
+---
+export const prerender = false;
+import { checkUser } from '@utils/authCheck.js';
+const user = await checkUser(Astro.request);
+if (!user || !user?.authenticated) return Astro.redirect('/login');
+
+// Import the Svelte component
+import ArticleTable from '@components/admin/articleTable.svelte';
+import { getCollection } from "astro:content";
+import Layout from "@layouts/AdminLayout.astro";
+import { checkUser } from '@utils/authCheck.js';
+
+const articles = await getCollection("posts");
+---
+
+<Layout title="Article">
+  <div id="articlestable" class="">
+    <h1 class="text-3xl font-bold px-5">Edit Articles</h1>
+    <main class="mt-2 px-5">
+        <ArticleTable articles={articles} client:load />
+    </main>
+  </div>
+</Layout>

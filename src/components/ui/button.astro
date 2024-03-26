@@ -1,0 +1,70 @@
+---
+/* interface Props {
+  size?: "md" | "lg";
+  block?: boolean;
+  style?: "outline" | "primary" | "inverted";
+  class?: string;
+  [x: string]: any;
+}
+
+const {
+  size = "md",
+  style = "primary",
+  block,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const sizes = {
+  md: "px-5 py-2.5",
+  lg: "px-6 py-3",
+};
+
+const styles = {
+  outline:
+    "border-2 border-indigo-500 hover:bg-black text-black hover:text-white",
+  primary:
+    "bg-indigo-600 text-white hover:bg-indigo-800  border-2 border-transparent",
+};
+*/
+
+// Documentation of Props with comments (JavaScript doesn't support 'interface')
+// Props can include:
+//   size: "md" | "lg" (optional, default "md")
+//   block: boolean (optional)
+//   style: "outline" | "primary" | "inverted" (optional, default "primary")
+//   class: string (optional)
+//   [x: string]: any; (any other additional properties)
+
+const {
+  size = "md",
+  style = "primary",
+  block,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const sizes = {
+  md: "px-5 py-2.5",
+  lg: "px-6 py-3",
+};
+
+const styles = {
+  outline:
+    "border-2 border-indigo-500 hover:bg-black text-black hover:text-white",
+  primary:
+    "bg-indigo-600 text-white hover:bg-indigo-800 border-2 border-transparent",
+};
+---
+
+<button
+  {...rest}
+  class:list={[
+    "rounded text-center transition focus-visible:ring-2 ring-offset-2 ring-gray-200",
+    block && "w-full",
+    sizes[size],
+    styles[style],
+    className,
+  ]}
+  ><slot />
+</button>

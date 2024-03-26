@@ -1,0 +1,123 @@
+---
+title: Le Projet Sifter
+url: le-projet-sifter
+description: >-
+  Rendre toute l'étoile de l’Ouest consultable - du concept au produit publié en
+  60 jours
+desc_125: >-
+  Quel formidable projet. J'avais recueilli l'étoile de l'Ouest pendant des
+  années, et puis, subitement, nous avons décidé d'e
+abstract: >-
+  Découvrez le périple numérique de l'étoile de l'Ouest, publication bahá'íe
+  clé, désormais disponible sur CD. Ce guide rapide met en lumière ses
+  caractéristiques principales, sa valeur historique et comment il enrichit la
+  recherche dans la littérature bahá'íe.
+
+external_reference:
+  link: null
+  linkText: null
+
+draft: false
+
+datePublished: '2024-01-28'
+dateModified: '2024-01-28'
+
+category: bahai-education
+topics:
+  - bahai-education-software
+  - bahai-history
+  - integration-of-science-and-religion
+  - bahai-interpretive-texts
+  - educational-requisites-of-teaching
+  - bahai-study-guides
+
+image:
+  src: ./stack_w_cd1_faded2.jpg
+  alt: Stack of books replaced by a single CD
+
+audio: >-
+  https://blogw-assets.s3.us-west-1.amazonaws.com/2024-01-28_the-sifter-project/fr.mp3
+audio_duration: PT8M42S
+audio_image: ./stack_large.gif
+narrator: auto
+
+author: chad-jones
+
+language: fr
+translator: auto
+---
+
+
+
+
+## Ce fut un projet tellement amusant !
+
+![Citation d'Abdu'l-Baha à propos de Star of the West](./starquote.gif)
+
+Un moment en 1998, je venais de me marier et je visitais brièvement les États-Unis. Nous logions chez Erica Toussaint et il fut question des projets de numérisation que nous avions menés ensemble et de la conférence à venir à Milwaukie. Je ne sais plus qui, mais quelqu'un a suggéré de vendre un CD de Star of the West lors de la conférence. Cela semblait absurde, mais plus j'y pensais, plus cela semblait possible si c'était bien planifié.
+
+Nous avons travaillé à rebours à partir de la date de la conférence, en calculant le temps pour l'impression des CD, le design, etc. C'était un programme infernal. Déployer un logiciel sur CD en deux mois était de la folie. Je savais que cela ne serait pas parfait, je devais donc intégrer les mises à jour automatiques avant tout le reste.
+
+Erica est partie en voyage quelques jours plus tard et il me restait un mois et demi pour créer un produit commercial ! À quoi avais-je bien pu m'engager ??
+
+{% related-resource
+    meta=$meta
+    type="Téléchargement Logiciel"
+    link="https://badasht.s3.us-west-1.amazonaws.com/sifter-star-install.zip"
+    title="Sifter - Téléchargement de Star of the West"
+    image="./book_w_cd_200.jpg"
+    description="Téléchargement de l'installateur, 650 MB"
+/%}
+
+Pour la mémoire historique. Voici l'annonce originale de la page web présentant Sifter : [Sifter - Star of the West >>](/sifter-star-of-the-west)
+_____
+
+## Un plan tout simplement fou
+
+Malgré le développement itératif moderne, terminer un projet logiciel déployé en moins de deux mois est toujours un planning fou. J'ai ruminé sur le défi et voici comment nous l'avons fait :
+
+1. **Prioriser l'extrême** : hiérarchiser strictement les fonctionnalités pour que les plus importantes soient réalisées en premier
+2. **Déployer en premier** : construire la fonctionnalité de mise à jour en ligne en premier. C'était une idée complètement nouvelle à l'époque, d'ailleurs.
+3. **Itérer et Livrer Quotidiennement** : développement en direct et déploiement de nouvelles fonctionnalités quotidiennement à un petit groupe d'utilisateurs actifs. Les tests d'acceptation des utilisateurs deviennent une partie intégrante du processus de développement.
+
+### D'énormes images...
+
+À l'époque, l'espace disque était encore insuffisant pour s'attendre à ce que les utilisateurs installent les plus de 500 Mo d'images de pages sur leurs disques durs, donc le logiciel devait fonctionner sans faille avec ou sans images. Le PDF était encore trop lourd, il s'agissait donc de dossiers d'images TIFF avec des index pour fournir la navigation, des marque-pages, la recherche en texte intégral, etc.
+
+### OCR de faible qualité, beurk...
+
+La recherche devait être assez permissive pour passer outre toutes les horribles erreurs d'OCR injectées dans les pages. De nos jours, on ne voit pas à quel point l'OCR est mauvaise parce que la mauvaise OCR est cachée dans une couche invisible dans les fichiers PDF. Mais elle gêne toujours la recherche. Pour obtenir la meilleure OCR possible, nous avons utilisé un système d'OCR « par vote » qui combinait plusieurs moteurs et votait pour chaque mot. Cela a rendu les résultats environ 20 % meilleurs.
+
+### Et déployer... rien
+
+Les deux premiers jours, Erica a dû partir pour une tournée d'écoles d'été. La première chose que j'ai faite a été de mettre en place une application qui vérifiait sur Internet si une mise à jour était disponible. Puis, si une mise à jour existait, elle se téléchargeait elle-même puis s'auto-réinstallait en direct (ce n'était pas facile sur Windows). Mais ça a marché ! Et dès le premier jour, nous avions un mécanisme pour déployer de nouvelles versions et une application qui appliquerait automatiquement les mises à jour. Dès lors, je déployais des mises à jour une douzaine de fois par jour. Erica, ma première testeuse, vérifiait l'application plusieurs fois par jour pour la voir évoluer. Quel plaisir !
+
+### Étape par étape, chaque jour terminé
+
+C'était vraiment cool. En une semaine, nous avions la navigation par image par référence. En deux semaines, la recherche en texte intégral. En trois semaines, les marque-pages et l'impression. Chaque jour voyait un ou deux nouveaux déploiements, chacun un produit complet mais amélioré. Une semaine avant la conférence, nous avons gravé la dernière image et envoyé pour l'impression. Deux jours avant la conférence, nous avons récupéré une boîte de 1 000 CD de l'imprimeur, accompagnés de livrets, de boîtiers et de jaquettes pour CD.
+
+Nous avons traversé le pays avec le produit brut et, à notre arrivée, la veille de la conférence, nous avons passé la soirée avec un groupe de jeunes à assembler des paquets de CD. Le matin, nous avons rencontré Justice St. Rain de Special Ideas et lui avons donné une pile de CD à vendre.
+
+{% aside %}
+ ![Livre avec CD](./book_w_cd_200.jpg)
+{% /aside %}
+
+Et ce n'était pas un travail bâclé non plus, le package complet avait vraiment belle allure ! L'OCR est une technologie affreuse mais cette approche a réussi à surmonter les inconvénients et à donner un accès en texte intégral à l'ensemble de la collection. Lorsque George Ronald a republié Star of the West, ils n'ont fait que la moitié parce que l'ensemble complet était trop volumineux. Cela faisait donc un certain temps que les 8 500 pages complètes n'étaient plus disponibles pour les baha'is.
+
+### Le test...
+
+Plus tard dans l'année, je rendais visite à ma famille à Haïfa et j'ai eu l'occasion de montrer l'outil à Ruhiyyih Khanum. Elle m'a tout de suite demandé de trouver l'annonce de sa naissance. Sous une pression extrême, j'ai fouillé et -- par chance totale -- trouvé malgré la formulation maladroite : "Une petite fille est venue bénir le foyer de M. et Mme W. S. Maxwell de Montréal, Canada."
+
+### Étrangement...
+
+Dès que j'ai republié l'ensemble, j'ai commencé à être contacté par des Covenant Breakers, les disciples de Joel Marengella, car ils pensaient d'une manière ou d'une autre que toutes les déclarations positives d'Abdu'l-Baha à propos de Mason Remey, publiées dans Star of the West, les mèneraient dans leurs bras. Mais l'histoire de Mason Remey devient juste une triste leçon d'objet plus on réalise à quel point il est vraiment tombé en disgrâce. Surtout lorsque l'on réalise qu'il était un champion de l'Alliance.
+
+Abdu'l-Baha avait appelé Mason un « lion de l'Alliance ». Il est important que nous connaissions les fragments tragiques de l'histoire. Après tout, crise et victoire sont liées.
+
+### Des retours encourageants :
+
+> Je viens d'obtenir Sifter - Star of the West. J'ADORE ! Le package entier est magnifiquement exécuté."
+
+> ... Plus tôt cette année, j'ai obtenu Star of the West sur CD lors de la Conférence de Milwaukee. Lorsque je suis rentré chez moi, j'ai lancé le logiciel avec impatience et fait une recherche sur Albert Smiley et trouvé une tablette d'Abdu'l-Baha à Albert Smiley publiée dans Star of the West. Sans voix et frappé d'admiration, j'ai lu la Tablet. Je n'avais jamais envisagé que je pourrais trouver une Tablet et cette Tablet a changé toute ma perspective vis-à-vis du projet...."
+
+> J'espère que vous avez reçu beaucoup de lettres comme la mienne. Je voulais exprimer mon appréciation pour votre produit... L'opération est intuitive et assez simple pour moi. Je ne sens pas pour le moment que la technologie s'interpose entre moi et les paroles, la vie des époques que je lis.... C'est en effet une bénédiction de la technologie moderne de pouvoir lire tous ces volumes.... Je n'aurais jamais cru que j'aurais l'occasion de lire Star of the West".

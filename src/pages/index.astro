@@ -1,0 +1,59 @@
+---
+export const prerender = true;
+
+import { getCollection } from "astro:content";
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/container.astro";
+import PostThumb from "@components/article/postThumb.astro";
+import { Image } from "astro:assets";
+import chad from "@assets/chad-jones.jpg";
+import ArticleSelector from '@components/article/articleSelector.astro';
+
+const isPublished = ({data}) => (!data.draft && data.datePublished<=new Date());
+const isDev = import.meta.env.APP_ENV==='dev';
+const articles = await getCollection("posts", (ar) => {
+  return (isPublished(ar) || isDev);
+});
+---
+
+<Layout title="Article">
+  <Container>
+<div class="text-center p-5 max-w-7xl border rounded-lg shadow-md bg-slate-50">
+  <h2 class="text-lg italic md:text-3xl font-bold text-gray-600 "
+    style="font-family: Merriweather" >
+    <Image src={chad} alt="Chad Jones" style={{
+      float: 'left', // Float the image to the left
+      borderRadius: '50%', // Crop the image to a circle
+      border: '1px solid silver', // Add a 1px silver outline
+      paddingRight: '10px', // Add some spacing to the right of the image
+      opacity: '0.75', // Reduce the opacity of the image
+      objectFit: 'cover', // Ensure the image covers the crop area without stretching
+      width: '75px', // Set the desired width of the image
+      height: '75px' // Set the desired height of the image (same as width for a circle)
+    }} loading="lazy" />
+    Welcome to my Bahá’í education blog
+  </h2>
+  <p class="text-sm md:text-sm text-gray-700 dark:text-gray-400 mt-2">
+    A personal collection of thoughts, resources, and articles about
+    Bahá’í education. I hope you find the resources useful.
+  </p>
+</div>
+
+  <div id="articleSelector" class="mt-5 sticky top-20 z-10">
+   <ArticleSelector />
+  </div>
+    <main class="mt-5 sm:mt-14">
+      <div class="flex flex-wrap justify-center gap-5  sm:gap-10">
+        {Array.isArray(articles) && articles.map((post, index) =>(
+          <div style={{ width: '300px' }}
+            class={`articlePost flex-none ${post.data.language !== 'en' || index >= 20 ? 'hidden' : ''}`}
+            data-title={post.data.title}
+            data-tags={post.data.tags.join(',')}
+            data-language={post.data.language}>
+            <PostThumb post={post} />
+          </div>
+        ))}
+      </div>
+    </main>
+  </Container>
+</Layout>

@@ -1,0 +1,72 @@
+---
+import { Picture } from 'astro:assets';
+import { getEntry } from 'astro:content';
+import { Smart } from 'simple-icons-astro';
+
+const slug = Astro.props.slug;
+const size = Astro.props.size || "sm";
+const categoryURL = `/categories/${slug}`;
+// console.log("categoryURL: ", categoryURL);
+
+const category = await getEntry('categories', slug);
+
+
+const image = category.data.image;
+const title = category.data.category;
+// console.log("category: ", category.data.category);
+
+const uniqueID = 'id-' + Math.random().toString(36).slice(2, 11);
+
+---
+
+{(size==="sm") && (
+ <div id={uniqueID} class="categoryCard w-48 h-48 shadow-lg rounded-lg overflow-hidden mx-auto border-2 border-gray-200 p-1">
+  <a href={categoryURL} aria-label={image.alt}>
+    <div class="relative h-full">
+      <Picture src={image.src} class="w-full h-full object-cover rounded-md" alt={image.alt} />
+      <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-35 rounded-b-lg">
+        <div class="text-white px-1 py-1">
+          <h3 class="text-sm font-semibold">{image.alt}</h3>
+          <h3 class="text-xs"></h3>
+        </div>
+      </div>
+    </div>
+  </a>
+ </div>
+)}
+
+{(size==="md") && (
+ <div id={uniqueID} class="categoryCard w-96 h-48 shadow-lg rounded-lg overflow-hidden mx-auto border-2 border-gray-200 p-1">
+  <a href={categoryURL} aria-label={image.alt}>
+    <div class="relative h-full">
+      <Picture src={image.src} class="w-full h-full object-cover rounded-md" alt={image.alt} />
+      <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-35 rounded-b-lg">
+        <div class="text-white px-1 py-1">
+          <h3 class="text-sm font-semibold">{image.alt}</h3>
+          <h3 class="text-xs"></h3>
+        </div>
+      </div>
+    </div>
+  </a>
+ </div>
+)}
+
+{(size==="lg") && (
+ <div id={uniqueID} class="categoryCard w-[800px] h-[300px] shadow-lg rounded-lg overflow-hidden mx-auto border-2 border-gray-200 p-1">
+  <a href={categoryURL} aria-label={image.alt}>
+    <div class="relative h-full">
+      <Picture src={image.src}
+      class="w-full h-full object-cover rounded-md" alt={image.alt}
+      widths={[120, 188, 300, 372, 788, 1000, 1280]}
+      />
+      <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-35 rounded-b-lg">
+        <div class="text-white px-1 py-1">
+          <h3 class="text-sm font-semibold">{image.alt}</h3>
+          <h3 class="text-xs"></h3>
+        </div>
+      </div>
+    </div>
+  </a>
+ </div>
+)}
+

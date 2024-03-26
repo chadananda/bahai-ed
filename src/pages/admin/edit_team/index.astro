@@ -1,0 +1,35 @@
+---
+export const prerender = false;
+import { checkUser } from '@utils/authCheck.js';
+const user = await checkUser(Astro.request);
+if (!user || !user?.authenticated) return Astro.redirect('/login');
+
+import { getCollection } from 'astro:content';
+import Layout from  "@layouts/AdminLayout.astro";
+import Container from "@components/container.astro";
+import Sectionhead from "@components/sectionhead.astro";
+import AuthorCard from "@components/article/authorCard.astro";
+
+const authors = await getCollection("team")
+const author_slugs = authors.map((author) => author.data.name_slug);
+---
+
+<Layout pageTitle="Edit Team Members">
+  <Container>
+    <Sectionhead>
+      <Fragment slot="title"> Edit Team Memembers </Fragment>
+      <Fragment slot="desc">  </Fragment>
+    </Sectionhead>
+
+    <main class="flex flex-wrap justify-center gap-5 mt-5">
+      {Array.isArray(author_slugs) && author_slugs.map((slug) => (
+        <div class="flex-none">
+         <a href=`/admin/edit_team/${slug}` aria-label={slug} >
+            <AuthorCard slug={slug} size="sm" />
+         </a>
+        </div>
+      ))}
+    </main>
+
+  </Container>
+</Layout>

@@ -1,0 +1,30 @@
+---
+export const prerender = true;
+import { getCollection } from 'astro:content';
+import Layout from  "@layouts/Layout.astro";
+import Container from "@components/container.astro";
+import Sectionhead from "@components/sectionhead.astro";
+import AuthorCard from "@components/article/authorCard.astro";
+
+const authors = await getCollection("team", ({ data }) => !data.draft)
+const author_slugs = authors.map((author) => author.data.name_slug);
+
+// console.log(author_slugs);
+
+---
+
+<Layout pageTitle="All Authors">
+  <Container>
+    <Sectionhead>
+      <Fragment slot="title"> All Authors </Fragment>
+      <Fragment slot="desc"> found in the knowledge base </Fragment>
+    </Sectionhead>
+
+    <main class="flex flex-wrap justify-center gap-5 mt-5">
+      {Array.isArray(author_slugs) && author_slugs.map((slug) => (
+        <div class="flex-none"> <AuthorCard slug={slug} size="sm" /> </div>
+      ))}
+    </main>
+
+  </Container>
+</Layout>

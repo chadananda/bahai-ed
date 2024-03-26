@@ -1,0 +1,48 @@
+---
+// Define the images for each type
+const type = Astro.props.type || 'small';
+---
+
+<hr class={`custom-hr ${type}`}  aria-hidden="true" />
+
+
+<style>
+   hr.custom-hr {
+     border: none;
+     height: 10px; /* Adjust as needed */
+     background-repeat: no-repeat;
+     background-size: contain;
+     background-position: center;
+   }
+   hr.custom-hr.small {
+     /* Additional styling for small type */
+     border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+   }
+   hr.custom-hr.medium {
+    overflow: visible; /* For IE */
+    height: 30px;
+    border-style: solid;
+    border-color: black;
+    border-width: 1px 0 0 0;
+    border-radius: 20px;
+   }
+   hr.custom-hr.medium:before { /* Not really supposed to work, but does */
+      display: block;
+      content: "";
+      height: 30px;
+      margin-top: -31px;
+      border-style: solid;
+      border-color: black;
+      border-width: 0 0 1px 0;
+      border-radius: 20px;
+   }
+   hr.custom-hr.large {
+     /* Additional styling for large type */
+     border: 0;
+    height: 1px;
+    background: #333;
+    background-image: linear-gradient(to right, #ccc, #333, #ccc);
+   }
+ </style>

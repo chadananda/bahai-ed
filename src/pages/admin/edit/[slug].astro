@@ -1,0 +1,141 @@
+---
+export const prerender = false;
+import { checkUser } from '@utils/authCheck.js';
+const user = await checkUser(Astro.request);
+if (!user || !user?.authenticated) return Astro.redirect('/login');
+
+import { getEntry, getEntries } from "astro:content";
+import { getPostFromSlug } from '@utils/utils.js';
+import Layout from "@layouts/AdminLayout.astro";
+
+import ArticleConcept from '@components/admin/ArticleConcept.astro';
+// import ArticleMeta from '@components/admin/ArticleMeta.astro';
+import ArticleOutline from '@components/admin/ArticleOutline.astro';
+import ArticleEditor from '@components/admin/TipTap/Editor.svelte';
+import ArticleExtras from '@components/admin/ArticleExtras.astro';
+import ArticleOutput from '@components/admin/ArticleOutput.astro';
+
+import { loadArticleRaw } from '@utils/utils.js';
+
+// Generate a new path for every collection entry
+// export async function getStaticPaths() {
+//   const posts = await getCollection("posts");
+//   return posts.map((entry) => ({ params: {slug: entry.slug}, props: {entry}, }));
+// }
+
+// Get the entry directly from the prop on render
+const slug = Astro.params.slug;
+
+//const entry = await getEntry('posts', slug);
+const entry = await getPostFromSlug(slug)
+
+if (!entry) {
+  console.error('No entry found for slug: ', Astro.params.slug);
+  console.error(Astro.props)
+  return Astro.redirect('/admin');
+}
+
+const article = await entry.render(); // needed?
+const author = await getEntry('team', entry.data.author.id);
+const category = await getEntry('categories', entry.data.category.id);
+const topics = await getEntries(entry.data.topics);
+
+const {content, meta} = await loadArticleRaw(slug);
+---
+
+<Layout>
+  <div class="px-5 relative w-full">
+    <h1 class="text-2xl font-bold mb-4">{entry.data.title}</h1>
+    <div class="w-full">
+      <!-- Navigation starts -->
+      <div class="w-full xl:mx-0 h-12 block bg-white shadow rounded">
+        <div class="flex border-b overflow-hidden">
+          <!-- Tab: Concept -->
+          <button data-tab="Concept" class="tab-button focus:outline-none text-sm pt-3 rounded-t mr-2 cursor-pointer px-3 pt-0 pb-2 ">
+            <span class="mr-1">💡</span>Concept
+          </button>
+          <!-- Tab: Meta -->
+          <!-- <button data-tab="Meta" class="tab-button focus:outline-none text-sm pt-3 rounded-t mr-2 cursor-pointer px-3 pt-0 pb-2 ">
+           <span class="mr-1">📄</span>Meta
+          </button> -->
+          <!-- Tab: Outline -->
+          <button data-tab="Outline" class="tab-button focus:outline-none text-sm pt-3 rounded-t mr-2 cursor-pointer px-3 pt-0 pb-2 ">
+            <span class="mr-1">🔍</span>Outline
+          </button>
+          <!-- Tab: Text -->
+          <button data-tab="Text" class="tab-button focus:outline-none text-sm pt-3 rounded-t mr-2 cursor-pointer px-3 pt-0 pb-2 active">
+            <span class="mr-1">✏️</span>Text
+          </button>
+          <!-- Tab: Extras -->
+          <button data-tab="Extras" class="tab-button focus:outline-none text-sm pt-3 rounded-t mr-2 cursor-pointer px-3 pt-0 pb-2 ">
+            <span class="mr-1">➕</span>Extras
+          </button>
+          <!-- Tab: Output -->
+          <button data-tab="Output" class="tab-button focus:outline-none text-sm pt-3 rounded-t mr-2 cursor-pointer px-3 pt-0 pb-2 ">
+            <span class="mr-1">🖨️</span>Output
+          </button>
+        </div>
+      </div>
+      <!-- Content area -->
+      <div class="w-full mt-5">
+        <div id="ConceptContent" class="tab-content hidden">
+          <ArticleConcept slug={entry.slug} />
+        </div>
+        <!-- <div id="MetaContent" class="tab-content hidden">
+          <ArticleMeta slug={entry.slug} />
+        </div> -->
+        <div id="OutlineContent" class="tab-content hidden">
+          <ArticleOutline article={entry.body} slug={entry.slug} />
+        </div>
+        <div id="TextContent" class="tab-content">
+          <ArticleEditor client:load slug={slug} content={content} meta={meta}/>
+        </div>
+        <div id="ExtrasContent" class="tab-content hidden">
+          <ArticleExtras />
+        </div>
+        <div id="OutputContent" class="tab-content hidden">
+          <ArticleOutput article={entry} />
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+
+<script type="module">
+  document.addEventListener('DOMContentLoaded', () => {
+    const tabs = document.querySelectorAll('.tab-button');
+    const contents = document.querySelectorAll('.tab-content');
+
+    function hideAllContents() {
+      contents.forEach(content => content.classList.add('hidden'));
+    }
+
+    function deactivateAllTabs() {
+      tabs.forEach(tab => tab.classList.remove('active'));
+    }
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        deactivateAllTabs();
+        hideAllContents();
+
+        const targetId = tab.getAttribute('data-tab') + 'Content';
+        const targetContent = document.getElementById(targetId);
+
+        tab.classList.add('active');
+        targetContent.classList.remove('hidden');
+      });
+    });
+  });
+</script>
+
+
+<style>
+  .tab-button.active {
+    background-color: #4f46e5; /* Example: a light indigo background */
+    color: white; /* White text */
+    border-bottom: 2px solid #4f46e5; /* Indigo bottom border */
+  }
+</style>
+

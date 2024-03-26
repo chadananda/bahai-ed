@@ -1,0 +1,66 @@
+
+/* @import url('@fontsource-variable/inter/index.css'); */
+
+/* Article element styling
+   Here we've isolated the styling for all the special article components
+   So you can modify them all together
+*/
+
+
+
+/* float to the right of the article
+   left-side border in blue
+   large, whimsical font */
+   /* article aside.articleAside {
+    float: right;
+    border-left: 5px solid rgb(138, 189, 246);
+    padding-left: 10px;
+    margin-left: 10px;
+    width: 30%;
+    font-family: 'Inter', sans-serif;
+    font-size: 1.5em;
+    font-weight: 600;
+    line-height: 1.5em;
+    text-align: left;
+  }
+
+  article[dir="rtl"] aside.articleAside {
+    float: left;
+    border-left: none;
+    border-right: 5px solid rgb(138, 189, 246);
+    padding-left: 0;
+    padding-right: 10px;
+    margin-left: 0;
+    margin-right: 10px;
+    text-align: right;
+  } */
+
+
+
+
+h3 {
+  border-bottom: 1px dotted rgb(227, 227, 227);
+  padding-bottom: 10px;;
+}
+h4 {
+  font-weight: bolder;
+}
+
+
+article img:not([class]) {
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  max-width: 80%;
+  width: auto;
+  height: auto;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+ @media screen and (max-width: 600px) {
+   article img:not([class]) {
+     max-width: 100%;
+   }
+ }
+

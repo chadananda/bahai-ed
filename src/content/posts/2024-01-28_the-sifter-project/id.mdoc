@@ -1,0 +1,122 @@
+---
+title: Proyek Penyaring
+url: proyek-penyaring
+description: >-
+  Mendeteksi seluruh Star of the West agar Dapat Dicari - dari konsep hingga
+  produk terbitan dalam 60 hari
+desc_125: >-
+  Proyek yang hebat. Bertahun-tahun mengumpulkan seluruh Star of the West, lalu
+  segera menerbitkan versi CD untuk dijual.
+abstract: >-
+  Ungkap perjalanan digital 'Star of the West', publikasi penting Bahá'í, kini
+  tersedia dalam CD. Panduan singkat ini menyoroti fitur utama, nilai historis,
+  dan peningkatan riset literatur Bahá'í.
+
+external_reference:
+  link: null
+  linkText: null
+
+draft: false
+
+datePublished: '2024-01-28'
+dateModified: '2024-01-28'
+
+category: bahai-education
+topics:
+  - bahai-education-software
+  - bahai-history
+  - integration-of-science-and-religion
+  - bahai-interpretive-texts
+  - educational-requisites-of-teaching
+  - bahai-study-guides
+
+image:
+  src: ./stack_w_cd1_faded2.jpg
+  alt: Stack of books replaced by a single CD
+
+audio: >-
+  https://blogw-assets.s3.us-west-1.amazonaws.com/2024-01-28_the-sifter-project/id.mp3
+audio_duration: PT8M59S
+audio_image: ./stack_large.gif
+narrator: auto
+
+author: chad-jones
+
+language: id
+translator: auto
+---
+
+
+
+## Proyek yang sangat menyenangkan!
+
+![Kutipan dari Abdu'l-Baha tentang Bintang Barat](./starquote.gif)
+
+Pada suatu waktu di tahun 1998, saya baru menikah dan berkunjung ke AS untuk waktu yang singkat. Kami tinggal di rumah Erica Toussaint dan muncul pembicaraan tentang proyek pemindaian yang telah kami lakukan bersama dan konferensi yang akan datang di Milwaukie. Saya tidak yakin siapa, tetapi seseorang mengajukan ide untuk menjual CD Bintang Barat di konferensi tersebut. Tampaknya konyol, tetapi semakin saya pikirkan semakin mungkin rasanya jika direncanakan dengan hati-hati.
+
+Kami bekerja mundur dari tanggal konferensi, menghitung waktu untuk pencetakan CD, desain, dll. Jadwalnya gila. Mengerahkan perangkat lunak di CD dalam dua bulan adalah ide gila. Saya tahu tidak akan sempurna, jadi saya harus mengintegrasikan pembaruan otomatis sebelum yang lainnya.
+
+Erica pergi beberapa hari kemudian untuk bepergian dan saya memiliki satu setengah bulan untuk membangun produk komersial! Apa yang baru saja saya komitmen?
+
+{% related-resource
+    meta=$meta
+    type="Software Download"
+    link="https://badasht.s3.us-west-1.amazonaws.com/sifter-star-install.zip"
+    title="Sifter - Unduh Bintang Barat"
+    image="./book_w_cd_200.jpg"
+    description="Instalasi unduhan, 650 MB"
+/%}
+
+Untuk catatan sejarah. Inilah halaman web asli yang mengumumkan Sifter: [Sifter - Bintang Barat >>](/sifter-star-of-the-west)
+_____
+
+
+## Rencana yang benar-benar gila
+
+Meskipun pengembangan iteratif modern, menyelesaikan proyek perangkat lunak terpasang dalam kurang dari dua bulan masih merupakan jadwal yang gila. Saya merenungkan tantangan tersebut dan inilah cara kami melakukannya:
+
+1. **Prioritas Ekstrem**: memprioritaskan fitur dengan ketat sehingga fitur yang paling penting dikerjakan terlebih dahulu
+2. **Pasang Dulu**: membangun fungsi pembaruan daring pertama. Ini adalah ide yang benar-benar baru kala itu, omong-omong.
+3. **Iterasi dan Pengiriman Harian**: pengembangan langsung dan fitur baru dikerahkan setiap hari ke sekelompok pengguna inti yang aktif. Pengujian penerimaan pengguna menjadi bagian dari proses pengembangan.
+
+### Gambar besar...
+
+Pada saat itu, ruang penyimpanan dalam drive masih tidak cukup untuk mengharapkan pengguna memasang gambar halaman penuh lebih dari 500 MB di hard disk mereka, jadi perangkat lunak harus bekerja dengan mulus dengan atau tanpa gambar. PDF masih terlalu rumit sehingga ini adalah folder gambar TIFF dengan indeks untuk menyediakan navigasi, penanda, pencarian teks lengkap, dll.
+
+### OCR kualitas rendah, eugh...
+
+Pencarian harus cukup samar untuk terlihat melewati semua kesalahan OCR yang mengerikan yang dimasukkan ke dalam halaman. Saat ini Anda tidak melihat seberapa buruk OCR karena OCR yang buruk disembunyikan dalam lapisan tak terlihat di file PDF. Tapi itu masih menghambat pencarian. Untuk mendapatkan OCR terbaik, kami menggunakan sistem OCR "pemungutan suara" yang menggabungkan beberapa mesin dan memilih pada setiap kata. Hal itu membuat hasilnya menjadi 20% lebih baik.
+
+### Dan terpasang.... tidak ada apa-apa
+
+Dua hari pertama, Erica harus berangkat untuk tur sekolah musim panas. Hal pertama yang saya lakukan adalah menyiapkan aplikasi yang memeriksa internet untuk pembaruan. Lalu, jika ada pembaruan, aplikasi tersebut mengunduh sendiri dan kemudian melakukan pemasangan ulang secara langsung atas dirinya sendiri (ini tidak mudah di Windows). Tapi itu berhasil! Dan sejak hari pertama kami memiliki mekanisme untuk mengerahkan build baru dan aplikasi yang akan menerapkan build secara otomatis. Sejak saat itu, saya mengerahkan pembaruan selusin kali setiap hari. Erica, penguji utama saya, akan memeriksa aplikasi beberapa kali sehari untuk melihat perkembangannya. Sangat menyenangkan!
+
+### Langkah demi langkah, setiap hari selesai
+
+Benar-benar kerennya. Dalam seminggu kami memiliki navigasi gambar berdasarkan referensi. Dalam dua minggu, pencarian teks lengkap. Dalam tiga minggu, pembukuan dan pencetakan. Setiap hari ada satu atau dua penyebaran baru, masing-masing merupakan produk lengkap yang lebih baik. Seminggu sebelum konferensi, kami membakar gambar terbaru dan mengirimnya untuk dicetak. Dua hari sebelum konferensi kami mengambil satu kotak 1.000 CD dari percetakan, lengkap dengan buku panduan, kotak dan selipan jaket CD.
+
+Kami melakukan perjalanan lintas negara dengan produk mentah dan ketika kami tiba di sana, malam sebelum konferensi, kami menghabiskan malam bersama sekelompok pemuda merakit paket CD. Pagi harinya kami bertemu dengan Justice St. Rain dari Special Ideas dan memberinya tumpukan CD untuk dijual.
+
+{% aside %}
+ ![Buku dengan CD](./book_w_cd_200.jpg)
+{% /aside %}
+
+Dan itu bukan pekerjaan sembarangan, seluruh paket terlihat cukup bagus! OCR adalah teknologi yang mengerikan tetapi pendekatan ini berhasil membantu mengatasi sisi negatifnya dan memberikan akses teks lengkap ke seluruh set. Ketika George Ronald menerbitkan kembali Bintang Barat, mereka hanya melakukannya setengah karena set penuhnya terlalu besar. Jadi sudah cukup lama sejak 8.500 halaman penuh tersedia untuk kaum Baha'i.
+
+### Uji coba....
+
+Di akhir tahun itu, saya mengunjungi keluarga di Haifa dan memiliki kesempatan untuk mendemonstrasikan alat tersebut kepada Ruhiyyih Khanum. Dia langsung meminta saya untuk mencari pengumuman kelahirannya. Di bawah tekanan yang ekstrim, saya mencari-cari dan -- oleh total keberuntungan -- menemukannya meskipun dengan kata-kata yang canggung: "Seorang putri kecil telah datang untuk memberkati rumah Tuan dan Nyonya W. S. Maxwell dari Montreal, Kanada."
+
+### Anehnya...
+
+Segera setelah saya menerbitkan kembali set tersebut, saya mulai dihubungi oleh Pembolak-balik Perjanjian, pengikut Joel Marengella, karena mereka entah bagaimana berpikir bahwa semua pernyataan positif dari Abdu'l-Baha tentang Mason Remey, yang diterbitkan dalam Bintang Barat, akan entah bagaimana menarik kaum Baha'i ke pangkuan mereka. Tapi kisah Mason Remey hanya menjadi pelajaran berharga yang menyedihkan ketika Anda semakin menyadari seberapa jauh dia sebenarnya jatuh dari anugerah. Terutama ketika Anda menyadari bahwa dia adalah juara Perjanjian.
+
+Abdu'l-Baha telah menyebut Mason sebagai "singa Perjanjian". Penting bagi kita untuk mengetahui bagian-bagian tragis dari sejarah. Krisis dan kemenangan adalah berkaitan setelah semua.
+
+### Umpan balik yang menggembirakan:
+
+> Saya baru saja mendapatkan Sifter - Bintang Barat. Saya SUKA SEKALI! Seluruh paketnya dilaksanakan dengan indah."
+
+> ... Di awal tahun ini saya memperoleh Bintang Barat dalam CD di Konferensi Milwaukee. Ketika saya kembali ke rumah saya dengan bersemangat meluncurkan perangkat lunak dan melakukan pencarian tentang Albert Smiley dan menemukan sebuah tablet dari Abdu'l-Baha untuk Albert Smiley yang diterbitkan dalam Bintang Barat. Terdiam dan terpukau, saya membaca Tablet tersebut. Saya tidak pernah membayangkan bahwa saya akan menemukan sebuah Tablet dan Tablet itu mengubah seluruh perspektif saya terhadap proyek...."
+
+> Saya harap Anda telah menerima banyak surat seperti milik saya. Saya ingin menyampaikan penghargaan saya dengan produk Anda... Operasinya intuitif dan cukup sederhana bagi saya. Saya tidak merasa saat ini teknologi berada di antara saya dan kata-kata, kehidupan zaman yang saya baca tentang.... Memang merupakan berkah dari teknologi modern untuk dapat membaca semua volume tersebut.... Saya tidak pernah percaya saya akan mendapat kesempatan untuk membaca Bintang Barat".

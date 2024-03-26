@@ -1,0 +1,35 @@
+
+
+ /* This will hide the elements on screen, but show them when printing */
+ @media screen {
+  .printonly { display: none; }
+}
+
+@media print {
+  .printonly { display: block !important; }
+  .noprint { @apply hidden; display: none; }
+}
+
+img {
+  content-visibility: auto;
+}
+article p a:not([class]) {
+  font-weight: normal !important;
+  text-decoration: none !important;
+  border-bottom: 1px dashed silver;
+}
+h1, h2, h3, h4, h5, h6 {
+    scroll-margin-top: 100px; /* Replace [HeaderHeight] with the height of your sticky header/navbar */
+}
+
+@font-face {
+  font-family: 'Merriweather';
+  src: url('/fonts/merriweather-regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+h1,h2,h3,h4,h5 {
+  font-family: Merriweather;
+}

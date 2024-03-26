@@ -1,0 +1,23 @@
+---
+import { Image } from "astro:assets";
+import { getArticleImageURL, getArticleSlugFromURL } from '@utils/utils.js';
+var { src, alt } = Astro.props;
+
+// convert local image in article to resolved URL
+const isLocalImage = (typeof src === 'string') && (!src.startsWith('http') && !src.startsWith('/'));
+if (isLocalImage) {
+  const slug = await getArticleSlugFromURL(Astro.url.href)
+  const imageURL = await getArticleImageURL(slug, src)
+  // console.log('processing local image', src, '->', slug, imageURL)
+  if (imageURL) src = imageURL;
+}
+
+---
+
+
+{typeof src === 'string' ?  <img src={src} alt={alt} width="600" /> :
+
+  <Image src={src} alt={alt}
+    widths={[160, 240, 600, src.width]}
+    sizes={`(max-width: 200px) 160px, (max-width: 360px) 240px, (max-width: 720px) 600px, ${src.width}px`} />
+}

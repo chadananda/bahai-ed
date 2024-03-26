@@ -1,0 +1,74 @@
+---
+import { Picture } from 'astro:assets';
+const {image, name, type, url, worksFor, description, sameAs} = Astro.props.author
+import { slugify } from '@utils/utils';
+import { getArticleSlugFromURL, getArticleImage, getArticleURL } from '@utils/utils.js';
+const slug = await getArticleSlugFromURL(Astro.url.href)
+const authorImg = (await getArticleImage(slug, image));
+
+
+const pageURL = getArticleURL(Astro);
+// const pageURL = Astro.url.href.replace('[::1]', 'localhost').replace(/\/$/, '') //.replace(/:(\d+)/, ':3000')
+const siteURL = new URL(pageURL).origin.replace(/\/$/, '');
+//const imageURL = authorImg ? siteURL + (await authorImg)?.default?.src : '';
+const imageURL = authorImg ? siteURL +  authorImg.src : '';
+const uniqueID = 'id-' + Math.random().toString(36).slice(2, 11);
+const AuthorBioIDURL = `${pageURL}#${uniqueID}`;
+const authorSlug = slugify(name)
+const authorURL = url & url.length ? url : `${siteURL}/article/authors/${authorSlug}` // absolute url for this author tag
+const publicAuthorURL = authorURL.startsWith('http') ? authorURL : `${siteURL}${authorURL}` // absolute url for this author tag
+
+// console.log(name, authorSlug, authorURL, publicAuthorURL);
+
+var schema = {
+  "@context": "https://schema.org",
+  "@type": type,
+  '@id': `${publicAuthorURL}`,
+  name: name,
+  url: publicAuthorURL,
+  image: imageURL,
+  description: description,
+  sameAs: sameAs, // an array of social media urls
+  mainEntityOfPage: {
+    "@type": "WebPageElement",
+    id: AuthorBioIDURL,
+  }
+};
+if (type === 'Person') {
+  schema.jobTitle = "Author";
+  schema.worksFor = { "@type": worksFor['@type'], name: worksFor.name, }
+  schema.isPartOf = { "@type": "WebPage", "@id": pageURL}
+}
+
+// console.log('jsonld:', jsonld)
+
+// example markdoc usage:
+//
+//     {% author-bio  author=$meta.author /%}
+---
+
+
+  <div id={uniqueID} class="author-bio w-full my-20 border border-y-4 border-x-0 border-gray-200 p-3">
+    <div class="flex flex-wrap sm:flex-nowrap">
+      <div class="flex-1 order-2 sm:order-1 mt-4 sm:mt-0 sm:mr-4 text-center sm:text-start">
+        <div class="author-bio-title text-lg font-semibold italic text-gray-500">About {name}</div>
+        <br>
+        <div class="author-bio text-md font-extralight">{description}</div>
+      </div>
+      <div class="w-full sm:w-auto sm:flex-shrink-0 order-1 sm:order-2 flex justify-center items-center">
+        <div class="w-48 h-48 overflow-hidden rounded-full relative opacity-75 shadow-md border border-gray-400 border-2">
+          <a href={publicAuthorURL} aria-label={name}>
+          <Picture src={authorImg} alt={name}
+            class="absolute inset-0 w-full h-full object-cover rounded-full"
+            formats={["webp", "jpg"]}
+            decoding="async"
+            loading="lazy"
+            height={185} quality="high" />
+            widths={[185]}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />
+

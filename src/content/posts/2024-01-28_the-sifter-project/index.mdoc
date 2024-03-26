@@ -1,0 +1,124 @@
+---
+title: The Sifter Project
+url: the-sifter-project
+description: >-
+  Making all of Star of the West Searchable - from concept to published product
+  in 60 days
+desc_125: >-
+  What a great project. I'd been collecting the entire Star of the West for
+  years and then, in a sudden rush, we decided to make a published CD version
+  for sale.
+abstract: >-
+  Unveil the digital journey of the 'Star of the West', a pivotal Bahá'í
+  publication, now accessible on CD. This quick guide highlights its key
+  features, historical value, and how it enhances Bahá'í literature research.
+
+external_reference:
+  link: null
+  linkText: null
+
+draft: false
+
+datePublished: '2024-01-28'
+dateModified: '2024-01-28'
+
+category: bahai-education
+topics:
+  - bahai-education-software
+  - bahai-history
+  - integration-of-science-and-religion
+  - bahai-interpretive-texts
+  - educational-requisites-of-teaching
+  - bahai-study-guides
+
+image:
+  src: ./stack_w_cd1_faded2.jpg
+  alt: Stack of books replaced by a single CD
+
+audio: >-
+  https://blogw-assets.s3.us-west-1.amazonaws.com/2024-01-28_the-sifter-project/en.mp3
+audio_duration: PT10M4S
+audio_image: ./stack_large.gif
+narrator: auto
+
+author: chad-jones
+---
+
+
+
+
+## This was such a fun project!
+
+![Quote from Abdu'l-Baha about Star of the West](./starquote.gif)
+
+Some time in 1998, I was newly married and visiting the US briefly. We were staying in the home of Erica Toussaint and discussion came up of the scanning projects we had done together and the upcoming Milwaukie conference. I'm not sure who, but someone floated the idea of selling a CD of Star of the West at the conference. It seemed absurd, but the more I though about it the more possible it seemed if planned carefully.
+
+We worked backwards from the date of the conference, calculating time for CD printing, design, etc. It was a crazy schedule. Deploying software on CD in two months was crazy. I knew it would not be perfect, so I had to integrate auto-updates before anything else.
+
+Erica left a few days later traveling and I had a month and a half to build a commercial product! What had I just committed to??
+
+{% related-resource
+    meta=$meta
+    type="Software Download"
+    link="https://badasht.s3.us-west-1.amazonaws.com/sifter-star-install.zip"
+    title="Sifter - Star of the West Download"
+    image="./book_w_cd_200.jpg"
+    description="Installer download, 650 MB"
+/%}
+
+For historical record. Here is the original web page post announcing Sifter: [Sifter - Star of the West >>](/sifter-star-of-the-west)
+_____
+
+
+## Absolutely insane plan
+
+Despite modern iterative development, completing a deployed software project in under two months is still an insane schedule. I chewed on the challenge and here is how we did it:
+
+1. **Extreme Prioritize**: strictly prioritize features so the most important ones get done first
+2. **Deploy First**: build the online updating functionality first. This was a completely new idea back then, by the way.
+3. **Iterate and Deliver Daily**: live development and new features deployed daily to a small core of active users. User acceptance testing becomes part of the development process.
+
+### Huge images...
+
+At the time, drive space was still insufficient to expect users to install the full 500mb+ of page images on their hard disks, so the software had to work seamlessly with or without images. PDF was still too unwieldy so these were folders of TIFF images with indexes to provide navigation, bookmarks, full-text search etc.
+
+### Low quality OCR, ick...
+
+The search had to be fuzzy enough to look past all the horrible OCR errors injected into the pages. Nowadays you don't see how bad OCR is because bad OCR is hidden in an invisible layer in PDF files. But it still hampers search. To get the best OCR possible, we used a "voting" OCR system which combined several engines and voted on each word. That made the results a good 20% better.
+
+### And deploy.... nothing
+
+The first two days, Erica had to set out for a summer-school tour. The first thing I did was set up an application which checked the internet for an update. Then, if an update existed, it downloaded itself and then did a little live-reinstall over itself (this was not easy on Windows). But it worked! And from the first day we had a mechanism to deploy new builds and an application which would apply the builds automatically. From then on, I was deploying updates a dozen times each day. Erica, my prime tester, would check the application several times a day to watch it evolve. What fun!
+
+### Step by step, every day finished
+
+It really was cool. Within a week we had image navigation by reference. In two weeks, full text-search. In three weeks, bookmarking and printing. Every day saw one or two new deployments, each one a complete but improved product. A week from the conference we burned the latest image and sent it for printing. Two days before the conference we picked up a box of 1,000 CDs from the printer, together with booklets cases and CD jacket slips.
+
+We headed cross-country with the raw product and when we got there, the night before the conference, we spent the evening with a bunch of youth assembling CD packages. In the morning we met Justice St. Rain of Special Ideas and gave him a stack of CDs to sell.
+
+{% aside %}
+ ![Book with CD](./book_w_cd_200.jpg)
+{% /aside %}
+
+And it was not a slipshod job either, they entire package looked quite nice! OCR is awful technology but this approach managed to help overcome the downsides and give full text access to the entire set. When George Ronald republished Star of the West, they only did half because the full set was too large. So it had been quite a time since the full 8,500 pages were available to the Baha'is.
+
+### The test....
+
+Later that year, I was visiting family in Haifa and had the chance to demonstrate the tool to Ruhiyyih Khanum. She immediately asked me to find the announcement of her birth. Under extreme pressure, I poked around and -- by total luck -- found it despite the awkward wording: "A little daughter has come to bless the home of Mr. and Mrs. W. S. Maxwell of Montreal. Canada."
+
+### Weirdly...
+
+As soon as I republished the set, I started to get contacted by Covenant Breakers, the followers of Joel Marengella, because they somehow thought that all the positive statements from Abdu'l-Baha about Mason Remey, published in Start of the West, would somehow drive Baha'is into their arms. But the story of Mason Remey just becomes more of a sad object lesson the more you appreciate how far he actually fell from grace. Especially when you realize that he was a champion of the Covenant.
+
+Abdu'l-Baha had called Mason a "lion of the Covenant". It's important that we know the tragic bits of history. Crisis and victory are related after all.
+
+### Encouraging feedback:
+
+> I just got the Sifter - Star of the West. I LOVE IT! The whole package is beautifully executed."
+
+> ... Earlier this year I obtained Star of the West on CD at the Milwaukee Conference. When I returned home I eagerly launched the software and did a search on Albert Smiley and found a tablet from Abdu'l-Baha to Albert Smiley published in the Star of the West. Speechless and struck with awe, I read the Tablet. I had never considered that I would find a Tablet and that Tablet changed my whole perspective toward the project...."
+
+> I hope you have received a lot of letters like mine. I wanted to express my appreciation with your product... The operation is intuitive and simple enough for me. I don't feel at this time that the technology is between me and the words, the life of the times I am reading about.... It is indeed a blessing of modern technology to be able to get to read all those volumes.... I never believed I would ever get the chance to read the Star of the West".
+
+
+

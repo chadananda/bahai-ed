@@ -1,0 +1,124 @@
+---
+title: El Proyecto Sifter
+url: el-proyecto-sifter
+description: >-
+  Haciendo la búsqueda de 'Estrella del Oeste' accesible - de la idea al
+  producto publicado en 60 días
+desc_125: >-
+  Un proyecto formidable. Acumulé 'Estrella del Oeste' por años y luego, rápido,
+  decidimos hacer una versión CD para vender.
+abstract: >-
+  Descubre la travesía digital de 'Estrella del Oeste', una publicación bahá'í
+  esencial, ahora disponible en CD. Esta guía rápida resalta sus características
+  claves, valor histórico y cómo mejora la investigación de la literatura
+  bahá'í.
+
+external_reference:
+  link: null
+  linkText: null
+
+draft: false
+
+datePublished: '2024-01-28'
+dateModified: '2024-01-28'
+
+category: bahai-education
+topics:
+  - bahai-education-software
+  - bahai-history
+  - integration-of-science-and-religion
+  - bahai-interpretive-texts
+  - educational-requisites-of-teaching
+  - bahai-study-guides
+
+image:
+  src: ./stack_w_cd1_faded2.jpg
+  alt: Stack of books replaced by a single CD
+
+audio: >-
+  https://blogw-assets.s3.us-west-1.amazonaws.com/2024-01-28_the-sifter-project/es.mp3
+audio_duration: PT8M48S
+audio_image: ./stack_large.gif
+narrator: auto
+
+author: chad-jones
+
+language: es
+translator: auto
+---
+
+
+
+
+## ¡Este fue un proyecto tan divertido!
+
+![Cita de Abdu'l-Bahá acerca de la Estrella de Occidente](./starquote.gif)
+
+Algún momento en 1998, recién casado y de visita en EE.UU. brevemente. Nos hospedábamos en la casa de Erica Toussaint y surgió la conversación sobre los proyectos de digitalización que habíamos hecho juntos y la próxima conferencia en Milwaukie. No estoy seguro de quién, pero alguien propuso la idea de vender un CD de la Estrella de Occidente en la conferencia. Parecía absurdo, pero cuanto más lo pensaba más posible me parecía si se planificaba con cuidado.
+
+Trabajamos hacia atrás desde la fecha de la conferencia, calculando tiempo para la impresión del CD, diseño, etc. Era un cronograma alocado. Desplegar software en CD en dos meses era una locura. Sabía que no sería perfecto, así que tenía que integrar actualizaciones automáticas antes que cualquier otra cosa.
+
+Erica partió de viaje unos días después y ¡yo tenía mes y medio para construir un producto comercial! ¿A qué me había comprometido??
+
+{% related-resource
+    meta=$meta
+    type="Descarga de Software"
+    link="https://badasht.s3.us-west-1.amazonaws.com/sifter-star-install.zip"
+    title="Sifter - Descarga de la Estrella de Occidente"
+    image="./book_w_cd_200.jpg"
+    description="Descarga del instalador, 650 MB"
+/%}
+
+Para registro histórico. Aquí está el post original de la página web anunciando Sifter: [Sifter - Estrella de Occidente >>](/sifter-star-of-the-west)
+_____
+
+## Plan absolutamente insensato
+
+A pesar del desarrollo iterativo moderno, completar un proyecto de software desplegado en menos de dos meses sigue siendo un cronograma insensato. Reflexioné sobre el desafío y así fue como lo hicimos:
+
+1. **Priorizar al Extremo**: priorizar estrictamente las características para que las más importantes se completen primero.
+2. **Desplegar Primero**: construir primero la funcionalidad de actualización en línea. Por cierto, esto era una idea completamente nueva en aquel entonces.
+3. **Iterar y Entregar Diariamente**: desarrollo en vivo y nuevas características desplegadas diariamente a un pequeño núcleo de usuarios activos. Las pruebas de aceptación del usuario se convierten en parte del proceso de desarrollo.
+
+### Imágenes enormes...
+
+En ese tiempo, el espacio en disco todavía era insuficiente para esperar que los usuarios instalaran los 500MB+ de imágenes de páginas en sus discos duros, por lo que el software tenía que funcionar a la perfección con o sin imágenes. El PDF todavía era demasiado pesado, así que eran carpetas de imágenes TIFF con índices para proporcionar navegación, marcadores, búsqueda de texto completo, etc.
+
+### OCR de baja calidad, puaj...
+
+La búsqueda tenía que ser lo suficientemente difusa para pasar por alto todos los horribles errores de OCR inyectados en las páginas. Hoy en día no ves lo malo que es el OCR porque el mal OCR está oculto en una capa invisible en los archivos PDF. Pero todavía obstaculiza la búsqueda. Para obtener el mejor OCR posible, usamos un sistema de OCR "de votación" que combinaba varios motores y votaba por cada palabra. Eso mejoró los resultados un buen 20%.
+
+### Y desplegar.... nada
+
+Los primeros dos días, Erica tuvo que salir para un tour de escuela de verano. Lo primero que hice fue configurar una aplicación que verificaba en internet si había una actualización. Entonces, si existía una actualización, la descargaba y hacía una pequeña reinstalación en vivo sobre sí misma (esto no era fácil en Windows). Pero ¡funcionó! Y desde el primer día tuvimos un mecanismo para desplegar nuevas construcciones y una aplicación que aplicaría las construcciones automáticamente. Desde ese momento, estuve desplegando actualizaciones una docena de veces al día. Erica, mi principal probadora, revisaba la aplicación varias veces al día para ver su evolución. ¡Qué divertido!
+
+### Paso a paso, cada día terminado
+
+Realmente fue genial. Dentro de una semana teníamos navegación por imagen por referencia. En dos semanas, búsqueda de texto completo. En tres semanas, marcadores e impresión. Cada día veía uno o dos nuevos despliegues, cada uno un producto completo pero mejorado. Una semana antes de la conferencia quemamos la imagen más reciente y la enviamos a imprimir. Dos días antes de la conferencia recogimos una caja de 1,000 CDs de la imprenta, junto con folletos, estuches y cubiertas para los CDs.
+
+Nos dirigimos a través del país con el producto crudo y al llegar, la noche anterior a la conferencia, pasamos la velada con un grupo de jóvenes armando paquetes de CDs. Por la mañana nos encontramos con Justice St. Rain de Special Ideas y le dimos un montón de CDs para vender.
+
+{% aside %}
+ ![Libro con CD](./book_w_cd_200.jpg)
+{% /aside %}
+
+Y tampoco fue un trabajo chapucero, ¡el paquete completo se veía bastante bien! La tecnología OCR es terrible, pero este enfoque logró ayudar a superar los inconvenientes y proporcionar acceso de texto completo a toda la colección. Cuando George Ronald volvió a publicar la Estrella de Occidente, solo hicieron la mitad porque la colección completa era demasiado grande. Así que había pasado bastante tiempo desde que las completas 8,500 páginas estuvieron disponibles para los bahá'ís.
+
+### La prueba...
+
+Más adelante ese año, estaba visitando familia en Haifa y tuve la oportunidad de mostrar la herramienta a Ruhiyyih Khanum. Ella me pidió inmediatamente que encontrara el anuncio de su nacimiento. Bajo presión extrema, busqué y -- por pura suerte -- lo encontré a pesar del torpe redactado: "Una pequeña hija ha venido a bendecir el hogar del Sr. y la Sra. W. S. Maxwell de Montreal, Canadá."
+
+### Curiosamente...
+
+En cuanto volví a publicar la colección, empecé a ser contactado por Rompedores del Convenio, seguidores de Joel Marengella, porque de alguna manera pensaban que todas las declaraciones positivas de Abdu'l-Bahá acerca de Mason Remey, publicadas en la Estrella de Occidente, de alguna manera llevarían a los bahá'ís a sus brazos. Pero la historia de Mason Remey solo se convierte en una lección objetiva más triste cuánto más aprecias cuánto en realidad se desvió de la gracia. Especialmente cuando te das cuenta de que fue un campeón del Convenio.
+
+Abdu'l-Bahá había llamado a Mason un "león del Convenio". Es importante que conozcamos las partes trágicas de la historia. Crisis y victoria están relacionadas después de todo.
+
+### Retroalimentación alentadora:
+
+> ¡Acabo de obtener Sifter - Estrella de Occidente. ¡ME ENCANTA! Todo el paquete está bellamente ejecutado!"
+
+> ... A principios de este año obtuve la Estrella de Occidente en CD en la Conferencia de Milwaukee. Cuando regresé a casa lancé con entusiasmo el software e hice una búsqueda sobre Albert Smiley y encontré una tabla de Abdu'l-Bahá para Albert Smiley publicada en la Estrella de Occidente. Sin palabras y sobrecogido por la impresión, leí la Tabla. Nunca había considerado que encontraría una Tabla y esa Tabla cambió por completo mi perspectiva hacia el proyecto...."
+
+> Espero que hayas recibido muchas cartas como la mía. Quería expresar mi aprecio por tu producto... La operación es intuitiva y lo suficientemente simple para mí. No siento en este momento que la tecnología sea un obstáculo entre yo y las palabras, la vida de los tiempos que estoy leyendo... Es de verdad una bendición de la tecnología moderna poder leer todos esos volúmenes.... Nunca creí que alguna vez tendría la oportunidad de leer Estrella de Occidente".
+

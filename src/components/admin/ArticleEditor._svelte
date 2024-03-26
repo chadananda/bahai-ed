@@ -1,0 +1,225 @@
+<!-- src/components/admin/ArticleEditor.svelte -->
+<script>
+ // this editor needs some API endpoints:
+ //  1.  /api/article?slug=slug -- POST the article to the server
+ //  2.  /api/upload-image?slug=slug;filename=filename -- posts the image to the server
+ //  3.  /api/ai-writers?article,paragraph,authorid= -- POST for AI suggestions
+ //  4.  /api/ai-writers?
+
+import { onMount } from 'svelte';
+import {
+  Editor,
+  EditorBubble,
+  EditorBubbleItem,
+  EditorCommand,
+  EditorCommandItem,
+  EditorContent,
+  EditorRoot,
+} from "novel";
+
+  // Declare article and slug as props
+//  export let article;
+//  export let meta;
+ export let article;
+ export let author;
+
+//  let EasyMDE;
+//  let easyMDEInstance;
+ let textArea;
+ let hasUnsavedChanges = false;
+ let id = article.id, slug = article.slug;
+ let content = article.content, meta = article.data;
+
+  // Reactive statement to update the save button
+//  $: if (easyMDEInstance)  updateSaveButton(hasUnsavedChanges);
+
+function updateSaveButton(unsavedChanges) {
+  // const saveButton = document.querySelector('.fa-save');
+  // if (saveButton) {
+  //   saveButton.style.color = unsavedChanges ? 'green' : 'silver'; // Explicitly setting to 'inherit' when there are no
+  //   saveButton.style.fontSize = unsavedChanges ? '24px' : '14px'; // unsaved changes
+  //   saveButton.style.fontWeight = unsavedChanges ? 'bold' : 'inherit'; // unsaved changes
+  // }
+}
+
+function addCSS() {
+  // const link = document.createElement('link');
+  // link.href = 'https://unpkg.com/easymde/dist/easymde.min.css';
+  // link.type = 'text/css';
+  // link.rel = 'stylesheet';
+  // document.head.appendChild(link);
+}
+
+onMount(async () => {
+  if (typeof window !== 'undefined') { // that is, browser only, no ssr
+
+    // addCSS();
+    // // Dynamically import EasyMDE when on the client-side
+    // const EasyMDEModule = await import('easymde');
+    // EasyMDE = EasyMDEModule.default;
+    // easyMDEInstance = new EasyMDE({
+    //   element: textArea,
+    //   spellChecker: false,
+    //   initialValue: await loadArticle(slug),// article.trim(),
+    //   toolbar: [
+    //   'bold', 'italic', 'heading', '|',
+    //   'code', 'quote', 'unordered-list', 'ordered-list', '|',
+    //   'link', 'image', 'table', '|',
+    //   'preview', 'side-by-side', 'fullscreen',
+    //   {
+    //     name: "upload-image",
+    //     action: function(editor) {
+    //       const fileInput = document.createElement('input');
+    //       fileInput.type = 'file';
+    //       fileInput.accept = 'image/*';
+    //       fileInput.onchange = e => {
+    //         const file = e.target.files[0];
+    //         if (file) uploadImage(file, editor);
+    //       };
+    //       fileInput.click();
+    //     },
+    //     className: "fa fa-picture-o",
+    //     title: "Upload Image",
+    //   },
+    //   '||', '||',
+    //     {
+    //       name: 'save',
+    //       action: saveArticleContent,
+    //       className: 'fa fa-save ml-auto', // Use a Font Awesome save icon
+    //       title: 'Save Article',
+    //     },
+    //   ],
+    // });
+
+    // easyMDEInstance.codemirror.on('change', () => {
+    //   hasUnsavedChanges = true;
+    // });
+
+    // // Add Ctrl+S functionality
+    // const handleKeyDown = (e) => {
+    //   if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); saveArticleContent(); }
+    // };
+    // window.addEventListener('keydown', handleKeyDown);
+    // return () => { window.removeEventListener('keydown', handleKeyDown); };
+  }
+});
+
+// async function loadArticle(slug) {
+//   try {
+//     const response = await fetch(`/api/article?slug=${slug}`);
+//     if (response.ok) {
+//       const data = await response.json();
+//       content = data.body.trim();
+//       meta = data.meta; // we're not using this yet, but it seemed like a good idea
+//       return content;
+//     } else {
+//       const errorBody = await response.json();
+//       console.error("Failed to load article. Status code: ", response.status, errorBody);
+//     }
+//   } catch (error) {
+//     console.error("Error loading article:", error);
+//   }
+// }
+
+// async function saveArticle() {
+//   content = easyMDEInstance.value();
+//   try {
+//     const response = await fetch(`/api/article`, {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         'Credentials': 'include',
+//       },
+//       body: JSON.stringify({ meta, content, slug }),
+//     });
+//     if (response.ok) {
+//       console.log("Article saved successfully");
+//       hasUnsavedChanges = false;
+//     } else {
+//       const errorBody = await response.json();
+//       console.error("Failed to save article. Status code: ", response.status, errorBody);
+//     }
+//   } catch (error) {
+//     console.error("Error saving article:", error);
+//   }
+// }
+
+
+
+
+async function uploadImage(file, editor) {
+  // const formData = new FormData();
+  // formData.append('image', file); // 'image' is the key your server expects for the file
+
+  // try {
+  //   const response = await fetch('/api/upload-image', {
+  //     method: 'POST',
+  //     body: formData,
+  //   });
+
+  //   if (!response.ok) {
+  //     throw new Error('Network response was not ok');
+  //   }
+
+  //   const data = await response.json();
+  //   if (data.url) {
+  //     const markdownImage = `![](${data.url})`;
+  //     editor.codemirror.replaceSelection(markdownImage);
+  //   } else {
+  //     throw new Error('No URL in response');
+  //   }
+  // } catch (error) {
+  //   console.error('Error uploading image:', error);
+  //   alert('Error uploading image. Please try again.');
+  // }
+}
+
+async function saveArticleContent() {
+  const saveButton = document.querySelector('.fa-save');
+  if (saveButton) {
+    saveButton.style.color = 'gray';
+    saveButton.style.fontSize = '14px';
+  }
+  content = easyMDEInstance.value().trim();
+  try {
+    const response = await fetch(`/api/article`, { // Adjusted to match your API endpoint
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ slug, meta: false, content}), // Include slug, meta, and content
+    });
+    if (response.ok) {
+      console.log("Article saved successfully");
+      hasUnsavedChanges = false;
+    } else {
+      const errorBody = await response.json();
+      console.error("Failed to save article. Status code: ", response.status, errorBody);
+    }
+  } catch (error) {
+    console.error("Error saving article:", error);
+  } finally {
+    updateSaveButton(hasUnsavedChanges);
+  }
+}
+</script>
+
+
+
+<div class="w-full relative p-2">
+  <EditorRoot>
+    <EditorContent>
+      <EditorCommand>
+        <EditorCommandItem />
+        <EditorCommandItem />
+        <EditorCommandItem />
+      </EditorCommand>
+      <EditorBubble>
+        <EditorBubbleItem />
+        <EditorBubbleItem />
+        <EditorBubbleItem />
+      </EditorBubble>
+    </EditorContent>
+  </EditorRoot>
+</div>
+
+
+

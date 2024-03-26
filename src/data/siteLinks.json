@@ -1,0 +1,16 @@
+{
+ "menuLinks": [
+   {"title": "Categories", "path": "/categories", "children": null},
+   {"title": "Topics", "path": "/topics", "children": null},
+   {"title": "Contact", "path": "/contact", "children": null}
+ ],
+  "companyLinks": [
+ ],
+ "productLinks": [
+ ],
+ "resourceLinks": [
+ ]
+}
+
+
+

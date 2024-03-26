@@ -1,0 +1,73 @@
+---
+export const prerender = false;
+
+import Layout from '@layouts/Layout.astro';
+import { getUser } from "@utils/db.js";
+var errorMsg = '';
+
+if (Astro.request.method === "POST") {
+  try {
+    const data = await Astro.request.formData();
+    const email = data.get("email");
+    const password = data.get("password");
+    // Do something with the data
+    let user = await getUser(email, password);
+    if (user.error) errorMsg = user.error
+    else if (!user.authenticated) errorMsg = "Login failed"
+    else {
+      // Serialize user data or create a session token
+      const sessionData = JSON.stringify(user);
+      // Create the Set-Cookie header
+      const cookieValue = `session=${sessionData}; HttpOnly; Path=/; Max-Age=3600; Secure`;
+      // Create headers for the response with the cookie and redirect location
+      const headers = new Headers();
+      headers.append('Set-Cookie', cookieValue);
+      headers.append('Location', '/admin');
+      // Return a new response object to handle redirection with the cookie
+      return new Response(null, {
+          status: 302,
+          headers: headers
+      });
+    }
+  } catch (error) {
+    if (error instanceof Error) errorMsg = error.message;
+  }
+}
+
+---
+
+<Layout title="Adminstration Login">
+ <div class="flex justify-center items-center   bg-gray-100 py-10">
+   <div class="w-full max-w-xs">
+     <form id="login-form" method="POST" class="bg-white shadow-md rounded px-8 pt-6 pb-6 mb-4"
+     data-astro="no-hoist"
+     data-turbo="false">
+
+       <!-- Display error message if login failed -->
+       <div id="error-message" role="alert"></div>
+
+       <div class="mb-4">
+         <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
+           Email
+           <input type="email" id="email" name="email" required
+                  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"  />
+         </label>
+       </div>
+       <div class="mb-6">
+         <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
+           Password
+           <input type="password" id="password" name="password" required
+                  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" />
+         </label>
+         {errorMsg && <p>{errorMsg}</p>}
+       </div>
+       <div class="flex items-center justify-between">
+         <button type="submit"
+               class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"> Sign In </button>
+         <!-- <a href="reset-resetpass" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"> Forgot Password? </a> -->
+       </div>
+     </form>
+   </div>
+ </div>
+
+</Layout>

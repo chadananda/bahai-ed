@@ -1,0 +1,35 @@
+---
+export const prerender = false;
+import { checkUser } from '@utils/authCheck.js';
+const user = await checkUser(Astro.request);
+if (!user || !user?.authenticated) return Astro.redirect('/login');
+
+import { getCollection, getEntry } from "astro:content";
+import Layout from "@layouts/AdminLayout.astro";
+import Container from "@components/container.astro";
+import PostThumb from "@components/article/postThumb.astro";
+import AuthorCard from "@components/article/authorCard.astro";
+import { checkUser } from '@utils/authCheck.js';
+
+// allow the user to edit users and cretate users with validation from the ZOD object
+// import { team } from '@content/config.ts';
+
+
+// export async function getStaticPaths() {
+//   const allTeam = await getCollection('team');
+//   return allTeam?.map((person) => ({params: { id: person.id } }));
+// }
+
+const id = Astro.params.id
+console.log('id:', id);
+---
+
+<!-- <Layout pageTitle={post.id}>
+ <Container>
+
+    <AuthorCard slug={post.id} size="md" />
+
+
+ </Container>
+</Layout> -->
+

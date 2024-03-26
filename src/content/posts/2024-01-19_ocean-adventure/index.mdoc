@@ -1,0 +1,138 @@
+---
+title: 'The Ocean Adventure: Making Ocean Search'
+url: the-ocean-adventure
+description: >-
+  Explore the birth of Ocean 1.0, a digital odyssey transforming Baha'i
+  literature. From scanner to global CDs, it's a tale of tech, ingenuity, and
+  unity.
+desc_125: >-
+  Discover Ocean 1.0's journey: A tech leap in Baha'i literature, uniting
+  knowledge and communities globally.
+abstract: >-
+  TL;DR: Ocean 1.0 was a fantastic service opportunity that met the existing
+  demand for digital search capabilities within Baha'i writings, blending
+  technology with a passion for accessibility and knowledge sharing. I had so
+  many hopes for Ocean but so little time. The result was so limited that I
+  almost named it 'lake'. But overall it was a very rewarding project.
+
+external_reference:
+  link: null
+  linkText: null
+
+draft: false
+post_type: Article
+
+datePublished: '2024-01-19'
+dateModified: '2024-01-20'
+
+category: bahai-education
+topics:
+  - bahai-education-software
+  - integration-of-science-and-religion
+  - bahai-interpretive-texts
+  - educational-requisites-of-teaching
+  - bahai-history
+
+image:
+  src: ./ocean_sshot_lg.png
+  alt: Ocean Screen Shot
+
+audio: >-
+  https://blogw-assets.s3.us-west-1.amazonaws.com/2024-01-19_ocean-adventure/en.mp3
+audio_duration: PT7M34S
+audio_image: ./ocean-icon.png
+narrator: auto
+
+author: chad-jones
+---
+
+
+
+
+{% related-resource
+    meta=$meta
+    type="Software Download"
+    link="https://badasht.s3.us-west-1.amazonaws.com/Ocean_1.0.zip"
+    title="Ocean 1.0"
+    description="Software installer for Windows"
+/%}
+
+
+{% aside %}
+  ![Ocean Icon](./ocean-icon.png)
+{% /aside %}
+
+
+## The Humble Beginnings of Ocean Search
+
+## Scanner Adventures: The Dawn of Digital Search
+The story of Ocean search begins with a simple desire to bridge the gap between traditional Baha'i literature and the burgeoning digital world. My journey, began with youth service at the Baha'i World Center in Haifa, Israel, where we learned to use the Unix Grep tool to search the core Baha'i library.
+
+This was a daily exercise and it created a longing to have basic search tools for ongoing study.
+
+![Study in Haifa](./dunbar-class.png)
+
+
+## From the USA to India: A Scanner in My Suitcase
+A few years later, a personal turn of events led me to join my brother in India. It was here, amidst a different culture and environment, that the seeds for Ocean were sown. I had already purchased an expensive scanner – a significant investment at the time – to start digitizing Baha'i books. This was not just a task but a labor of love, driven by a commitment to digitize and share the rich heritage of Baha'i literature.
+
+![Indian Baha'is](./ocean-india-classes.png)
+
+## Chai, Chat, and Code: The Birth of Ocean
+While visiting the USA, I had enlightening conversations with the head of the US Publishing Trust. At the time, they had plans to sell electronic versions of each book, but the emerging popularity of CDs suggested to me a different opportunity. While in India and China, and then India again, I immersed myself in learning Object Pascal through Delphi, an incredible tool for creating Windows applications. This was a time of growth and learning, driven by the goal of making Baha'i texts more accessible.
+
+## DLL Hell and the Quest for a Self-Contained App
+One key realization during this journey was the fragility of applications with external dependencies – something we used to refer to as "DLL Hell". Striving for a self-contained application, robust and reliable, became a guiding principle. However, incorporating an inverted index or a database within a desired footprint was challenging. I had to find a way to make raw, 'grep-like' searches fast and efficient.
+
+![Ocean Linux](./ocean-linux.png)
+
+## Assembly Forums and the Fastest Search in the East
+This challenge led me to lurk in assembly-language forums, a community of optimization experts who were instrumental in developing Ocean's hand-tuned assembler version of the Boyer-Moore search algorithm. This collaboration was not just about technical achievement; it was about community, sharing, and learning together.
+
+## The Great Diacritic Disappearance (and Comeback)
+With a bit of memory-mapping magic, Ocean began to perform like a database. Of course, this required some text manipulation – removing diacritics from names in the Dawn-Breakers, for instance. I later reintroduced diacritics for the most common Baha'i words in the search results, a subtle change that went largely unnoticed but significantly improved the user experience.
+
+## Controversy? Bring it On!
+When I approached Mr. Shah with the complete version of Ocean, aware of its potential controversy, his encouragement was a beacon: "If nobody is complaining, then you're not doing anything worthwhile. Go for it!" His support was pivotal.
+
+You have to remember that back then, search engines like Google were just beginning -- and the legal questions about whether or not it was legal to provide search results on copyrighted materials was completely unclear. Later, Google [won a massive lawsuit](https://en.wikipedia.org/wiki/Authors_Guild,_Inc._v._Google,_Inc.) brought by the Association of American Publishers -- establishing that copyright law did not apply to search results.
+
+## The Global CD Invasion: International CD Shipping
+The launch involved ordering a thousand mini-CDs, with Cyrus Vahedi generously helping with printing and packing instruction cards and kits. We mailed these globally to Auxiliary Board Members and Counsellors, a massive undertaking considering the era's limited internet capabilities.
+
+![Table of Ocean CDs](./ocean-cds.png)
+
+Then a volunteer in the US with a CD fulfillment company offered to ship CDs at cost to anyone who requested. We agreed on a flat $5 price to cover shipping -- and that $5 was optional!
+
+![Ocean CD - Back](./Ocean_back.jpg)
+
+## Sifting Through Funds to Float the Ocean
+Funding for this extensive mailing was partly derived from the online sales of ["Sifter - Star of the West", another project close to my heart](/sifter-star-of-the-west). The real excitement, however, came with the 'smuggling' of 50 CDs into Iran and the distribution of CDs to the Baha'is in Myanmar by Mr. Shah, showcasing the hunger for knowledge in communities with limited internet access.
+
+[![Sifter - Star of the West CD](./book_w_cd_200.jpg)](/sifter-star-of-the-west)
+
+## The Secret Agent CD: Yusuf Ali's Hidden Surprise
+
+Perhaps the most creative solution was in response to CDs being checked at borders in certain sensitive countries. For Iran, we gave the CD to individual Iranian Baha'i tourists (they would come to visit the Lotus Temple in India) and a group of youth from Shíráz even volunteered to distribute installation onto every PC in the community.
+
+When I heard that some countries were still checking contents of CDs at airports, we disguised Ocean within Yusuf Ali (Cat Stevens) music files on CDs. A simple music player interface hid the application, which could be installed by typing "Ocean" into the player.
+
+Mr. Shah packed 10 cds in his suitcase on a visit to the Baha'is of Myanmar (Burma), who had computers but were not permitted to access the internet.
+
+Overall, this was a fantastic project. So many people pitched in along the way and in the end, we managed to encourage interaction with the sacred texts.
+
+Individual initiative is how the world goes around.
+
+
+{% related-resource
+    meta=$meta
+    type="Software Download"
+    link="https://badasht.s3.us-west-1.amazonaws.com/Ocean_1.0.zip"
+    title="Ocean 1.0"
+    description="Software installer for Windows"
+/%}
+
+
+
+
+

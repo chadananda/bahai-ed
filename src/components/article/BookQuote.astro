@@ -1,0 +1,51 @@
+---
+// BookQuote.astro - Book quote component
+const {bookTitle, bookLink, content, meta} = Astro.props
+const BookSlug = bookLink.match(/\/([^\/]+)\/?$/)?.[1];
+const direction = ['fa','ar'].indexOf(meta?.language)>-1 ? 'rtl' : 'ltr';
+---
+
+<div
+  dir={direction}
+  class="play-quote"
+  data-language="en"
+  data-slug={BookSlug}
+  data-locators=""
+  data-audio-offsets=""
+  data-audio=""
+  >
+  <div class="spacer-block"> </div>
+  <div class="quote-text" data-para-number="">
+  {content}
+   <div class="bookLink">
+     <a href={bookLink} target="_blank" aria-label={bookTitle}>
+        <svg class="inline-block" viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1.25 3A.75.75 0 012 2.25h6A4.75 4.75 0 0112.75 7v14a.75.75 0 01-1.5 0A2.25 2.25 0 009 18.75H2a.75.75 0 01-.75-.75V3zm10 15V7A3.25 3.25 0 008 3.75H2.75v13.5H9a3.75 3.75 0 012.25.75z"/><path d="M12.641 3.641A4.75 4.75 0 0116 2.25h6a.75.75 0 01.75.75v15a.75.75 0 01-.75.75h-7A2.25 2.25 0 0012.75 21a.75.75 0 01-1.5 0V7c0-1.26.5-2.468 1.391-3.359zM12.75 18a3.75 3.75 0 012.25-.75h6.25V3.75H16A3.25 3.25 0 0012.75 7v11z"/>
+        </svg> &nbsp; {bookTitle || BookSlug} ->
+        <!-- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path fill="#fff" d="M11.003 22.108h1.994V5.718l4.66 4.66 1.414-1.415L12 1.892 4.929 8.963l1.414 1.414 4.66-4.66z" />
+        </svg> -->
+    </a></div>
+  </div>
+
+</div>
+
+
+<style>
+  .play-quote .quote-text {
+    color: gray;
+    font-style: italic;
+    margin-left: 2em;
+    padding-left: 1em;
+    border-left: 5px solid silver;
+  }
+  .play-quote .bookLink a {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    text-decoration: none;
+    font-style: underline;
+    color: rgba(59, 89, 164, 0.75);
+  }
+</style>

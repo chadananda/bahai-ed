@@ -1,0 +1,43 @@
+---
+import { getArticleAudioPath, getArticleSlugFromURL, getArticleURL } from '@utils/utils.js'
+// get the props from astro
+const src = Astro.props.src
+
+const pageURL = getArticleURL(Astro);
+const siteURL = new URL(pageURL).origin.replace(/\/$/, '');
+const slug = await getArticleSlugFromURL(pageURL);
+
+ // convert file path to URL
+if (!slug) console.error('AudioPlayer.astro error: Slug empty');
+
+console.log('AudioPlayer.astro slug', slug);
+const audioPath = await getArticleAudioPath(slug, src);
+const audioURL = siteURL + audioPath;
+
+// console.log('audioURL', audioURL);
+
+
+//const audioURL = `${siteURL}${slug}/${src}`; // Constructs the full URL
+
+
+
+const audioExt = src.split('.').pop().toLowerCase();
+const getAudioType = (ext) => {
+  const extensionToMimeType = {
+    mp3: 'audio/mpeg',
+    m4a: 'audio/mp4',
+    ogg: 'audio/ogg',
+    wav: 'audio/wav',
+    flac: 'audio/flac',
+    webm: 'audio/webm',
+  };
+  // Return the corresponding MIME type, or a default if the extension is unknown
+  return extensionToMimeType[ext] || 'audio/mp4'; // Using 'audio/mp4' as a generic fallback
+};
+const audioType = getAudioType(audioExt);
+---
+
+<audio controls class="mx-auto">
+  <source src={audioURL} type={audioType}>
+      Your browser does not support the audio element.
+</audio>

@@ -1,0 +1,28 @@
+---
+export const prerender = false;
+import { checkUser } from '@utils/authCheck.js';
+const user = await checkUser(Astro.request);
+if (!user || !user?.authenticated) return Astro.redirect('/login');
+
+import Layout from '@layouts/AdminLayout.astro';
+// const user = Astro.locals.user;
+import Logout from '@components/logout.astro';
+---
+<Layout>
+  <div class="mx-auto text-center w-full">
+
+    <h1 class="text-xl"> Admin Dashboard </h1>
+
+    {user && (
+      <ul>
+        <li>   {user.name},  {user.email}, {user.role}  </li>
+      </ul>
+      <Logout />
+    )}
+    {!user && (
+      <h2 class="text-lg"> No user object found </h2>
+    )}
+ </div>
+</Layout>
+
+

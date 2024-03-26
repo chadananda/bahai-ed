@@ -1,0 +1,17 @@
+{
+ "compilerOptions": {
+   "allowJs": true,
+   "baseUrl": ".",
+   "paths": {
+     "@assets/*": ["./src/assets/*"],
+     "@components/*": ["./src/components/*"],
+     "@content/*": ["./src/content/*"],
+     "@data/*": ["./src/data/*"],
+     "@layouts/*": ["./src/layouts/*"],
+     "@styles/*": ["./src/styles/*"],
+     "@utils/*": ["./src/utils/*"],
+     "@api/*": ["./src/pages/api/*"]
+   }
+ },
+ "include": ["src/**/*.astro", "src/**/*.js", "src/**/*.ts", "src/**/*.d.ts", "public/article_assets/initializePlyr.js"]
+}

@@ -1,0 +1,57 @@
+---
+
+ const asideLink = Astro.props.link
+ const asideLinkText = Astro.props.linkText
+---
+
+<aside class="articleAside">
+   <slot />
+
+   {asideLink && (<a class="asideLink" target="_blank" href={asideLink}>{asideLinkText}</a>)}
+</aside>
+
+
+
+<style is:global>
+   p {
+      margin-top: .25em;
+   }
+   aside.articleAside {
+     font-size: medium;
+     font-weight: normal;
+     color: gray;
+     font-style: italic;
+     float: right;
+     padding-left: 1em;
+     padding-right: 0;
+     margin-right: 0;
+     margin-left: 1em;
+     border: 0;
+     border-left: 5px solid rgb(138, 189, 246);
+     text-align: left;
+     width: 30%;
+   }
+
+
+   [dir="rtl"] aside.articleAside {
+      float: left;
+      border-left: none;
+      border-right: 5px solid rgb(138, 189, 246);
+      padding-left: 0;
+      padding-right: 1em;
+      margin-left: 0;
+      margin-right: 5px;
+      text-align: right;
+   }
+
+
+    /* article link should be a block floated right */
+   a.asideLink {
+      display: block;
+      float: right;
+      color: gray;
+      font-style: italic;
+      padding-bottom:1em;
+      text-decoration: none;
+   }
+</style>

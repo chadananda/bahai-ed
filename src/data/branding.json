@@ -1,0 +1,45 @@
+{
+  "site": "bahai-education.org",
+  "siteName": "Baha'i Education",
+  "title": "A personal blog on the subject of deepening and teaching the Baha'i Faith",
+  "subtitle": "Exploring ideas and resources for deepening and teaching the Baha'i Faith",
+  "description": "I think religion can be described as a school with a curriculum of study and a heck of a lot of project assignments. ",
+  "description_long": "Religion is like a school with a curriculum of study -- and life is the field assignment.  ",
+  "author": "Chad Jones",
+
+  "url": "https://bahai-education.org",
+  "logo": "https://bahai-education.org/favicon.svg",
+  "vercel_project_id": "bahai-ed",
+  "vercel_project_name": "bahai-ed",
+  "vercel_project_domain": "bahai-ed.vercel.app",
+  "vercel_project_url": "https://bahai-ed.vercel.app",
+  "vercel_project_dashboard": "https://vercel.com/chadananda/bahai-ed/deployments",
+  "github_project_url": "https://github.com/chadananda/bahai-ed",
+  "company": "bahai-education.org",
+  "address": "7890 Boren Ln, Granite Bay CA 95746",
+  "email": "chad@bahai-education.org",
+  "phone": "",
+  "web3forms_access_key": "a7763c6b-35e2-4a39-9d3e-d165cec6f2e8",
+  "logo": "https://bahai-education.org/favicon.svg",
+  "youtube": {
+    "channel": "UCJ5h9jIq6xv6T9XwzZX3qWQ",
+    "channel_name": "bahai-education"
+  },
+  "twitter": {
+    "creator": "@chadananda",
+    "site": "@bahai-education"
+  },
+  "facebook": {
+    "author": "chadananda",
+    "publisher": "bahai-education"
+  },
+  "linkedin": {
+    "author": "chadananda",
+    "publisher": "bahai-education"
+  },
+
+  "podcast": {
+    "category": "Religion & Spirituality",
+    "subcategory": "Religion"
+  }
+}

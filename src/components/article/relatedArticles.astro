@@ -1,0 +1,34 @@
+---
+// topic intersections, does not require topic to be created already
+import PostThumb from "@components/article/postThumb.astro";
+import { getArticleSlugFromURL, getRelatedPosts, getArticleTranslations,
+ mainLanguages } from '@utils/utils.js';
+
+const slug = await getArticleSlugFromURL(Astro.url.href);
+const relatedPosts = await getRelatedPosts(slug);
+
+const isPublished = (p) => p.data.datePublished <= new Date() && !p.data.draft;
+const translations = (await getArticleTranslations(slug)).filter((p) => isPublished(p));
+
+// console.log('matched translations', translations.length);
+---
+
+ <ul id="carouselTargetList">
+   {relatedPosts.map((post) => (
+     <li class:list={["carousel__slide"]}><PostThumb post={post} small vertical /></li>
+   ))}
+ </ul>
+
+ <ul id="languageList" class="mt-20">
+  {translations.map(({data: m}) => (
+    <li class="px-5 text-sm mb-10"><a class="" href={`/${m?.url}`}>
+      <div class="text-8xl opacity-50 -mb-3">{mainLanguages[m.language].flag}</div>
+      <h4 class="text-blue-900 underline">{m.title}</h4></a>
+    </li>
+  ))}
+</ul>
+
+
+
+
+

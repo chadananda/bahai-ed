@@ -1,0 +1,96 @@
+---
+export const prerender = true;
+
+import { getCollection, getEntry } from "astro:content";
+import Layout from "@layouts/Layout.astro";
+import PostThumb from "@components/article/postThumb.astro";
+import { slugify } from "@utils/utils.js";
+import Container from "@components/container.astro";
+import Sectionhead from "@components/sectionhead.astro";
+import TopicFAQ from '@components/article/topicFAQ.astro';
+import CategoryCard from '@components/article/categoryCard.astro';
+
+// export paths for all categories
+
+// export async function getStaticPaths() {
+//   const authors = await getCollection("team", ({data}) => data.draft!==true);
+//   return authors.map(({ data }) => ({ params: { author: data.name_slug } }));
+// };
+
+
+
+
+export async function getStaticPaths() {
+  const categories = await getCollection("categories");
+  return categories.map(({data}) => ({ params: { category: data.category_slug } }));
+}
+
+// this category slug
+const { category: category_slug } = Astro.params;
+// console.log('category_slug: ', category_slug);
+
+// this category object
+const category = await getEntry("categories", category_slug);
+const description = category.data.description;
+// console.log('category entity name: ', category.data.category);
+
+// all articles matching this category
+const isPublished = ({data}) => (!data.draft && data.datePublished<=new Date());
+const isDev = import.meta.env.APP_ENV==='dev';
+const allPosts = await getCollection("posts", (ar) => isPublished(ar) || isDev);
+
+const matchingPosts = allPosts.filter((ar) => ar.data.category.id===category_slug);
+
+// all authors who wrote these articles, without duplication
+const matchingAuthors = [...new Set(matchingPosts.map(post => post.data.author))];
+
+// faq matching this category, if it exsits
+const faqs = await getEntry('faqs', category_slug);
+---
+
+<Layout title={category_slug} description={description}>
+   { !!faqs && (<TopicFAQ faqs={faqs} />)}
+   { !faqs && (
+     <Sectionhead>
+       <Fragment slot="title"> Article Topics </Fragment>
+       <Fragment slot="desc"> About the “{category.data.category}” </Fragment>
+     </Sectionhead>
+   )}
+  <Container class="w-full mx-5 sm:mx-15 pt-5">
+
+    <CategoryCard slug={category_slug} size="lg" />
+
+    <main class="flex flex-wrap justify-center gap-20 mt-10">
+      {Array.isArray(matchingPosts) && matchingPosts.map((post) => (
+        <div class="flex-none articlePost"
+          data-title={post.data.title}
+          data-tags={post.data.tags.join(',')}
+          data-language={post.data.language}>
+          <PostThumb post={post} />
+        </div>
+      ))}
+    </main>
+
+  </Container>
+</Layout>
+
+<!-- {Array.isArray(posts) && posts.map((post) => (
+  <div class="flex-none articlePost"
+      data-title={post.data.title}
+      data-tags={post.data.tags.join(',')}
+      data-language={post.data.language}>
+    <PostThumb post={post} />
+  </div>
+))} -->
+
+<script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', function() {
+    const selectedLanguage = localStorage.getItem('selectedLanguage') || 'en';
+    const articles = document.querySelectorAll('.articlePost');
+    articles.forEach(article => {
+      const language = article.dataset.language.toLowerCase();
+      if (language === selectedLanguage)  article.classList.remove('hidden');
+        else article.classList.add('hidden');
+    });
+  });
+</script>

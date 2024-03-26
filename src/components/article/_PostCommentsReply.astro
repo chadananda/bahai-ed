@@ -1,0 +1,23 @@
+---
+const { slug, id, visible } = Astro.props;
+const formid = `reply-form-${id?id:'0'}`;
+---
+
+<div id={formid} class={`reply-form ${visible ? 'block' : 'hidden'}`}>
+  <form
+  class="space-y-4 p-2 m-5 border-1 bg-slate-100 border-gray-300 rounded-md shadow-md"
+  action={`/comment/${slug}/${id || ''}`} method="POST">
+    <div>
+      <div class="mt-1">
+        <textarea id="comment" name="comment" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 p-3 block w-full sm:text-sm border border-gray-300 rounded-md" placeholder="Write your comment..." required></textarea>
+      </div>
+      <div class="flex gap-2 mt-1 pt-2">
+        <input type="text" name="name" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-1 px-3 flex-1 sm:text-sm border border-gray-300 rounded-md" placeholder="Name" required />
+        <input type="email" name="email" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-1 px-3 flex-1 sm:text-sm border border-gray-300 rounded-md mr-3" placeholder="Email (optional)"  />
+        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-400 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Post
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

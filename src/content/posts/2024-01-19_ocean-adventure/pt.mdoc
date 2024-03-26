@@ -1,0 +1,136 @@
+---
+title: 'Aventura no Oceano: Criando o Ocean 1.0'
+url: aventura-no-oceano
+description: >-
+  Explore a criação do Ocean 1.0, uma odisseia digital transformando a
+  literatura Bahá'í. Dos scanners aos CDs globais, é uma história de tecnologia,
+  engenhosida
+desc_125: >-
+  Descubra a jornada do Ocean 1.0: Um salto tecnológico na literatura Bahá'í,
+  unindo conhecimento e comunidades.
+abstract: >-
+  Resumo: Ocean 1.0 foi uma incrível oportunidade de serviço que atendeu à
+  demanda existente por capacidades de busca digital nos escritos Bahá'ís,
+  mesclando tecnologia com uma paixão por acessibilidade e compartilhamento de
+  conhecimento. Eu tinha tantas esperanças para o Ocean, mas tão pouco tempo. O
+  resultado foi tão limitado que quase o nomeei de 'lago'. Mas no geral, foi um
+  projeto muito gratificante.
+
+external_reference:
+  link: >-
+    https://www.bahai.org/library/authoritative-texts/the-universal-house-of-justice/messages/20231128_001/1#973422615
+  linkText: 'published at: bahai.org'
+
+draft: false
+post_type: Article
+
+datePublished: '2024-01-19'
+dateModified: '2024-01-20'
+
+category: bahai-education
+topics:
+  - bahai-education-software
+  - integration-of-science-and-religion
+  - bahai-interpretive-texts
+  - educational-requisites-of-teaching
+  - bahai-history
+
+image:
+  src: ./ocean_sshot_lg.png
+  alt: Ocean Screen Shot
+
+audio: >-
+  https://blogw-assets.s3.us-west-1.amazonaws.com/2024-01-19_ocean-adventure/pt.mp3
+audio_duration: PT7M45S
+audio_image: ./ocean-icon.png
+narrator: auto
+
+author: chad-jones
+
+language: pt
+translator: auto
+---
+
+
+
+{% related-resource
+    meta=$meta
+    type="Download de Software"
+    link="https://badasht.s3.us-west-1.amazonaws.com/Ocean_1.0.zip"
+    title="Ocean 1.0"
+    description="Instalador de software para Windows"
+/%}
+
+
+{% aside %}
+  ![Ícone do Ocean](./ocean-icon.png)
+{% /aside %}
+
+
+## Os Humildes Começos do Ocean 1.0
+
+## Aventuras com Scanner: O Alvorecer da Pesquisa Digital
+A história do Ocean 1.0 começa com um simples desejo de preencher a lacuna entre a literatura Bahá'í tradicional e o mundo digital em crescimento. Minha jornada começou com um serviço juvenil no Centro Mundial Bahá'í em Haifa, Israel, onde aprendemos a usar a ferramenta Grep do Unix para pesquisar na biblioteca central Bahá'í.
+
+Isso foi um exercício diário e criou um anseio por ter ferramentas básicas de pesquisa para o estudo contínuo.
+
+![Estudo em Haifa](./dunbar-class.png)
+
+
+## Dos EUA para a Índia: Um Scanner na Minha Mala
+Alguns anos mais tarde, uma reviravolta pessoal me levou a me juntar ao meu irmão na Índia. Foi aqui, em meio a uma cultura e ambiente diferentes, que as sementes para o Ocean foram semeadas. Eu já havia comprado um scanner caro – um investimento significativo na época – para começar a digitalizar os livros Bahá'ís. Isso não era apenas uma tarefa, mas um trabalho de amor, impulsionado pelo comprometimento de digitalizar e compartilhar o rico patrimônio da literatura Bahá'í.
+
+![Bahá'ís Indianos](./ocean-india-classes.png)
+
+## Chai, Conversa e Código: O Nascimento do Ocean
+Em uma visita aos EUA, tive conversas esclarecedoras com o chefe da Editora dos EUA. Naquela época, eles pretendiam vender versões eletrônicas de cada livro, mas a popularidade emergente dos CDs me sugeriu uma oportunidade diferente. Enquanto na Índia e na China, e depois na Índia novamente, mergulhei no aprendizado de Object Pascal através do Delphi, uma ferramenta incrível para criar aplicativos Windows. Foi um tempo de crescimento e aprendizado, impulsionado pelo objetivo de tornar os textos Bahá'ís mais acessíveis.
+
+## DLL Hell e a Busca por um App Autocontido
+Uma realização importante durante essa jornada foi a fragilidade de aplicativos com dependências externas – algo que costumávamos referir como "DLL Hell". Esforçar-se por um aplicativo autocontido, robusto e confiável, tornou-se um princípio orientador. No entanto, incorporar um índice invertido ou um banco de dados dentro de uma pegada desejada foi um desafio. Precisei encontrar uma forma de tornar as buscas brutas, tipo 'grep', rápidas e eficientes.
+
+![Ocean no Linux](./ocean-linux.png)
+
+## Fóruns de Assembly e a Busca Mais Rápida do Oriente
+Esse desafio me levou a me infiltrar em fóruns de linguagem assembly, uma comunidade de especialistas em otimização que foram fundamentais no desenvolvimento da versão em assembly do algoritmo de busca Boyer-Moore do Ocean. Essa colaboração não foi apenas sobre conquista técnica; tratava-se de comunidade, compartilhamento e aprendizado juntos.
+
+## O Grande Desaparecimento (e Retorno) dos Diacríticos
+Com um pouco de mágica do mapeamento de memória, o Ocean começou a funcionar como um banco de dados. Claro, isso exigiu alguma manipulação de texto – removendo diacríticos dos nomes em Dawn-Breakers, por exemplo. Mais tarde, reintroduzi diacríticos para as palavras Bahá'ís mais comuns nos resultados da pesquisa, uma mudança sutil que passou amplamente despercebida, mas melhorou significativamente a experiência do usuário.
+
+## Controvérsia? Que Venha!
+Quando me aproximei do Sr. Shah com a versão completa do Ocean, consciente de sua potencial controvérsia, seu encorajamento foi um farol: "Se ninguém está reclamando, então você não está fazendo nada de valor. Vá em frente!" Seu apoio foi fundamental.
+
+Você tem que lembrar que, naquela época, motores de busca como o Google estavam apenas começando -- e as questões legais sobre se era ou não legal fornecer resultados de pesquisa sobre materiais protegidos por direitos autorais eram completamente incertas. Mais tarde, o Google [ganhou uma ação judicial massiva](https://en.wikipedia.org/wiki/Authors_Guild,_Inc._v._Google,_Inc.) movida pela Associação de Editores Americanos -- estabelecendo que a lei de direitos autorais não se aplicava aos resultados da pesquisa.
+
+## A Invasão Global de CDs: Envio Internacional de CDs
+O lançamento envolveu a encomenda de mil mini-CDs, com Cyrus Vahedi ajudando generosamente com a impressão e empacotamento de cartões de instruções e kits. Enviamos esses globalmente para membros do Corpo Auxiliar e Conselheiros, uma empreitada massiva considerando as capacidades limitadas da internet na época.
+
+![Mesa de CDs do Ocean](./ocean-cds.png)
+
+Depois, um voluntário nos EUA com uma empresa de cumprimento de CDs ofereceu-se para enviar CDs ao custo para qualquer um que solicitasse. Concordamos com um preço fixo de $5 para cobrir o envio -- e esse $5 era opcional!
+
+![CD do Ocean - Verso](./Ocean_back.jpg)
+
+## Peneirando Fundos para Flutuar o Ocean
+O financiamento para este extenso envio foi derivado, em parte, das vendas online do ["Sifter - Star of the West", outro projeto muito importante para mim](/sifter-star-of-the-west). No entanto, a verdadeira empolgação veio com o 'contrabando' de 50 CDs para o Irã e a distribuição de CDs para os Bahá'ís em Myanmar pelo Sr. Shah, demonstrando o anseio pelo conhecimento em comunidades com acesso limitado à internet.
+
+[![Sifter - Star of the West CD](./book_w_cd_200.jpg)](/sifter-star-of-the-west)
+
+## O CD Agente Secreto: A Surpresa Escondida de Yusuf Ali
+
+Talvez a solução mais criativa tenha sido em resposta aos CDs serem verificados nas fronteiras em certos países sensíveis. Para o Irã, entregamos o CD a turistas Bahá'ís iranianos (eles vinham visitar o Templo de Lótus na Índia) e um grupo de jovens de Shíráz até se voluntariou para distribuir a instalação em todos os PCs da comunidade.
+
+Quando soube que alguns países ainda estavam verificando o conteúdo dos CDs em aeroportos, disfarçamos o Ocean dentro de arquivos de música de Yusuf Ali (Cat Stevens) em CDs. Uma interface simples de player de música ocultava o aplicativo, que poderia ser instalado digitando "Ocean" no player.
+
+O Sr. Shah embalou 10 CDs em sua mala em uma visita aos Bahá'ís de Mianmar (Birmânia), que tinham computadores mas não podiam acessar a internet.
+
+No geral, este foi um projeto fantástico. Tantas pessoas contribuíram ao longo do caminho e, no final, conseguimos incentivar a interação com os textos sagrados.
+
+A iniciativa individual é como o mundo gira.
+
+{% related-resource
+    meta=$meta
+    type="Download de Software"
+    link="https://badasht.s3.us-west-1.amazonaws.com/Ocean_1.0.zip"
+    title="Ocean 1.0"
+    description="Instalador de software para Windows"
+/%}

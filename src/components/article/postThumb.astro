@@ -1,0 +1,67 @@
+---
+import { Picture } from 'astro:assets';
+import { getEntry } from 'astro:content';
+import { getArticleURL } from '@utils/utils.js';
+
+const { post, small } = Astro.props
+const articleLink = `/${post.data?.url}`;
+const author = await getEntry('team', post.data.author.id);
+const category = await getEntry('categories', post.data.category.id);
+
+const image = post.data.image;
+// const pageURL = Astro.url.href.replace('[::1]', 'localhost').replace(/\/$/, '')
+const pageURL = getArticleURL(Astro);
+const siteURL = new URL(pageURL).origin.replace(/\/$/, '');
+const uniqueID = 'id-' + Math.random().toString(36).slice(2, 11);
+const authorURL = `${siteURL}/authors/${author.id}`
+const pubdate = new Date(post.data.datePublished);
+const datePublished = pubdate.toLocaleDateString('en-US', {year:'numeric', month:'short', day:'numeric'});
+const isPublished = pubdate <= new Date() && !post.data.draft;
+---
+
+<!--  if prop small then  -->
+
+
+<div id={uniqueID}
+  class={ `overflow-hidden ${small ? 'w-[200px]' : 'w-[302px]'} ` }>
+  <a href={articleLink} aria-label={post.data.title}>
+    <Picture
+      src={image.src}
+      alt={image.alt}
+      formats={["avif", "webp", "jpg"]}
+      sizes={small ? "(max-width: 200px) 100vw, 200px" : "(max-width: 300px) 100vw, 300px"}
+      class={`object-cover rounded-lg shadow-lg border border-gray-200 ${small ? 'w-[200px] h-[133px] opacity-75' : 'w-[300px] h-[200px]'}`+
+       ` ${isPublished ? '' : 'border-dashed border-4 border-green-300 opacity-50'} `
+      }
+      quality="low"
+      transition:name={`post-img-${post.slug}`}
+      width={small ? "200" : "300"} height={small ? "133" : "200"}
+    />
+    <div class="mt-4">
+      {!small && (
+        <span class={`text-blue-400 uppercase tracking-wider ${small ? 'text-xxs' : 'text-xs'} font-medium`}>
+          <a href={`/categories/${category.id}`} aria-label={category.data.category}>{category.data.category}</a>
+        </span>
+      )}
+
+      {small ? (
+        <h2 class="text-sm font-semibold leading-snug tracking-tight -mt-2 mb-10" transition:persist> {post.data.title}
+        <a href={authorURL} aria-label={author.data.name} class="text-xs font-extralight text-gray-600 ml-2">{author.data.name}</span></h2>
+      ) : (
+        <h2 class="text-xl font-semibold leading-snug tracking-tight mt-1" transition:persist> {post.data.title} </h2>
+      )}
+
+      {!small && (
+        <div class="text-sm mt-3 flex gap-2">
+          <span class="text-gray-600">
+            <a href={authorURL} aria-label={author.data.name}>{author.data.name} </a>
+          </span>
+          <span class="text-gray-600">• </span>
+          <time class="text-gray-600" datetime={datePublished}> {datePublished} </time>
+        </div>
+      )}
+    </div>
+  </a>
+</div>
+
+

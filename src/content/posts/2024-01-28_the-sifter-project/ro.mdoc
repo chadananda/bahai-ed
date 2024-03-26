@@ -1,0 +1,121 @@
+---
+title: Proiectul Sifter
+url: proiectul-sifter
+description: >-
+  Facem căutabilă întreaga Star of the West - de la concept la produs publicat
+  în 60 de zile
+desc_125: >-
+  Ce proiect minunat. Am adunat Star of the West ani de zile și apoi, brusc, am
+  decis să facem o versiune pe CD de vânzare.
+abstract: >-
+  Descoperă parcursul digital al 'Star of the West', o publicație esențială
+  Bahá'í, acum accesibilă pe CD. Acest ghid rapid evidențiază funcționalitățile
+  cheie, valoarea istorică și cum îmbogățește cercetările în literatura Bahá'í.
+
+external_reference:
+  link: null
+  linkText: null
+
+draft: false
+
+datePublished: '2024-01-28'
+dateModified: '2024-01-28'
+
+category: bahai-education
+topics:
+  - bahai-education-software
+  - bahai-history
+  - integration-of-science-and-religion
+  - bahai-interpretive-texts
+  - educational-requisites-of-teaching
+  - bahai-study-guides
+
+image:
+  src: ./stack_w_cd1_faded2.jpg
+  alt: Stack of books replaced by a single CD
+
+audio: >-
+  https://blogw-assets.s3.us-west-1.amazonaws.com/2024-01-28_the-sifter-project/ro.mp3
+audio_duration: PT8M44S
+audio_image: ./stack_large.gif
+narrator: auto
+
+author: chad-jones
+
+language: ro
+translator: auto
+---
+
+
+
+## Acest proiect a fost atât de distractiv!
+
+![Citat din Abdu'l-Baha despre Steaua Occidentului](./starquote.gif)
+
+Undeva în 1998, eram de curând căsătorit și vizitam SUA pe scurt timp. Ne-am cazat în casa Ericăi Toussaint și a apărut discuția despre proiectele de scanare pe care le făcusem împreună și despre conferința iminentă din Milwaukie. Nu sunt sigur cine, dar cineva a venit cu ideea de a vinde un CD cu Steaua Occidentului la conferință. Părea absurd, dar cu cât mă gândeam mai mult la asta, cu atât părea mai realizabil dacă era planificat cu grijă.
+
+Am lucrat cu termenul invers față de data conferinței, calculând timpul pentru tipărirea CD-ului, design etc. Era un program nebunesc. Implementarea software-ului pe CD în două luni era o nebunie. Știam că nu va fi perfect, așa că trebuia să integrez actualizări automate înainte de orice alt lucru.
+
+Erica a plecat câteva zile mai târziu într-o călătorie și eu aveam o lună și jumătate să construiesc un produs comercial! În ce mă angajasem??
+
+{% related-resource
+    meta=$meta
+    type="Software Download"
+    link="https://badasht.s3.us-west-1.amazonaws.com/sifter-star-install.zip"
+    title="Sifter - Descărcare Steaua Occidentului"
+    image="./book_w_cd_200.jpg"
+    description="Descărcare instalator, 650 MB"
+/%}
+
+Pentru înregistrarea istorică. Iată postarea originală a paginii web care anunța Sifter: [Sifter - Steaua Occidentului >>](/sifter-star-of-the-west)
+_____
+
+## Plan absolut nebunesc
+
+Chiar și cu dezvoltarea modernă iterativă, finalizarea unui proiect de software implementat în mai puțin de două luni este încă un program nebun. Am ruminat provocarea și iată cum am făcut-o:
+
+1. **Prioritizare Extremă**: prioritizarea strictă a funcționalităților astfel încât cele mai importante să fie finalizate prima oară
+2. **Implementează Mai Întâi**: construirea funcționalității de actualizare online ca prim pas. Aceasta era o idee complet nouă atunci, apropo.
+3. **Iterează și Livrează Zilnic**: dezvoltare în timp real și noi funcționalități implementate zilnic către un nucleu mic de utilizatori activi. Testarea acceptării de către utilizator devine parte a procesului de dezvoltare.
+
+### Imagini uriașe...
+
+Pe atunci, spațiul pe disc era încă insuficient pentru a te aștepta ca utilizatorii să instaleze complet cele 500mb+ de imagini ale paginilor pe hard discurile lor, așa că software-ul trebuia să funcționeze fără probleme cu sau fără imagini. PDF-ul era încă prea dificil, așa că acestea erau foldere de imagini TIFF cu indexuri pentru a oferi navigare, semne de carte, căutare în text complet etc.
+
+### OCR de calitate scăzută, ick...
+
+Căutarea trebuia să fie suficient de laxă pentru a trece peste toate erorile teribile de OCR injectate în paginile scanate. În zilele noastre nu mai vezi cât de rea este OCR-ul pentru că erorile de OCR slabe sunt ascunse într-un strat invizibil în fișierele PDF. Dar încă afectează căutarea. Pentru a obține cel mai bun OCR posibil, am utilizat un sistem de OCR "votat", care combina mai multe motoare și vota fiecare cuvânt. Asta a îmbunătățit rezultatele cu un bun 20%.
+
+### Și implementează.... nimic
+
+Primele două zile, Erica a trebuit să plece pentru un turneu de școală de vară. Primul lucru pe care l-am făcut a fost să configurez o aplicație care verifica internetul pentru un update. Apoi, dacă exista un update, se descărca singură și apoi realiza o reinstalare mică în timp real peste ea însăși (ceea ce nu era ușor pe Windows). Dar a funcționat! Și încă din prima zi aveam un mecanism pentru a implementa noi build-uri și o aplicație care aplica automat build-urile. De atunci, implementam actualizări de zeci de ori în fiecare zi. Erica, testerul meu principal, verifica aplicația de mai multe ori pe zi pentru a-i vedea evoluția. Ce distracție!
+
+### Pas cu pas, fiecare zi finalizată
+
+Chiar a fost grozav. Într-o săptămână aveam navigare a imaginilor pe referințe. În două săptămâni, căutare în text complet. În trei săptămâni, realizarea de semne de carte și imprimare. Fiecare zi vedea una sau două noi implementări, fiecare un produs complet, dar îmbunătățit. Cu o săptămână înainte de conferință, am ars ultima imagine și am trimis-o la tipar. Cu două zile înainte de conferință, am ridicat o cutie de 1000 de CD-uri de la tipograf, alături de broșuri, carcase și plicuri pentru CD.
+
+Am pornit în traversarea țării cu produsul nefinisat și când am ajuns acolo, noaptea înaintea conferinței, am petrecut seara împreună cu un grup de tineri asamblând pachetele de CD-uri. Dimineața, ne-am întâlnit cu Justice St. Rain de la Special Ideas și i-am dat o stivă de CD-uri de vândut.
+
+{% aside %}
+ ![Carte cu CD](./book_w_cd_200.jpg)
+{% /aside %}
+
+Și nu a fost o treabă de mântuială, întregul pachet arăta destul de bine! OCR este o tehnologie oribilă, dar această abordare a reușit să ajute să se depășească pragurile și să ofere acces complet la text pentru întregul set. Când George Ronald a republicat Steaua Occidentului, ei au făcut-o doar pe jumătate pentru că setul complet era prea mare. Așa că a trecut destul timp de când cele 8,500 de pagini erau disponibile pentru bahá'íi.
+
+### Testul....
+
+Mai târziu în acel an, vizitam familia în Haifa și am avut ocazia să demonstrez instrumentul Ruhiyyih Khanum. Ea m-a întrebat imediat să găsesc anunțul nașterii sale. Sub presiune extremă, am săpat și -- prin noroc total -- am găsit-o în ciuda formulării stângace: "O mică fiică a venit să binecuvânteze casa dlui. și a dnei. W. S. Maxwell din Montreal, Canada."
+
+### Ciudat...
+
+De îndată ce am republicat setul, am început să fiu contactat de Încălcătorii Legământului, adepții lui Joel Marengella, pentru că într-un fel credeau că toate declarațiile pozitive ale lui Abdu'l-Baha despre Mason Remey, publicate în Steaua Occidentului, i-ar atrage pe bahá'íi în brațele lor. Dar povestea lui Mason Remey devine o lecție obiect tristă cu cât înțelegi mai mult cât de departe a căzut el de pe piedestalul grației. În special atunci când realizezi că el era un campion al Legământului.
+
+Abdu'l-Baha l-a numit pe Mason "un leu al Legământului". Este important să cunoaștem părțile tragice ale istoriei. Criză și victorie sunt după toate legate. 
+
+### Feedback încurajator:
+
+> Tocmai am primit Sifter - Steaua Occidentului. ÎL ADOR! Întregul pachet este realizat splendid."
+
+> ... Mai devreme în acest an am obținut Steaua Occidentului pe CD de la Conferința din Milwaukee. Când m-am întors acasă am lansat cu nerăbdare software-ul și am căutat informații despre Albert Smiley și am găsit o tabletă de la Abdu'l-Baha pentru Albert Smiley publicată în Steaua Occidentului. Fără cuvinte și cuprins de venerație, am citit Tableta. Niciodată nu m-am gândit că aș găsi o Tabletă și acea Tabletă mi-a schimbat întreaga perspectivă față de proiect...."
+
+> Sper că ai primit multe scrisori ca a mea. Doream să îmi exprim aprecierea pentru produsul tău... Funcționarea este intuitivă și destul de simplă pentru mine. Nu simt în acest moment că tehnologia este între mine și cuvintele, viața timpurilor despre care citesc.... Este într-adevăr o binecuvântare a tehnologiei moderne să poți citi toate acele volume.... Niciodată nu am crezut că o să am ocazia să citesc Steaua Occidentului".

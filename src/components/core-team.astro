@@ -1,0 +1,50 @@
+---
+import { getCollection } from "astro:content";
+import { Picture } from "astro:assets";
+import brand from "@data/branding.json"
+
+// Filter team entries with 'draft: false' & date before current date
+const publishedTeamMembers = await getCollection("team", ({ data }) => {
+  return !data.draft && data.datePublished < new Date();
+});
+---
+
+
+
+
+<div class="mt-24">
+ <h2 class="text-4xl lg:text-5xl lg:tracking-tight text-center">
+   Core <span class="text-indigo-600 font-bold">Team</span>
+ </h2>
+ <p class="text-lg mt-4 text-slate-600 text-center">
+   {brand.siteName} is built by some awesome individuals.
+ </p>
+</div>
+
+<div class="grid md:grid-cols-4 gap-10 mx-auto mt-12">
+ {
+   publishedTeamMembers.map((teamMemberEntry) => (
+     <div class="group">
+       <div class="w-full aspect-square">
+         <Picture
+           src={teamMemberEntry?.data?.avatar?.src}
+           alt={teamMemberEntry?.data?.avatar?.alt || "Team Member"}
+           loading="lazy"
+           width={400}
+           height={400}
+           formats={["webp", "jpg"]}
+           class="w-full h-full object-cover bg-white rounded transition group-hover:-translate-y-1 group-hover:shadow-xl"
+           widths={[120, 188, 300, 372, 788, 1000, 1280]}
+         />
+       </div>
+
+       <div class="mt-4 text-center">
+         <h2 class="text-lg text-gray-800">{teamMemberEntry.data.name}</h2>
+         <h3 class="text-sm text-slate-500">
+           {teamMemberEntry.data.title}
+         </h3>
+       </div>
+     </div>
+   ))
+ }
+</div>

@@ -1,0 +1,122 @@
+---
+title: O Projeto Sifter
+url: o-projeto-sifter
+description: >-
+  Tornando acessível todo o conteúdo da 'Estrela do Oeste' - do conceito ao
+  produto publicado em 60 dias
+desc_125: >-
+  Que projeto incrível. Coletei a 'Estrela do Oeste' por anos e, em um ímpeto,
+  decidimos criar uma versão em CD para venda.
+abstract: >-
+  Desvende a jornada digital da 'Estrela do Oeste', uma publicação Bahá'í
+  essencial, agora disponível em CD. Este guia rápido destaca suas principais
+  características, valor histórico e como enriquece a pesquisa da literatura
+  Bahá'í.
+
+external_reference:
+  link: null
+  linkText: null
+
+draft: false
+
+datePublished: '2024-01-28'
+dateModified: '2024-01-28'
+
+category: bahai-education
+topics:
+  - bahai-education-software
+  - bahai-history
+  - integration-of-science-and-religion
+  - bahai-interpretive-texts
+  - educational-requisites-of-teaching
+  - bahai-study-guides
+
+image:
+  src: ./stack_w_cd1_faded2.jpg
+  alt: Stack of books replaced by a single CD
+
+audio: >-
+  https://blogw-assets.s3.us-west-1.amazonaws.com/2024-01-28_the-sifter-project/pt.mp3
+audio_duration: PT9M44S
+audio_image: ./stack_large.gif
+narrator: auto
+
+author: chad-jones
+
+language: pt
+translator: auto
+---
+
+
+
+## Esse foi um projeto incrivelmente divertido!
+
+![Citação de Abdu'l-Baha sobre o Star of the West](./starquote.gif)
+
+Em algum momento de 1998, eu estava recém-casado e visitando os EUA por pouco tempo. Estávamos hospedados na casa de Erica Toussaint e surgiu uma discussão sobre os projetos de digitalização que havíamos feito juntos e a próxima conferência em Milwaukie. Não me lembro bem quem, mas alguém teve a ideia de vender um CD do Star of the West na conferência. Parecia absurdo, mas quanto mais eu pensava, mais possível parecia se planejássemos com cuidado.
+
+Trabalhamos com a data da conferência em mente, calculando o tempo para a impressão do CD, o design, etc. Era uma agenda louca. Lançar um software em CD em dois meses era uma loucura. Eu sabia que não seria perfeito, então tive que integrar atualizações automáticas antes de qualquer coisa.
+
+Erica partiu alguns dias depois para uma viagem e eu tinha um mês e meio para criar um produto comercial! Em que eu tinha me metido??
+
+{% related-resource
+    meta=$meta
+    type="Software Download"
+    link="https://badasht.s3.us-west-1.amazonaws.com/sifter-star-install.zip"
+    title="Sifter - Download do Star of the West"
+    image="./book_w_cd_200.jpg"
+    description="Download do instalador, 650 MB"
+/%}
+
+Para registro histórico. Aqui está o post original da página web anunciando o Sifter: [Sifter - Star of the West >>](/sifter-star-of-the-west)
+_____
+
+## Um plano absolutamente insano
+
+Mesmo com o desenvolvimento iterativo moderno, completar um projeto de software implantado em menos de dois meses ainda é uma programação insana. Refleti sobre o desafio e aqui está como fizemos:
+
+1. **Priorização Extrema**: priorizar rigidamente os recursos para que os mais importantes sejam feitos primeiro
+2. **Implantar Primeiro**: construir a funcionalidade de atualização online em primeiro lugar. Isso era uma ideia completamente nova na época, por sinal.
+3. **Iteração e Entrega Diária**: desenvolvimento ao vivo e novos recursos implantados diariamente para um pequeno núcleo de usuários ativos. Testes de aceitação do usuário se tornam parte do processo de desenvolvimento.
+
+### Imagens enormes...
+
+Na época, o espaço em disco ainda era insuficiente para esperar que os usuários instalassem os mais de 500mb de imagens de páginas em seus discos rígidos, então o software teve que funcionar perfeitamente com ou sem imagens. PDF ainda era muito oneroso, então eram pastas de imagens TIFF com índices para fornecer navegação, marcadores, pesquisa de texto integral etc.
+
+### OCR de baixa qualidade, eca...
+
+A pesquisa tinha que ser suficientemente tolerante para ignorar todos os horríveis erros de OCR injetados nas páginas. Hoje em dia você não ve como o OCR é ruim porque os erros de OCR são escondidos em uma camada invisível nos arquivos PDF. Mas isso ainda prejudica a pesquisa. Para obter o melhor OCR possível, usamos um sistema de "votação" OCR que combinava várias engines e votava em cada palavra. Isso tornou os resultados uns bons 20% melhores.
+
+### E implantar... nada
+
+Nos dois primeiros dias, Erica teve que sair em uma turnê de escola de verão. A primeira coisa que fiz foi configurar um aplicativo que verificava na internet por uma atualização. Então, se houvesse uma atualização, ele se baixava e então realizava uma pequena reinstalação ao vivo sobre si mesmo (isso não era fácil no Windows). Mas funcionou! E desde o primeiro dia tínhamos um mecanismo para implantar novas builds e um aplicativo que as aplicava automaticamente. Desde então, eu estava implantando atualizações uma dúzia de vezes por dia. Erica, minha principal testadora, verificava o aplicativo várias vezes ao dia para assistir sua evolução. Que divertido!
+
+### Passo a passo, cada dia concluído
+
+Realmente foi legal. Em uma semana tínhamos navegação de imagem por referência. Em duas semanas, pesquisa de texto integral. Em três semanas, criação de marcadores e impressão. Cada dia via uma ou duas novas implantações, cada uma um produto completo, mas aprimorado. Uma semana antes da conferência, queimamos a última imagem e a enviamos para impressão. Dois dias antes da conferência pegamos uma caixa com 1.000 CDs da gráfica, juntamente com livretos, cases e encartes para CD.
+
+Seguimos pelo país com o produto cru e, quando chegamos lá, na noite anterior à conferência, passamos a noite com um bando de jovens montando pacotes de CDs. De manhã encontramos Justice St. Rain da Special Ideas e lhe demos uma pilha de CDs para vender.
+
+{% aside %}
+ ![Livro com CD](./book_w_cd_200.jpg)
+{% /aside %}
+
+E não foi um trabalho feito de qualquer jeito, todo o pacote ficou bastante agradável! OCR é uma tecnologia terrível, mas essa abordagem conseguiu ajudar a superar as desvantagens e proporcionar acesso total ao texto do conjunto inteiro. Quando a George Ronald republicou o Star of the West, ela fez apenas metade porque o conjunto completo era muito grande. Então, já fazia um tempo desde que as 8.500 páginas estavam disponíveis para os Bahá'ís.
+
+### O teste....
+
+Mais tarde naquele ano, eu estava visitando a família em Haifa e tive a chance de demonstrar a ferramenta para Ruhiyyih Khanum. Ela imediatamente me pediu para encontrar o anúncio de seu nascimento. Sob extrema pressão, eu procurei e -- por pura sorte -- o encontrei apesar da redação estranha: "Uma pequena filha veio abençoar o lar do Sr. e da Sra. W. S. Maxwell de Montreal. Canadá."
+
+### Curiosamente...
+
+Assim que eu republicou o conjunto, comecei a ser contatado por Quebradores do Convênio, seguidores de Joel Marengella, porque de alguma forma eles pensavam que todas as afirmações positivas de Abdu'l-Baha sobre Mason Remey, publicadas no Star of the West, de alguma forma os levaria para seus braços. Mas a história de Mason Remey apenas se torna mais uma lição triste de objeto quanto mais você percebe quão longe ele realmente caiu da graça. Especialmente quando você se dá conta de que ele era um defensor do Convênio.
+
+Abdu'l-Baha havia chamado Mason de "leão do Convênio". É importante que conheçamos as partes trágicas da história. Crise e vitória estão relacionadas, afinal.
+
+### Feedbacks encorajadores:
+
+> Eu acabo de receber o Sifter - Star of the West. EU AMO! Todo o pacote está lindamente executado."
+
+> ... No início deste ano, eu obtive o Star of the West em CD na Conferência de Milwaukee. Quando voltei para casa, lancei o software ansiosamente e fiz uma busca por Albert Smiley e encontrei uma tábua de Abdu'l-Baha para Albert Smiley publicada no Star of the West. Sem palavras e atônito, li a Tábua. Eu nunca havia considerado que eu encontraria uma Tábua e aquela Tábua mudou completamente minha perspectiva em relação ao projeto...."
+
+> Espero que tenha recebido muitas cartas como a minha. Queria expressar minha gratidão pelo seu produto... A operação é intuitiva e simples o suficiente para mim. Eu não sinto neste momento que a tecnologia está entre mim e as palavras, a vida dos tempos que estou lendo... É de fato uma bênção da tecnologia moderna poder ler todos esses volumes... Eu nunca acreditei que teria a chance de ler o Star of the West".

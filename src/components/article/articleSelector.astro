@@ -1,0 +1,58 @@
+---
+export const prerender = true;
+
+import { getAllLanguages, mainLanguages } from '@utils/utils.js'
+const langs = Array.from(await getAllLanguages());
+---
+
+<div class="flex justify-center my-5 sticky top-20 z-10">
+ <div class="max-w-2xl w-full border-2 rounded-lg shadow-md p-0 sm:p-2 flex items-center space-x-1 sm:space-x-4 bg-white overflow-hidden">
+   <input id="arfilter" type="text" class="flex-grow p-3 sm:p-4 text-md sm:text-2xl rounded-md focus:outline-none" placeholder="Title, author, topic" style="max-width: calc(100% - 100px);" />
+   <select id="langsel" class="w-32 sm:w-36 p-2 text-sm sm:text-lg rounded-md text-gray-400 text-center focus:outline-none" default="en">
+     {langs && langs.map(lang => (
+       <option value={lang}> {mainLanguages[lang].flag} {mainLanguages[lang].name}</option>
+     ))}
+   </select>
+ </div>
+</div>
+
+
+
+<script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', function() {
+    // Check if there's a selected language saved and set it
+    const savedLanguage = localStorage.getItem('selectedLanguage') || 'en';
+    if (savedLanguage) {
+      document.getElementById('langsel').value = savedLanguage;
+    }
+
+    // Now trigger the filtering based on saved preferences
+    document.getElementById('arfilter').dispatchEvent(new Event('input'));
+  });
+
+  document.getElementById('arfilter').addEventListener('input', function() {
+    const searchQuery = this.value.toLowerCase();
+    const selectedLanguage = document.getElementById('langsel').value;
+    const articles = document.querySelectorAll('.articlePost');
+
+    articles.forEach(article => {
+      const title = article.dataset.title.toLowerCase();
+      const tags = article.dataset.tags.toLowerCase();
+      const language = article.dataset.language.toLowerCase();
+      if (language === selectedLanguage && (title.includes(searchQuery) || tags.includes(searchQuery))) {
+        article.classList.remove('hidden');
+      } else {
+        article.classList.add('hidden');
+      }
+    });
+  });
+
+  // Trigger on language change
+  document.getElementById('langsel').addEventListener('change', function() {
+    const selectedLanguage = this.value;
+    // Save the selected language to localStorage
+    localStorage.setItem('selectedLanguage', selectedLanguage);
+    // Trigger the input event handler to re-filter articles based on the new language selection
+    document.getElementById('arfilter').dispatchEvent(new Event('input'));
+  });
+</script>

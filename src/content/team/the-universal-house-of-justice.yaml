@@ -1,0 +1,26 @@
+title: "Organization"
+image:
+  src: ./seat-uhj.jpg
+  alt: Seat of the Universal House of Justice
+
+external: true
+contact:
+isFictitious: false
+
+jobTitle: "Head of Baha'i Faith"
+name: "The Universal House Of Justice"
+name_slug: "the-universal-house-of-justice"
+type: "Organization"
+url: "https://universalhouseofjustice.bahai.org"
+worksFor:
+  '@type': "Organization"
+  name: "God"
+description: "The Universal House of Justice, established in 1963 and based in Haifa, Israel, is the supreme governing body of the Bahá’í Faith. Comprised of nine members elected every five years by the National Spiritual Assemblies, this institution is responsible for guiding the spiritual and administrative affairs of the Baha'i community globally."
+sameAs:
+  - "https://www.linkedin.com/in/author"
+  - "https://www.twitter.com/author"
+  - "https://www.facebook.com/author"
+draft: false
+
+
+

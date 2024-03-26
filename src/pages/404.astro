@@ -1,0 +1,25 @@
+---
+export const prerender = true;
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/container.astro";
+import Link from "@components/ui/link.astro";
+---
+
+<Layout title="404 Not Found">
+  <Container>
+    <div class="min-h-[calc(100vh-20rem)] flex items-center justify-center">
+      <div class="mt-16 text-center">
+        <h1
+          class="text-6xl lg:text-9xl font-bold lg:tracking-tight bg-gradient-to-b from-indigo-600 to-indigo-300 bg-clip-text text-transparent">
+          404
+        </h1>
+        <p class="text-lg lg:text-2xl font-medium mt-4 text-slate-700">
+          Frankly, the page you are looking for doesn’t exist. We suggest you reconsider your life choices.
+        </p>
+        <div class="mt-10">
+          <Link href="/" style="outline">Back to Home</Link>
+        </div>
+      </div>
+    </div>
+  </Container>
+</Layout>

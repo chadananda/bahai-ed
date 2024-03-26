@@ -1,0 +1,33 @@
+---
+import brand from '@data/branding.json';
+import Footer from "@components/footer.astro";
+import Navbar from "@components/navbar/navbar.astro";
+import SideBar from "@components/admin/sidebar.astro";
+import { checkUser } from "@utils/authCheck.js";
+
+const { title } = Astro.props;
+
+---
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="alternate icon" href="/favicon.ico" />
+  <title>{title} | {brand.title}</title>
+</head>
+<body>
+<Navbar />
+
+
+<div class="flex">
+  <SideBar />  <!-- Admin Sidebar  -->
+  <slot />  <!-- Main Admin Content -->
+</div>
+
+
+<!-- <Footer margin={footerMargin} /> -->
+</body>
+</html>

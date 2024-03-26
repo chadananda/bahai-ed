@@ -1,0 +1,202 @@
+---
+// ArticleJSONLD.astro - a component to generate structured data for an article
+
+import brand from '@data/branding.json';
+import { SEO, TwitterCardType } from "astro-seo";
+import { getImage } from "astro:assets";
+import { getEntry } from "astro:content";
+import { filterTopics } from "@utils/dataUtils.astro";
+import { getArticleAudioPath, getArticleTranslations, getArticleURL } from '@utils/utils.js';
+
+// type Props = CollectionEntry<'article'>['data'];
+
+const { title, description, desc_125, keywords, language, video_main, post_type, audio, audio_duration, url:slug } = Astro.props;
+
+// console.log('catref', catref);
+const category = await getEntry('categories', Astro.props.category.id);
+const author = await getEntry('team', Astro.props.author.id);
+// const topics = await getEntries(Astro.props.topics);
+const topics = await filterTopics(Astro.props.topics); // because topics are no longer references
+// console.log('topicsList', topics);
+const image = Astro.props.image?.src?.fsPath; // image path of processed image
+
+// for some reason dateModified is not always rendering correctly in Astro
+let datePublished = Astro.props.datePublished;
+let dateModified = Astro.props.dateModified;
+if (!dateModified || isNaN(dateModified.getTime())) dateModified = new Date();
+function toIsoStringWithTimezone(d) {
+    let z = n => ('0' + n).slice(-2),
+        off = d.getTimezoneOffset(),
+        sign = off < 0 ? '+' : '-',
+        padHours = z(Math.floor(Math.abs(off) / 60)),
+        padMinutes = z(Math.abs(off) % 60);
+    return d.getFullYear() + '-' + z(d.getMonth() + 1) + '-' + z(d.getDate()) +
+           'T' + z(d.getHours()) + ':' + z(d.getMinutes()) + ':' + z(d.getSeconds()) +
+           sign + padHours + ':' + padMinutes;
+}
+datePublished = toIsoStringWithTimezone(datePublished);
+dateModified = toIsoStringWithTimezone(dateModified);
+
+const pageURL = getArticleURL(Astro);
+//Astro.url.href.replace('[::1]', 'localhost').replace(/\/$/, '') //.replace(/:(\d+)/, ':3000')
+const siteURL = new URL(pageURL).origin.replace(/\/$/, '');
+
+const authorSlug = author.data.name ? author.id : brand.siteName;
+const authorURL = `${siteURL}/author/${authorSlug}`;
+
+// get original image?
+// const image = image.src.fsPath;
+
+// format image for large twitter card
+let twitLarge, twitLargeImage;
+// 2:1 aspect ratio, min 300x157, max 4096x4096 JPG, PNG, WEBP, and GIF
+if (image) twitLarge = await getImage({src:image, format:"webp", width:600, height:314});
+twitLargeImage = twitLarge ? { url:  `${siteURL}${twitLarge.src}`, width: twitLarge.attributes.width,
+  height: twitLarge.attributes.height,
+} : false;
+
+var video = video_main ? {
+  url: video_main.videoURL, title: video_main.title, description: video_main.description,
+  duration: video_main.duration, image: video_main.image, transcript: video_main.transcript,
+} : null;
+
+
+let largeImage, coverImage: {url: '', width: 0, height:0, alt:''};
+if (image) {
+  largeImage = await getImage({ src: image, format: "webp", width: 1200, height: 600, });
+  coverImage = {
+    url: `${siteURL}${largeImage.src}`, alt: desc_125,
+    width: largeImage.attributes.width, height: largeImage.attributes.height
+  };
+} else console.error('Null image in', slug, image);
+
+let podcast = null;
+if (audio) {
+  console.log('ArticleJSONLD, looking for article path for slug: ', slug);
+  const audioFilePath = await getArticleAudioPath(slug, audio);
+  podcast =  {
+    audioURL: `${siteURL}${audioFilePath}`,
+    title,
+    description,
+    duration: audio_duration,
+    episodeNumber: 1,
+    seriesName: brand.siteName,
+    imageURL: coverImage?.url
+  }
+};
+
+// JSON-LD Schema for the article
+//  https://validator.schema.org/
+const schema = {
+  "@context": "https://schema.org",
+  "@type": post_type, // Article, WebPage, Event, Organization, Person, LocalBusiness, Product, Recipe, Review, BreadcrumbList, Course, JobPosting, Movie, MusicAlbum, QAPage, SearchResultsPage, SoftwareApplication, VideoObject
+  description: description,
+  keywords: keywords,
+  author: {
+    "@type": author.data.type,
+    name: author.data.name,
+    url: authorURL,
+  },
+  publisher: {
+    "@type": "Organization", //Organization, Corporation, GovernmentOrganization, NGO, EducationalOrganization, SportsTeam, MusicGroup, PerformingGroup, NewsMediaOrganization, FundingScheme, LibrarySystem, MedicalOrganization, WorkersUnion, Consortium, Airline, Brand
+    name: brand.siteName, // like "Ocean 2.0 Reader"
+    logo: {
+      "@type": "ImageObject",
+      url: brand.logo,
+    },
+  },
+  headline: title,
+  image: {
+    "@type": "ImageObject",
+    "url": coverImage?.url, // how to get width and height of image?
+    "width": coverImage?.width,
+    "height": coverImage?.height,
+  },
+  url: pageURL,
+  mainEntityOfPage: pageURL,
+  articleSection: category.data.category,
+  inLanguage: language,
+  /* the schema expects Date or DateTime using ISO 8601 format.   */
+  datePublished: datePublished,
+  /* updateDate is optional frontmatter, so we conditionally add dateModified if it exists */
+  dateModified: dateModified
+};
+
+// console.log('schema', schema);
+
+// A list of all the translations of this page
+const translations = await getArticleTranslations(slug, true);
+let altLinks = translations.map((tr) => {
+  return { rel: "alternate", hreflang: tr.data.language || 'en', href: `/${tr.data?.url}`};
+});
+// RSS autodiscovery allows browsers and other software to automatically find a site’s RSS feed from the main URL.
+altLinks.push({
+  rel:"alternate", type:"application/rss+xml", title,
+  href:`${Astro.site}podcast/${language}.xml`
+});
+// meta links include alternate links for translations
+const metaHeaders = {
+  link: [
+    { rel: "icon", type:"image/svg+xml",  href:"/favicon.svg" },
+    { rel: "sitemap", type:"application/xml",  href:"/sitemap-index.xml" },
+    { rel: "sitemap", type:"application/xml",  href:"/sitemap-articles.xml" }
+  ].concat(altLinks),
+};
+
+const twitterHeaders = twitLargeImage ? {
+  creator: brand.twitter.creator,
+  site: brand.twitter.site,
+  card: "summary_large_image" as TwitterCardType,
+  title: title, // max 55 characters
+  description: desc_125, // max 125 characters
+  image: twitLargeImage?.url, // 2:1 aspect ratio, min 300x157, max 4096x4096 JPG, PNG, WEBP, and GIF
+  imageAlt: coverImage?.alt, // Alt text for the Twitter card image
+  imageWidth: twitLargeImage?.width,
+  imageHeight: twitLargeImage?.height,
+} : null;
+
+var openGraphHeaders = {
+  basic: {
+    url: pageURL,
+    type: post_type.toLowerCase(),
+    title: title,
+    description: description, // max 155 characters
+    image: coverImage?.url, // 1.91:1 aspect ratio, min 300x157, max 4096x4096 JPG, PNG, WEBP, and GIF
+    imageAlt: coverImage?.alt,
+    imageWidth: coverImage?.width,
+    imageHeight: coverImage?.height,
+  },
+  image: {
+    alt: coverImage?.alt,
+  },
+  article: {
+    published_time: datePublished,
+    modified_time: dateModified,
+    author: authorURL,
+    section: category.data?.category,
+    tag: topics?.map(t => t.id).join(', '), // assuming topics is an array of references
+  },
+  video: {}, audio: {},
+};
+
+if (video) openGraphHeaders.video ={
+  url: video_main ? video?.url : '',
+  secure_url: video_main ? video_main?.videoURL : '', // if https available
+  type: 'video.educational', // or appropriate type
+}
+
+if (podcast) openGraphHeaders.audio = {
+  url: podcast.audioURL,
+  secure_url: podcast.audioURL, // if https available
+  type: 'audio.podcast', // or appropriate type
+}
+
+// console.log("openGraphHeaders", openGraphHeaders);
+
+---
+
+<SEO title={title} description={description} canonical={pageURL}
+  twitter={twitterHeaders} openGraph={openGraphHeaders} extend={metaHeaders} />
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />
+

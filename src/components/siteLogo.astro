@@ -1,0 +1,27 @@
+---
+import brand from "@data/branding.json"
+//you'll have to do your own think with the logo
+const logo = ['Bahai', 'education', '.org']
+const brandname = logo[0]+'-'+logo[1]+logo[2]
+---
+
+
+<nav>
+  <a href="/" aria-label={brandname} class="sitelogo flex items-center no-underline focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-300 focus-visible:outline-none focus-visible:shadow-outline-indigo rounded-full">
+     <img src="/favicon.svg" alt={`${brandname} Logo`}
+     width="40" height="40"
+     class="h-10 opacity-75 m-0 pr-2" />
+     <span class="sr-only">{brandname}</span>
+     <span class="text-lg  xs:inline">
+       <span class="logofirst font-bold greenish">{logo[0]}</span>-<span
+          class="text-slate-600">{logo[1]}</span><span
+          class="font-bold greenish">{logo[2]}</span>
+     </span>
+ </a>
+</nav>
+
+<style>
+  .greenish { color: #017b79; }
+  .logofirst::first-letter { text-transform: uppercase; }
+</style>
+

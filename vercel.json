@@ -1,0 +1,44 @@
+{
+ "trailingSlash": false,
+ "crons": [
+   {"path": "/api/process_posts", "schedule": "0 0 * * *"}
+  ],
+ "redirects": [
+   {"source": "/ocean", "destination": "https://oceanlibrary.com/search/", "permanent": true},
+   {"source": "/ocean/", "destination": "https://oceanlibrary.com/search/", "permanent": true},
+   {"source": "/ocean/Ocean_English.exe", "destination": "https://oceanlibrary.com/search/", "permanent": true},
+   {"source": "/ocean.html", "destination": "https://oceanlibrary.com/search/", "permanent": true},
+   {"source": "/ocean/OceanCD-Multilingual.zip", "destination": "https://oceanlibrary.com/search/", "permanent": true},
+   {"source": "/ocean/faq.htm", "destination": "https://oceanlibrary.com/search/", "permanent": true},
+   {"source": "/ocean/OceanCD-Spanish.zip", "destination": "https://oceanlibrary.com/search/", "permanent": true},
+   {"source": "/ocean/download.htm", "destination": "https://oceanlibrary.com/search/", "permanent": true},
+   {"source": "/ocean-20-interfaith-reader", "destination": "/ocean-2-interfaith-reader", "permanent": true},
+   {"source": "/default.htm", "destination": "https://oceanlibrary.com/search/", "permanent": true},
+   {"source": "/index.html", "destination": "/ocean-2-interfaith-reader", "permanent": true},
+   {"source": "/materials/Youth-and-Decision-Making.htm","destination": "/","permanent": true},
+   {"source": "/star.html","destination": "/sifter-star-of-the-west","permanent": true},
+   {"source": "/star","destination": "/sifter-star-of-the-west","permanent": true},
+   {"source": "/star-of-the-west","destination": "/sifter-star-of-the-west","permanent": true},
+   {"source": "/star/intro.html","destination": "/sifter-star-of-the-west","permanent": true},
+   {"source": "/dawnbreakers.html","destination": "/the-dawn-breakers-resources-for-the-study-of-nabils-narrative","permanent": true},
+   {"source": "/projects/acuto-2013-dawn-breakers-study-resources.html",
+     "destination": "/the-dawn-breakers-resources-for-the-study-of-nabils-narrative","permanent": true},
+   {"source": "/strengthening-unity-workshop-materials.html",
+     "destination": "/the-dawn-breakers-resources-for-the-study-of-nabils-narrative","permanent": true},
+   {"source": "/strengthening-unity-workshop-materials.html", "destination": "/the-dawn-breakers-resources-for-the-study-of-nabils-narrative","permanent": true},
+   {"source": "/memorize-quotes.html", "destination": "/the-dawn-breakers-resources-for-the-study-of-nabils-narrative","permanent": true},
+   {"source": "/news/acuto-discourse-abdul-baha-resources.html", "destination": "/the-dawn-breakers-resources-for-the-study-of-nabils-narrative","permanent": true},
+   {"source": "/terms.html", "destination": "/the-dawn-breakers-resources-for-the-study-of-nabils-narrative","permanent": true},
+
+   {"source": "/Qingdao.htm", "destination": "/the-dawn-breakers-resources-for-the-study-of-nabils-narrative","permanent": true},
+   {"source": "/short-prayers.pdf", "destination": "/learning-arabic-with-adventure-stories-novelarabic","permanent": true},
+   {"source": "/memorize-quotes ", "destination": "/the-dawn-breakers-resources-for-the-study-of-nabils-narrative","permanent": true},
+   {"source": "/news/acuto-discourse-abdul-baha-resources", "destination": "/the-dawn-breakers-resources-for-the-study-of-nabils-narrative","permanent": true},
+   {"source": "/news/nakhjavani-abs-talk-scholarship-power-understanding", "destination": "/the-dawn-breakers-resources-for-the-study-of-nabils-narrative","permanent": true},
+
+   {"source": "/node/38.html","destination": "/the-dawn-breakers-resources-for-the-study-of-nabils-narrative","permanent": true}
+ ]
+}
+
+
+

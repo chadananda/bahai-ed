@@ -1,0 +1,157 @@
+---
+
+const headings = Astro.props.headings;
+const toc = buildToc(headings);
+
+// function buildToc(headings) {
+//   const toc = [], parentHeadings = new Map();
+//   headings.forEach(h => {
+//     const heading = { ...h, subheadings: [] };
+//     parentHeadings.set(heading.depth, heading);
+//     heading.depth === 3 ? toc.push(heading) : parentHeadings.get(heading.depth - 1)?.subheadings.push(heading);
+//   });
+//   return toc;
+// }
+
+function buildToc(headings) {
+  const toc = [], parentHeadings = new Map();
+  headings.forEach(h => {
+    const heading = { ...h, subheadings: [] };
+    parentHeadings.set(heading.depth, heading);
+    if (heading.depth === 2 || heading.depth === 3) {
+      toc.push(heading);
+    } else if (heading.depth > 3) {
+      parentHeadings.get(heading.depth - 1)?.subheadings.push(heading);
+    }
+  });
+  return toc;
+}
+
+const largelist = toc && toc.length > 8
+const textsize = largelist ? 'text-xs lg:text-sm' : 'text-sm lg:text-base'
+
+const tocHtml = (() => {
+  return toc.map(heading => `
+    <li class="overflow-hidden block text-ellipsis text-gray-600 mt-0.5 pl-2 ml-1 pt-1 pb-0 rounded-md">
+      <a href="#${heading.slug}" aria-label="${heading.slug}" class="hover:text-gray-800 hover:underline">
+        ${heading.text}
+      </a>
+
+      ${heading.subheadings && heading.subheadings.length > 0 ? `
+        <ul>
+          ${heading.subheadings.map(subheading => `
+            <li class="overflow-hidden block text-ellipsis text-gray-500 mt-0.5 pl-2 ml-1 pt-0 pb-0 rounded-md text-xs lg:text-sm">
+              <a href="#${subheading.slug}" aria-label="${subheading.slug}" class="hover:text-gray-800 hover:underline">
+                ${subheading.text}
+              </a>
+            </li>
+          `).join('')}
+        </ul>
+      ` : ''}
+    </li>
+  `).join('');
+})();
+
+---
+
+<div id="tableofcontents" class="overflow-visible sticky top-[7vh] z-40">
+  <!-- mobile version shows a button  -->
+  <nav id="toc_mobile_button" class="p-0 mt-1 block md:hidden noprint">
+    <button class="w-full focus:outline-none min-w-11 -ml-2
+      border border-gray-300 rounded-md shadow-sm py-1 px-2 bg-white "
+    aria-controls="mobile-toc" aria-expanded="false">
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M3 9h14V7H3v2zm0 4h14v-2H3v2zm0 4h14v-2H3v2zm16 0h2v-2h-2v2zm0-10v2h2V7h-2zm0 6h2v-2h-2v2z"></path></svg>
+    </button>
+  </nav>
+
+  <!-- Slide-out TOC for mobile -->
+  <div id="mobile-toc" class="fixed top-28 left-0 transform -translate-x-full md:hidden transition duration-300 ease-in-out
+  border-4 border-gray-300 bg-white shadow-lg rounded-lg -ml-1 p-5">
+    <nav class="w-60 leading-4 text-sm overflow-y-auto">
+      <ul set:html={tocHtml}></ul>
+    </nav>
+  </div>
+
+
+  <!-- desktop version shows a side menu  -->
+  <nav id="desktop-toc" class={`p-0 w-60 lg:w-64 leading-4 m-0 pt-5
+  ${textsize}
+  hidden md:block noprint`}>
+    <ul set:html={tocHtml}></ul>
+  </nav>
+</div>
+
+
+<script type="text/javascript">
+  // Event listeners for toggling mobile ToC visibility
+  const tocToggle = document.getElementById('toc_mobile_button');
+  const mobileToc = document.getElementById('mobile-toc');
+  tocToggle.addEventListener('click', () => {
+    mobileToc.classList.toggle('-translate-x-full');
+  });
+  mobileToc.addEventListener('click', () => {
+    mobileToc.classList.toggle('-translate-x-full');
+  });
+  // Getting elements for desktop and mobile ToC
+  const desktopTocElem = document.getElementById('desktop-toc');
+  const mobileTocElem = document.getElementById('mobile-toc');
+  // Function to synchronize highlighting of ToC items
+  const syncToc = () => {
+    // Collecting all list items from both ToCs
+    const desktopItems = Array.from(desktopTocElem.querySelectorAll('li'));
+    const mobileItems = Array.from(mobileTocElem.querySelectorAll('li'));
+    const combinedItems = desktopItems.concat(mobileItems);
+    // Removing 'visible' class from all ToC items
+    combinedItems.forEach(item => item.classList.remove('visible'));
+    // Mapping ToC items to their corresponding document elements
+    const tocItems = combinedItems.map(item => {
+      const targetId = item.querySelector('a').getAttribute('href').slice(1);
+      const targetElem = document.getElementById(targetId);
+      return targetElem ? { item, targetElem, bounds: targetElem.getBoundingClientRect() } : null;
+    }).filter(Boolean);
+    // Variables to track the first visible and last above viewport elements
+    let firstVisible = null;
+    let lastAboveViewport = null;
+    // Looping through items to find the first visible and last above viewport elements
+    for (const { targetElem, bounds } of tocItems) {
+      if (bounds.top >= 0 && bounds.bottom <= window.innerHeight) {
+        firstVisible = targetElem;
+        break;
+      }
+      if (bounds.bottom <= 0) {
+        lastAboveViewport = targetElem;
+      }
+    }
+    // Determine which element should be highlighted
+    const target = firstVisible || lastAboveViewport;
+    // Applying 'visible' class to the corresponding ToC items
+    if (target) {
+      desktopTocElem.querySelector(`li a[href="#${target.id}"]`)?.parentElement.classList.add('visible');
+      mobileTocElem.querySelector(`li a[href="#${target.id}"]`)?.parentElement.classList.add('visible');
+    }
+  };
+  // Initialize synchronization and set up event listeners
+  syncToc();
+  window.addEventListener('resize', syncToc, { passive: true });
+  window.addEventListener('scroll', syncToc, { passive: true });
+</script>
+
+
+
+<style is:global>
+  /* Styles that may not have direct Tailwind equivalents */
+  #tableofcontents nav li {
+    line-height: 1.1rem;
+    padding: 6px;
+    padding-left: 8px;
+    margin-bottom: 1px;
+    margin-top: 1px;
+  }
+  #tableofcontents nav li.visible {
+    color: #111;
+    border-left: 2px solid #0062a3;
+    padding-left: 6px; /* Adjust padding for border */
+    background-color: #f4f8ff;
+    box-shadow: 0 0 0 1px #f3f3f3;
+  }
+</style>

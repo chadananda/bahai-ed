@@ -1,0 +1,71 @@
+/* Summarize a book:
+
+Take the book, an array of blocks of type paragraph and header
+
+Summarize paragraphs:
+
+  * while book not empty and request size < limit and next block is parg, add next block to request
+  * Summarize blocks, add to list and move on
+  * If next block is header or sub-header, add to list and move on
+  * Final outcome: outline of book with summaries and headers
+
+
+Pseudocode assuming and array of blocks with type and text, title, author and max token length
+*/
+const max_tokens = 1000
+const openai_endpoint = 'https://api.openai.com/v1/engines/davinci-codex/completions'
+
+async function fetchSummaryPart(text) {
+ const prompt = `Summarize the following story text: ${text}`;
+ try {
+   const response = await fetch(openai_endpoint, {
+     method: 'POST',
+     headers: {
+       'Content-Type': 'application/json',
+       'Authorization': `Bearer ${apiKey}`
+     },
+     body: JSON.stringify({ prompt, max_tokens })
+   });
+   if (!response.ok) {
+     throw new Error(`HTTP error! status: ${response.status}`);
+   }
+
+   const data = await response.json();
+   return data; // Assuming the API returns the summary in the JSON response
+ } catch (error) {
+   console.error('There was a problem fetching the summary:', error);
+ }
+}
+
+
+async function summarizeBook(book = [], maxTokens = 1000) {
+  let summary = [];
+  let request = "";
+
+  // Corrected loop syntax to 'for...of'
+  for (const block of book) {
+    // Corrected if-statement syntax (missing parenthesis)
+    if (['header', 'subheader'].includes(block.type)) {
+      if (request.length > 0) {
+        summary.push(await fetchSummaryPart(request));
+        request = "";
+      }
+      summary.push(block.content);
+    } else if (block.type === 'paragraph') {
+      // Corrected condition to include current block length
+      if ((request.length + block.content.length) > maxTokens) {
+        summary.push(await fetchSummaryPart(request));
+        request = block.content; // Start new request with current block content
+      } else {
+        request += block.content;
+      }
+    }
+  }
+
+  // Handle any remaining content after loop
+  if (request.length > 0) {
+    summary.push(await fetchSummaryPart(request));
+  }
+
+  return summary;
+}

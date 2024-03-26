@@ -1,0 +1,108 @@
+
+    "@fortawesome/fontawesome-svg-core": "^6.5.1",
+    "@fortawesome/free-brands-svg-icons": "^6.5.1",
+    "@fortawesome/free-regular-svg-icons": "^6.5.1",
+
+    "@iconify-json/bx": "^1.1.10",
+    "@iconify-json/uil": "^1.1.8",
+
+    "boxicons": "^2.1.4",
+
+    "novel": "^0.2.12",
+
+    "photon-icons": "^2.0.0",
+
+    "npm": "^10.5.0",
+
+
+    "sharp": "^0.33.2",
+
+    "nodemailer": "^6.9.12",
+    "simple-icons-astro": "^11.8.0",
+
+
+    "@vite-pwa/astro": "^0.2.0",
+
+    "imagemin": "^8.0.1",
+    "imagemin-gifsicle": "^7.0.0",
+    "imagemin-mozjpeg": "^10.0.0",
+    "imagemin-pngquant": "^9.0.2",
+    "imagemin-svgo": "^10.0.1",
+
+    "urlencoded-body-parser": "^3.0.0",
+
+ "@astrojs/partytown": "^2.0.4",
+
+
+
+
+ Unused dependencies
+* @astrojs/mdx
+* @astrojs/rss
+* @cartamd/plugin-attachment
+* @cartamd/plugin-code
+* @cartamd/plugin-emoji
+* @cartamd/plugin-slash
+* @fortawesome/fontawesome-svg-core
+* @fortawesome/free-brands-svg-icons
+* @fortawesome/free-regular-svg-icons
+* @fortawesome/free-solid-svg-icons
+* @fortawesome/svelte-fontawesome
+* @iconify-json/bx
+* @iconify-json/uil
+* @nextlint/svelte
+* @tiptap/extension-blockquote
+* @tiptap/extension-bubble-menu
+* @tiptap/extension-document
+* @tiptap/extension-floating-menu
+* @tiptap/extension-image
+* @tiptap/extension-paragraph
+* @tiptap/extension-text
+* @tiptap/extension-typography
+* @tiptap/extension-underline
+* @tiptap/react
+* @tiptap/starter-kit
+* @vercel/analytics
+* @vercel/speed-insights
+* astro-feather-icons
+* astro-navbar
+* astro-seo
+* boxicons
+* carta-md
+* formidable
+* github-slugger
+* install
+* jsonwebtoken
+* nodemailer
+* novel
+* photon-icons
+* sass
+* simple-icons-astro
+* svelte-tiptap
+* tiptap-markdown
+* urlencoded-body-parser
+Unused devDependencies
+* @fontsource-variable/inter
+* @vercel/node
+* @vite-pwa/astro
+* astro-critical-css
+* chalk
+* esbuild
+* eslint
+* imagemin
+* imagemin-gifsicle
+* imagemin-mozjpeg
+* imagemin-pngquant
+* imagemin-svgo
+* inquirer
+Missing dependencies
+* fs-extra: ./syncAssets.js
+* @data/branding.json: ./src/utils/db.js
+* astro:content: ./src/utils/db.js
+* zod: ./src/utils/openai_request.js
+* @utils/authCheck: ./src/pages/api/article.js
+* @utils/github_tools: ./src/pages/api/article.js
+* @utils/db.js: ./src/pages/api/post_comment.js
+* @utils/utils.js: ./src/pages/api/post_comment.js
+* @utils/db: ./src/pages/api/process_posts.js
+* @utils/openai_request: ./src/pages/api/process_posts.js

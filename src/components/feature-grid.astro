@@ -1,0 +1,116 @@
+---
+// @ts-ignore
+import { Picture, Image } from "astro:assets";
+import Card from "@components/card.astro";
+import brand from '@data/branding.json';
+import IntegrationImg from "../assets/integrations.svg?url";
+import FeatureImgOne from "../assets/features/2.png";
+import FeatureImgTwo from "../assets/features/2.png";
+import FeatureImgThree from "../assets/features/3.png";
+---
+
+<div class="mt-24">
+  <h2 class="text-4xl lg:text-5xl font-bold lg:tracking-tight">
+    A full <span class="text-indigo-600"> content promotion </span> campaign in a box
+  </h2>
+  <p class="text-lg mt-4 text-slate-600">
+    And you have options. We can work with your legacy technology -- or we can set you up with a state of the art extreme performance content platform which smokes your competition.
+  </p>
+  <p class="text-lg mt-4 text-slate-600">
+    Or we can also do both -- migrating your legacy content to an extreme performance platform.
+  </p>
+</div>
+
+<div class="grid md:grid-cols-2 lg:grid-cols-5 mt-16 gap-10">
+  <Card class="lg:col-span-3" color="purple">
+    <Fragment slot="image">
+      <Picture
+        src={FeatureImgOne}
+        alt="Feature image"
+        formats={["webp", "jpg"]}
+        class="h-full w-full object-contain"
+        loading="lazy"
+        widths={[120, 188, 300, 372, 788, 1000, 1280]}
+      />
+    </Fragment>
+    <span slot="badge"></span>
+    <span slot="title"> {brand.title} </span>
+    <span slot="desc">
+      {brand.description}
+    </span>
+  </Card>
+  <Card class="lg:col-span-2" color="indigo">
+    <Fragment slot="image">
+      <Picture
+        src={FeatureImgTwo}
+        alt="Feature image"
+        formats={["webp", "jpg"]}
+        class="h-full w-full object-contain"
+        loading="lazy"
+        widths={[120, 188, 300, 372, 788, 1000, 1280]}
+      />
+    </Fragment>
+    <span slot="badge"></span>
+    <span slot="title">{brand.title}</span>
+    <span slot="desc">
+      {brand.description}</span
+    >
+  </Card>
+</div>
+
+<div class="grid md:grid-cols-2 lg:grid-cols-3 mt-10 gap-10">
+  <Card color="indigo" size="sm">
+    <Fragment slot="image">
+      <Picture
+        src={FeatureImgThree}
+        alt="Feature image"
+        formats={["webp", "jpg"]}
+        class="h-full w-full object-contain"
+        loading="lazy"
+        widths={[120, 188, 300, 372, 788, 1000, 1280]}
+      />
+    </Fragment>
+    <span slot="badge">Template</span>
+    <span slot="title">Modern Design</span>
+    <span slot="desc">
+      Feeling old? Try this template and be a part of the modern design.</span
+    >
+  </Card>
+
+  <Card color="purple" size="sm">
+    <Fragment slot="image">
+      <Picture
+        src={FeatureImgTwo}
+        alt="Feature image"
+        formats={["webp", "jpg"]}
+        class="h-full w-full object-contain"
+        loading="lazy"
+        widths={[120, 188, 300, 372, 788, 1000, 1280]}
+      />
+    </Fragment>
+    <span slot="badge">Product</span>
+    <span slot="title">Highlight Features</span>
+    <span slot="desc">
+      You can highlight your features in a trendy grid like this one.</span
+    >
+  </Card>
+
+  <Card size="sm">
+    <Fragment slot="image">
+      <!-- // svg image. cannot use <picture/> as of now -->
+      <Image
+        src={IntegrationImg}
+        alt="Feature image"
+        width="909"
+        height="823"
+        class="h-full w-full object-contain"
+        loading="lazy"
+      />
+    </Fragment>
+    <span slot="badge">Webhooks</span>
+    <span slot="title">100+ Integrations</span>
+    <span slot="desc">
+      Integrate with hundreds of tools using Zapier.</span
+    >
+  </Card>
+</div>

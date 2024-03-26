@@ -1,0 +1,103 @@
+---
+import { getArticleImageURL, getArticleSlugFromURL, getArticleURL, getPostFromSlug, getArticleAssetURL } from '@utils/utils.js';
+const {meta, type, link, title, image, description} = Astro.props
+
+
+
+const pageURL = getArticleURL(Astro);
+const siteURL = new URL(pageURL).origin;
+
+let downloadURL = link;
+if (!link.startsWith('http')) {
+  // remove ./ from the beginning of the link
+  let filename = link.replace(/^\.\//, '');
+  if (filename.match(/\.(jpeg|jpg|gif|png|webp)$/)) {
+    downloadURL = siteURL + (await getArticleImageURL(meta.url, filename));
+  } else {  // all other assets (not images) are automatically moved to public
+    let path = await getArticleAssetURL(meta.url, filename);
+    downloadURL = siteURL + path;
+    // console.log('asset url:', downloadURL);
+  }
+}
+
+ // add these images later
+ var thumb = '';
+ if (type == "Audio Narration") {
+   thumb = "/article_assets/resource-audio.svg"
+//  } else if (type == "Video Narration") {
+//    thumb = "/article_assets/video_thumb.webp"
+ } else if (type == "PDF") {
+   thumb = "/article_assets/resources-pdf.svg"
+ } else if (type == "Word Document") {
+   thumb = "/article_assets/resource-msword.svg"
+ } else if (type == "Software Download") {
+   thumb = "/article_assets/resource-software.svg"
+ } else if (type == "ZIP Archive") {
+   thumb = "/article_assets/resource-zip.szg"
+//  } else if (type == "Image") {
+//    thumb = "/article_assets/image_thumb.webp"
+ } else if (type == "Other") {
+   thumb = "/article_assets/resource-general.svg"
+ } else {
+   thumb = "/article_assets/resource-general.svg"
+ }
+
+if (image) {
+  let slug = await getArticleSlugFromURL(Astro.url.href)
+  let imageURL = await getArticleImageURL(slug, image);
+  if (imageURL) thumb = imageURL;
+}
+
+
+
+
+
+ /* example markdoc usage:
+{% related-resource
+    meta=$meta
+    type="Audio Narration"
+    link="_reflections.mp3"
+    title="Audio Narration by Bahiyyih Nakhjavani"
+    description="MP3 download, 35.8 MB, 2 hours 29 minutes"
+    image=""
+/%}
+
+ */
+---
+
+
+<!-- grid layout -->
+<div dir="ltr" class="related-resource bg-gray-100 w-full h-24 grid grid-cols-[100px,1fr,auto] sm:grid-cols-[120px,1fr,auto] items-center border-2 border-gray-300 rounded-lg shadow transition-all duration-300 ease-in-out hover:border-gray-300 hover:shadow-lg overflow-hidden noprint">
+
+  <!-- Left box with 20% width -->
+  <a href={downloadURL} aria-label={type} download target="_blank" class="box-left bg-gray-200 rounded-l-lg flex items-center justify-center text-base sm:text-lg font-bold text-center w-full h-full no-underline">
+    <div class="resource-type whitespace-normal break-words">{type}</div>
+  </a>
+
+  <!-- Center box with text centered vertically -->
+  <div class="box-center flex-grow flex items-center justify-center px-5">
+    <a href={downloadURL}  aria-label={type}  download target="_blank" class="resource-link no-underline w-full h-full ">
+      <div class="leading-tight sm:leading-normal">
+        <span class="resource-title text-sm sm:text-lg font-bold block">{title}</span>
+        <span class="resource-description text-xs sm:text-sm text-gray-600 block">{description}</span>
+      </div>
+    </a>
+  </div>
+
+  <div class="box-right items-center justify-end relative w-auto hidden sm:flex">
+    <a href={downloadURL} aria-label={type}  download target="_blank" class="resource-link no-underline w-full h-full flex justify-center items-center position-relative">
+      { thumb && (
+      <img src={thumb} alt="thumbnail" class="resource-thumbnail h-20 opacity-50 m-2">
+      )}
+      <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" viewBox="0 0 24 24" width="48" height="48" class="download-button absolute inset-0 m-auto opacity-50 mt-10" preserveAspectRatio="xMidYMid meet" style="border-radius: 12px;"><g><rect fill="none" height="24" width="24" rx="2" ry="2"/></g><g><path d="M5,20h14v-2H5V20z M19,9h-4V3H9v6H5l7,7L19,9z" /></g></svg>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+
+

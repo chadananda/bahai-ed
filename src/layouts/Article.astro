@@ -1,0 +1,82 @@
+---
+export const prerender = true;
+// all the article-specific styling should go here or in article.css;
+import "@styles/article.css";
+import "@styles/global.css";
+import TOC from "@components/article/TOC.astro";
+// import { ViewTransitions } from "astro:transitions";
+import Footer from "@components/footer.astro";
+import Navbar from "@components/navbar/navbar.astro";
+import branding from "@data/branding.json";
+import ArticleJSONLD  from "@components/article/ArticleJSONLD.astro"; // validate at https://validator.schema.org/
+// fyi, check your opengraph here:  https://www.opengraph.xyz/
+import Container from "@components/container.astro";
+
+// vercel speed insights, helpful for SEO
+import  SpeedInsights  from "@vercel/speed-insights/astro"
+import { getArticleURL, mainLanguages as langs } from '@utils/utils.js';
+
+// frontmatter metadata for this article, grab the fields we'll need
+const props = Astro.props.meta.entry.data;
+const {image, description, title} = props;
+const {footerMargin = true } = Astro.props;
+const language = props.language || "en";
+const dir = langs[language].dir;
+
+
+
+const pageURL = getArticleURL(Astro);
+const siteURL = new URL(pageURL).origin.replace(/\/$/, '');
+const imageURL = new URL(image.src.src, siteURL).href.toString();
+const articleTitle = title ? title : branding.title
+const articleDescription = description || branding.description;
+
+import PostComments from "@components/article/PostComments.astro";
+import RelatedArticles from "@components/article/relatedArticles.astro";
+---
+
+<!doctype html>
+<html lang={language}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- <link rel="icon" type="image/svg+xml" href="/favicon.svg" /> -->
+    <!-- <link rel="sitemap" href="/sitemap-index.xml" /> -->
+    <ArticleJSONLD {...props} />
+    <!-- <ViewTransitions /> -->
+  </head>
+
+  <body>
+    <Navbar />
+
+    <!-- one column mobile, two column med, three column lg  -->
+    <div class="grid grid-cols-[5px_auto_5px] md:grid-cols-[240px_auto_5px] lg:grid-cols-[240px_auto_220px] relative">
+      <div class="left-column relative">
+        <TOC headings={Astro.props.headings}/>
+      </div>
+      <div class="content relative" lang={language} dir={dir}>
+        <slot />
+      </div>
+      <div class="right-column text-center relative">
+        <div class="hidden lg:block">
+        <RelatedArticles slug={Astro.props.meta.entry.slug} />
+        </div>
+      </div>
+    </div>
+
+    <Footer margin={footerMargin} />
+    <script type="module" src="/js/appendLink.js"></script>
+    <script type="module" src="/js/externalLinks.js"></script>
+  </body>
+
+<SpeedInsights />
+</html>
+
+
+<script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', function() {
+    const currentLang = document.documentElement.lang; // Get the lang attribute of <html>
+    localStorage.setItem('selectedLanguage', currentLang); // Save it to localStorage
+  });
+</script>
+

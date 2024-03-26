@@ -1,0 +1,305 @@
+---
+// Import Simple Icons
+import { Twitter, Facebook, Linkedin } from 'simple-icons-astro';
+import { Image } from 'astro:assets';
+import { getEntry } from 'astro:content';
+import { getArticleAudioPath, getArticleSlugFromURL, getArticleURL } from '@utils/utils.js';
+
+const meta = Astro.props.meta
+const {datePublished, audio, title, description, audio_duration: duration, title: seriesName } = meta;
+// const slug = Astro.url.href.split('/').pop();
+const slug = await getArticleSlugFromURL(Astro.url.href);
+const episodeNumber = meta.episode_number || 1;
+// fall back on the article image if no audio image is provided
+const image = meta.audio_image || meta.image.src;
+const {data:author} = await getEntry('team', Astro.props.meta.author.id);
+
+const pageURL = getArticleURL(Astro);
+const baseUrl = new URL(pageURL).origin.replace(/\/$/, '');
+
+let audioURL = `${audio}`;
+if (!audioURL.startsWith('http')) {  // convert file path to URL
+  // console.log('PodcastPlayer.astro Slug', slug);
+  const audioPath = await getArticleAudioPath(slug, audio);
+  audioURL = baseUrl + audioPath;
+}
+
+const imageURL = baseUrl+image.src; // build script copies to this path?
+
+// this player will be used more than once per page, so we need to generate unique IDs for each instance
+const playerID = 'id-' + Math.random().toString(36).substr(2, 9);
+// const audioPlayerID = `audio-${playerID}`; // Define a unique selector for the Plyr instance
+const encodedPageURL = encodeURIComponent(pageURL);
+const encodedDesc = encodeURIComponent(title +' - '+ description);
+// const waveID = `wave-${playerID}`; // Define a unique selector for the Plyr instance
+
+// social links to share this page
+const twitterLink = `https://twitter.com/intent/tweet?text=${encodedDesc}&url=${encodedPageURL}`;
+const facebookLink = `https://www.facebook.com/sharer/sharer.php?u=${encodedPageURL}`;
+const linkedinLink = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedPageURL}`;
+const emailLink = `mailto:?subject=Interesting%20Page&body=Check%20this%20out:%20${encodedPageURL}`;
+
+// JSON-LD for this podcast episode
+const schema = {
+  '@context': "https://schema.org",
+  '@type': "PodcastEpisode",
+  '@id': `${pageURL}#${playerID}`,
+  name: title,
+  description: description,
+  image: imageURL,
+  episodeNumber: episodeNumber,
+  partOfSeries: {
+    '@type': "PodcastSeries",
+    name: seriesName
+  },
+  author: {
+    "@type": "Person",
+    name: author.name,
+  },
+  datePublished: datePublished,
+  timeRequired: duration,
+  license: 'https://creativecommons.org/licenses/by-sa/4.0/',
+  url: audioURL,
+  mainEntityOfPage: {
+    "@type": "WebPageElement",
+    id: `${pageURL}#${playerID}`
+  },
+  isPartOf: {
+    "@type": "WebPage",
+    "@id": pageURL
+  }
+};
+
+---
+
+<!-- JSON-LD  -->
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+
+<!-- Our Podcast player container -->
+<div id={playerID} class="podcast-player min-h-48 bg-gray-100 shadow-md rounded-lg w-full my-10
+border-4 border-gray-300 p-1 noprint
+- flex flex-col sm:flex-row sm:flex-nowrap
+">
+  <!-- Image and play button, the left column  -->
+  <div class="image-container sm:w-48 h-24 sm:h-48 mb-2 sm:mb-0 cursor-pointer - group relative">
+    <Image src={image} alt={author.name} format="jpg" quality="low"
+      class="rounded-md object-cover w-full sm:w-48 h-24 sm:h-48 m-0 p-0 border-2 border-gray-400 opacity-70"
+      widths={[120, 188, 300, 372, 788, 1000, 1280]}
+    />
+
+    <!-- Player button centered over the image -->
+    <div class="playerbutton absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+      <button aria-label="Podcast Play Button" title="Play Podcast"
+      class="play-button w-16 h-16 rounded-full bg-gray-300 flex items-center justify-centern bg-opacity-70
+       group-hover:bg-gray-200 focus:outline-none focus:shadow-outline shadow-md border-2 border-gray-400">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="play-icon w-16 h-16 fill-current
+         text-gray-600 group-hover:text-gray-600 opacity-70">
+          <path d="M8 5v14l11-7z" rx="6"></path>
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="pause-icon w-16 h-16 hidden fill-current text-gray-600 group-hover:text-gray-600">
+          <path d="M6 19h4V5H6zm8-14v14h4V5h-4z" rx="6"></path>
+        </svg>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Descriptive content and wave scrubber, the right column -->
+  <div class="content-container pl-1 flex-grow - flex flex-col">
+    <!-- Top description section can expand if there's room  -->
+    <div class="text-details flex flex-col justify-center flex-grow">
+      <div class="playertext w-full overflow-hidden m-0 sm:pl-3">
+        <div class="text-base sm:text-lg font-semibold">{title}</div>
+        <div class="text-gray-600 text-xs sm:text-sm font-light sm:pl-2">by {author.name}</div>
+        <div class="text-gray-600 text-sm sm:text-md">{description}</div>
+      </div>
+    </div>
+
+
+    <!-- Scrubber area, we're replacing wave with a custom solution -->
+    <div class="waveform-wrapper h-14 sm:h-18 mb-0 overflow-hidden - relative">
+      <!-- HTML5 Audio Player (used as source)  -->
+      <audio src={audioURL} class="mediaplayer hidden" preload="metadata"  crossorigin="anonymous"></audio>
+      <!-- Scrubber area with vertical gradient and overlapping sine waves -->
+      <div class="audioscrubber w-full h-full relative">
+        <!-- Transparent Background with vertical gradient and Waveform Patterns -->
+        <svg class="absolute top-0 left-0 w-full h-full z-10" xmlns="http://www.w3.org/2000/svg">
+          <linearGradient id="vertGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="white" stop-opacity="0" />
+            <stop offset="50%" stop-color="white" stop-opacity="1" />
+            <stop offset="100%" stop-color="white" stop-opacity="0" />
+          </linearGradient>
+          <rect width="100%" height="100%" fill="url(#vertGradient)"></rect>
+          <pattern id="grid" width="8" height="8" patternUnits="userSpaceOnUse">
+            <path d="M 8 0 L 0 0 0 8" fill="none" stroke="#c2c8d0" stroke-width="0.5"/>
+          </pattern>
+          <rect width="100%" height="100%" fill="url(#grid)"></rect>
+        </svg>
+        <!-- animated gif background  -->
+        <div class="w-full h-full absolute top-0 left-0 z-20"
+        style="background-image: url('/article_assets/audio-wave.png');
+        background-repeat: repeat-x; background-size: auto 100%; opacity: 0.3;"></div>
+        <!-- scrubber bar  -->
+        <div class="scrubber-wrapper w-full h-full absolute top-0 left-0 z-20" style="">
+          <input type="range" aria-label="Podcast Player Scrubber" title="Scrubber"
+           class="scrubber w-full"  min="0" max="100" value="0" />
+        </div>
+      </div>
+    </div>
+    <!-- Timing and share links, positioned at the bottom -->
+    <div class="time-share px-0 sm:px-2 h-8 - flex justify-between">
+      <!-- Timing at the left -->
+      <div class="progress flex justify-start items-end text-sm text-gray-600">
+        <span class="play-position text-gray-600 p-0 sm:pr-2 "><span class="text-gray-600">0:00 </span></span>
+         /
+        <span class="total-length text-gray-600 p-0 sm:pl-2"><span class="text-gray-600"> 0:00</span></span>
+      </div>
+      <!-- Share icons at the bottom right -->
+      <div class="share flex justify-end items-end space-x-2">
+        <!-- Twitter -->
+        <a href={twitterLink} aria-label="Twitter" class="block text-gray-600 hover:text-blue-800" target="_blank" title="Share on Twitter"><Twitter /></a>
+        <!-- Facebook -->
+        <a href={facebookLink} aria-label="Facebook" class="block text-gray-600 hover:text-blue-800" target="_blank" title="Share on Facebook"><Facebook /></a>
+        <!-- LinkedIn -->
+        <a href={linkedinLink} aria-label="LinkedIn" class="block text-gray-600 hover:text-blue-800" target="_blank" title="Share on LinkedIn"><Linkedin /></a>
+        <!-- Share by email link -->
+        <a href={emailLink} aria-label="Email" class="block text-gray-600 hover:text-blue-800 no-underline"
+        title="Share by Email"><span class="text-lg">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" class="fill-current text-gray-600 hover:text-blue-800">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+          </svg>
+        </span></a>
+        <!-- Copy to clipboard Link -->
+        <a href="#" aria-label="clipboard" data-pageurl={pageURL} title="Copy Link"
+           class="block text-gray-600 hover:text-blue-800 no-underline"
+            onclick="(function(e) {
+              const pageURL = e.currentTarget.getAttribute('data-pageurl'); e.preventDefault();
+              navigator.clipboard.writeText(pageURL).then(() => alert('Link copied to clipboard'))
+                .catch(err => console.error('Error copying text:', err));
+            })(event)">
+          <span class="text-md">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" class="fill-current text-gray-600 hover:text-blue-800">
+              <path d="M0 0h24v24H0z" fill="none"/>
+              <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm-1 4l6 6v10c0 1.1-.9 2-2
+              2H7.99C6.89 23 6 22.1 6 21l.01-14c0-1.1.89-2 1.99-2h7zm-1 7h5.5L14 6.5V12z"/>
+            </svg>
+         </span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<style>
+svg#play {
+  width:200px;
+ margin: 120px auto;
+ display:block;
+  cursor: pointer;
+  transform-origin: 50% 50%;
+}
+svg#play #triangle {
+  fill:rgba(22,22,22,0);
+  transition:500ms;
+  transform-origin: 50% 50%;
+}
+svg#play:hover #triangle {
+  fill:#A3CD3A;
+  transform-origin: 50% 50%;
+}
+ svg #lineOne, svg #lineTwo {
+  transform-origin: 50% 50%;
+  transition: 1s;
+}
+ svg:hover #lineOne {
+  transform: rotate(260deg);
+   -webkit-transform: rotate(260deg);
+-moz-transform: rotate(260deg);
+-o-transform: rotate(260deg);
+   transform-origin: 50% 50%;
+}
+ svg:hover #lineTwo {
+  transform: rotate(-450deg);
+   transform-origin: 50% 50%;
+}
+</style>
+
+<script type="text/javascript" data-playerID={playerID}>
+  const playerID = document.currentScript.dataset.playerid;
+  const podPlay = document.getElementById(playerID);
+  const playButton = podPlay.querySelector('.image-container');
+  const playIcon = playButton.querySelector('.play-icon');
+  const pauseIcon = playButton.querySelector('.pause-icon');
+  const playPositionElement = podPlay.querySelector('.play-position');
+  const totalLengthElement = podPlay.querySelector('.total-length');
+  const audioPlayer = podPlay.querySelector('.mediaplayer');
+  const scrubber = podPlay.querySelector('.scrubber');
+
+  scrubber.addEventListener('input', function () {
+    var value = (this.value-this.min)/(this.max-this.min)*100;
+    this.style.backgroundSize = value + '% 100%';
+    audioPlayer.currentTime = audioPlayer.duration * (this.value / 100);
+  });
+
+  const formatTime = (timeInSeconds) => {
+    const hours = Math.floor(timeInSeconds / 3600);
+    const minutes = Math.floor((timeInSeconds % 3600) / 60);
+    const seconds = Math.floor(timeInSeconds % 60);
+    const parts = [
+      hours,
+      minutes.toString().padStart(2, '0'),
+      seconds.toString().padStart(2, '0'),
+    ]; // If less than an hour, return MM:SS, otherwise HH:MM:SS
+    return hours > 0 ? parts.join(':') : parts.slice(1).join(':');
+  };
+  const updateTimeDisplay = (currentTime, duration) => {
+    if (!isNaN(duration)) {
+      playPositionElement.textContent = formatTime(currentTime);
+      totalLengthElement.textContent = formatTime(duration);
+    }
+  };
+  // Function to update the play/pause icons
+  const updatePlayPauseIcons = () => {
+    if (audioPlayer.paused || audioPlayer.ended) {
+      playIcon.classList.remove('hidden');
+      pauseIcon.classList.add('hidden');
+    } else {
+      playIcon.classList.add('hidden');
+      pauseIcon.classList.remove('hidden');
+    }
+  };
+  // Toggle play/pause for audioPlayer
+  const togglePlayPause = () => {
+    if (audioPlayer.paused || audioPlayer.ended)  audioPlayer.play();
+      else audioPlayer.pause();
+  };
+  // assign toggle to play button
+  playButton.addEventListener('click', togglePlayPause);
+  // Event listeners for play, pause, and ended
+  audioPlayer.addEventListener('play', updatePlayPauseIcons);
+  audioPlayer.addEventListener('pause', updatePlayPauseIcons);
+  audioPlayer.addEventListener('ended', updatePlayPauseIcons);
+  // scrubber
+  audioPlayer.addEventListener("timeupdate", function() {
+    var currentTime = audioPlayer.currentTime;
+    var duration = audioPlayer.duration;
+    if (duration > 0) {
+      scrubber.value = (currentTime / duration) * 100;
+    }
+    updateTimeDisplay(currentTime, duration);
+  });
+  // Instantiate audio duration as soon as metadata has loaded
+  audioPlayer.addEventListener('loadedmetadata', () => {
+    updateTimeDisplay(audioPlayer.currentTime, audioPlayer.duration);
+  });
+</script>
+
+
+
+
+
+
+

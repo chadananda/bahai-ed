@@ -1,0 +1,47 @@
+---
+export const prerender = true;
+// import { Icon } from 'astro-icon/components'
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/container.astro";
+import Sectionhead from "@components/sectionhead.astro";
+import Contactform from "@components/contactform.astro";
+import brand from "@data/branding.json";
+---
+
+<Layout title="Contact">
+  <Container>
+    <Sectionhead>
+      <Fragment slot="title">Contact</Fragment>
+      <Fragment slot="desc">Got Questions? We are here to help.</Fragment>
+    </Sectionhead>
+
+    <div class="grid md:grid-cols-2 gap-10 mx-auto max-w-4xl mt-16">
+      <div>
+        <h2 class="font-medium text-2xl text-gray-800">Contact {brand.site}</h2>
+        <p class="text-lg leading-relaxed text-slate-500 mt-3">
+          Have something to say? We are here to help. Fill up the form or send
+          email or call phone.
+        </p>
+        <div class="mt-5">
+          <div class="flex items-center mt-2 space-x-2 text-gray-600">
+            <!-- <Icon class="text-gray-600 w-4 h-4" name="uil:map-marker" /> -->
+            <span>{brand.address}</span>
+          </div><div class="flex items-center mt-2 space-x-2 text-gray-600">
+            <!-- <Icon class="text-gray-600 w-4 h-4" name="uil:envelope" /> -->
+            <a
+              href={`mailto:${brand.email}`}>{brand.email}</a
+            >
+          </div><div class="flex items-center mt-2 space-x-2 text-gray-600">
+            <!-- <Icon class="text-gray-600 w-4 h-4" name="uil:phone" /> -->
+            <a
+              href="tel:+1 (987) 4587 899">{brand.phone}</a
+            >
+          </div>
+        </div>
+      </div>
+      <div class="bg-slate-100 p-5 md:p-8 rounded-xl mb-5">
+        <Contactform />
+      </div>
+    </div>
+  </Container>
+</Layout>

@@ -1,0 +1,18 @@
+---
+ // const user = Astro.locals.user;
+---
+
+
+<a id="logoutLink" class="logout block underline font-bold text-blue-500" href="">Logout</a>
+
+<script type="module">
+ document.addEventListener('DOMContentLoaded', () => {
+   const logoutLink = document.getElementById('logoutLink');
+   logoutLink.addEventListener('click', async (event) => {
+     event.preventDefault();
+     //console.log('Logging out user');
+     await fetch('/api/logout');
+     location.reload(); // Refresh the current page
+   });
+ });
+</script>

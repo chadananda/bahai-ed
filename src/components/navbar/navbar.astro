@@ -1,0 +1,43 @@
+---
+import Container from "@components/container.astro";
+import { StickyHeader, Astronav, MenuItems, MenuIcon } from "astro-navbar";
+
+import SiteLogo from "@components/siteLogo.astro";
+import links from "@data/siteLinks.json";
+const menuLinks = links.menuLinks;
+---
+
+<StickyHeader
+  class="sticky top-0 border-b transition-all z-50"
+  scrollY={50}
+  defaultClass="py-5 border-transparent"
+  activeClass="py-2 bg-white/80 border-gray-200 backdrop-blur-lg">
+  <Container>
+    <div
+      class="flex flex-col sm:flex-row justify-between items-center relative z-10"
+      transition:animate="none">
+      <Astronav>
+        <div class="flex w-full sm:w-auto items-center justify-between">
+          <div id="logo" class="flex items-center">
+            <SiteLogo />
+          </div>
+          <div class="block sm:hidden">
+            <MenuIcon class="w-4 h-4 text-gray-800" />
+          </div>
+        </div>
+        <MenuItems class="hidden w-full sm:w-auto mt-2 sm:flex sm:mt-0 noprint">
+          <ul class="flex flex-col sm:flex-row sm:gap-3">
+            { menuLinks.map((item, index) => (
+              <li>
+                <a href={item.path} aria-label={item.title} data-astro-reload
+                  class="flex sm:px-3 py-2 text-sm text-gray-600 hover:text-indigo-600 focus-visible:ring-2 focus-visible:ring-offset-2 transition focus-visible:ring-indigo-500 focus-visible:outline-none focus-visible:shadow-outline-indigo rounded-full">
+                  {item.title}
+                </a>
+              </li>
+             ))}
+          </ul>
+        </MenuItems>
+      </Astronav>
+    </div>
+  </Container>
+</StickyHeader>

@@ -1,0 +1,165 @@
+---
+import { Picture, getImage } from 'astro:assets';
+import { getEntry } from 'astro:content';
+import { getArticleURL } from '@utils/utils.js';
+
+if (!Astro.props.slug) console.error("Warning: no author slug provided!");
+
+const author = await getEntry('team', Astro.props.slug)
+var { image, name, type, worksFor, description, sameAs, name_slug } = author.data;
+
+
+const pageURL = getArticleURL(Astro);
+const siteURL = new URL(pageURL).origin.replace(/\/$/, '');
+const authorURL = author.data.url || `${siteURL}/authors/${name_slug}`;
+const size = Astro.props.size || 'sm';
+
+// generate a large image for the schema
+// console.log('Image obj:', image);
+const imageURL = image ? siteURL + (await getImage({src: image.src, format: "webp", width: 1200, height: 600})) : '';
+// const imageURL = '';
+const uniqueID = 'id-' + Math.random().toString(36).slice(2, 11);
+const AuthorBioIDURL = `${pageURL}#${uniqueID}`;
+
+var schema = {
+  "@context": "https://schema.org",
+  "@type": type,
+  '@id': authorURL,
+  name: name,
+  url: authorURL,
+  image: imageURL,
+  description,
+  sameAs, // an array of social media urls
+  mainEntityOfPage: {
+    "@type": "WebPageElement",
+    id: AuthorBioIDURL,
+  }
+};
+if (type === 'Person') {
+  schema.jobTitle = "Writer";
+  schema.worksFor = { "@type": worksFor['@type'], name: worksFor.name, }
+  schema.isPartOf = { "@type": "WebPage", "@id": pageURL}
+}
+
+const language = "en";
+const dir = "ltr";
+---
+
+{ size==='sm' && (
+<div id={uniqueID} class="author w-48 h-48 shadow-lg rounded-lg overflow-hidden mx-auto border-2 border-gray-200 p-1" lang={language} dir={dir}>
+
+    <div class="relative h-full">
+     <a href={authorURL} aria-label={image.alt} >
+       <Picture src={image.src}
+        class="w-full h-full object-cover rounded-md"
+        alt={image.alt}
+        widths={[120, 188, 300, 372, 788, 1000, 1280]}
+       />
+     </a>
+      <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-35 rounded-b-lg">
+        <div class="text-white px-1 py-1">
+          <h3 class="text-sm font-semibold">{name}</h3>
+          <h3 class="text-xs">{author.data.jobTitle}</h3>
+        </div>
+      </div>
+    </div>
+
+</div>
+)}
+
+
+{ size==='md' && (
+  <div id={uniqueID} class="author max-w-64 max-h-96 shadow-lg rounded-lg overflow-hidden mx-auto border-2 border-gray-200 p-2 text-center" lang={language} dir={dir}>
+
+    <a href={authorURL} aria-label={image.alt}>
+    <div class="relative pb-32 overflow-hidden">
+      <div class="absolute inset-0">
+      <div class="w-32 h-32 overflow-hidden rounded-full border-4 border-gray-400 mx-auto">
+        <Picture src={image.src} class="w-full h-full object-cover" alt={image.alt}
+        widths={[120, 188, 300, 372, 788, 1000, 1280]}  />
+      </div>
+      </div>
+    </div>
+    </a>
+
+    <div class="px-0 py-2">
+      <h3 class="text-lg font-semibold text-gray-800">{name}</h3>
+      <p class="text-gray-600 text-sm">{author.data.description_125}</p>
+    </div>
+  </div>
+)}
+
+
+
+{ size==='lg' && (
+  <div id={uniqueID} class="author max-w-64 max-h-96 shadow-lg rounded-lg overflow-hidden mx-auto border-2 border-gray-200 p-2 text-center" lang={language} dir={dir}>
+
+    <a href={authorURL} aria-label={image.alt}>
+      <div class="relative pb-32 overflow-hidden">
+        <div class="absolute inset-0">
+        <div class="w-32 h-32 overflow-hidden rounded-full border-4 border-gray-400 mx-auto">
+          <Picture src={image.src} class="w-full h-full object-cover" alt={image.alt}
+          widths={[120, 188, 300, 372, 788, 1000, 1280]}  />
+        </div>
+        </div>
+      </div>
+    </a>
+
+    <div class="px-0 py-2">
+      <h3 class="text-lg font-semibold text-gray-800">{name}</h3>
+      <p class="text-gray-600 text-sm">{author.data.description_125}</p>
+    </div>
+  </div>
+
+)}
+
+
+
+{ size==='bio' && (
+
+  <div id={uniqueID} class="author-bio w-full my-20 border border-y-4 border-x-0 border-gray-200 p-3" lang={language} dir={dir}>
+    <div class="flex flex-wrap sm:flex-nowrap">
+      <div class="flex-1 order-2 sm:order-1 mt-4 sm:mt-0 sm:mr-4 text-center sm:text-start">
+        <div class="author-bio-title text-lg font-semibold italic text-gray-500">About {name}</div>
+        <br>
+        <div class="author-bio text-md font-extralight">{description}</div>
+      </div>
+      <div class="w-full sm:w-auto sm:flex-shrink-0 order-1 sm:order-2 flex justify-center items-center">
+        <div class="w-48 h-48 overflow-hidden rounded-full relative opacity-75 shadow-md border border-gray-400 border-2">
+          <a href={authorURL} aria-label={image.alt}>
+          <Picture src={image.src} alt={image.alt}
+            class="absolute inset-0 w-full h-full object-cover rounded-full"
+            formats={["webp", "jpg"]}
+            decoding="async"
+            loading="lazy"
+            height={185} quality="med"
+            widths={[120, 185, 300, 372, 788, 1000, 1280]}
+            /></a>
+        </div>
+      </div>
+    </div>
+  </div>
+  </a>
+)}
+
+{ size==='full' && (
+  <div id={uniqueID} class="author max-w-64 max-h-96 shadow-lg rounded-lg overflow-hidden mx-auto border-2 border-gray-200 p-2 text-center" lang={language} dir={dir}>
+    <a href={authorURL} aria-label={image.alt}>
+    <div class="relative pb-32 overflow-hidden">
+      <div class="absolute inset-0">
+      <div class="w-32 h-32 overflow-hidden rounded-full border-4 border-gray-400 mx-auto">
+        <Picture src={image.src} class="w-full h-full object-cover" alt={image.alt}
+        widths={[120, 188, 300, 372, 788, 1000, 1280]}
+        />
+      </div>
+      </div>
+    </div>
+    </a>
+    <div class="px-0 py-2">
+      <h3 class="text-lg font-semibold text-gray-800">{name}</h3>
+      <p class="text-gray-600 text-sm">{author.data.description_125}</p>
+    </div>
+  </div>
+)}
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />

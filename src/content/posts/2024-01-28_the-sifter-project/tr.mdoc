@@ -1,0 +1,122 @@
+---
+title: El Elek Projesi
+url: el-elek-projesi
+description: >-
+  Batı'nın Yıldızı'nı konseptten yayınlanan ürüne 60 gün içinde aranabilir hale
+  getiriyoruz
+desc_125: >-
+  Harika bir proje gerçekten. Yıllardır Batı'nın Yıldızı'nı topluyordum ve
+  aniden CD versiyonunu satışa sunduk.
+abstract: >-
+  'Batı'nın Yıldızı' isimli önemli Bahá'í yayınını CD olarak erişilebilir kılan
+  dijital yolculuğun perdesini aralayın. Ana özelliklerini, tarihi değerini ve
+  Bahá'í edebiyatı araştırmalarını nasıl zenginleştirdiğini belirten kılavuz.
+
+external_reference:
+  link: null
+  linkText: null
+
+draft: false
+
+datePublished: '2024-01-28'
+dateModified: '2024-01-28'
+
+category: bahai-education
+topics:
+  - bahai-education-software
+  - bahai-history
+  - integration-of-science-and-religion
+  - bahai-interpretive-texts
+  - educational-requisites-of-teaching
+  - bahai-study-guides
+
+image:
+  src: ./stack_w_cd1_faded2.jpg
+  alt: Stack of books replaced by a single CD
+
+audio: >-
+  https://blogw-assets.s3.us-west-1.amazonaws.com/2024-01-28_the-sifter-project/tr.mp3
+audio_duration: PT8M30S
+audio_image: ./stack_large.gif
+narrator: auto
+
+author: chad-jones
+
+language: tr
+translator: auto
+---
+
+
+
+## Bu çok eğlenceli bir projeydi!
+
+![Abdu'l-Baha'dan Batı'nın Yıldızı hakkında alıntı](./starquote.gif)
+
+1998 yılının bir zamanında, yeni evlenmiştim ve kısaca ABD'yi ziyaret ediyordum. Erica Toussaint'ın evinde kalıyorduk ve birlikte yaptığımız tarama projeleri ve yaklaşmakta olan Milwaukie konferansı hakkında sohbet ettik. Kim olduğunu tam olarak hatırlamıyorum ama birisi, konferansta Batı'nın Yıldızı'nın bir CD'sini satma fikrini ortaya attı. Absürt geldi, ama üzerinde ne kadar düşünsem de, eğer dikkatli planlanırsa mümkün görünüyordu.
+
+Konferansın tarihinden geriye doğru çalışarak, CD baskısı, dizaynı vb. için zaman hesaplaması yaptık. Çılgın bir programdı. İki ayda CD üzerinde yazılım dağıtmak deliceydi. Mükemmel olmayacağını biliyordum, bu yüzden otomatik güncellemeleri her şeyden önce entegre etmem gerekiyordu.
+
+Erica birkaç gün sonra seyahate çıktı ve benim ticari bir ürün geliştirmek için bir buçuk ayım kaldı! Ben neye kendimi adamıştım acaba??
+
+{% related-resource
+    meta=$meta
+    type="Software Download"
+    link="https://badasht.s3.us-west-1.amazonaws.com/sifter-star-install.zip"
+    title="Sifter - Batı'nın Yıldızı İndir"
+    image="./book_w_cd_200.jpg"
+    description="Yükleyici indir, 650 MB"
+/%}
+
+Tarihi kayıt için. İşte Sifter'ın duyurusunu yapan orijinal web sayfası: [Sifter - Batı'nın Yıldızı >>](/sifter-star-of-the-west)
+_____
+
+
+## İnanılmaz delice bir plan
+
+Günümüzün iteratif geliştirme yöntemlerine rağmen, iki aydan kısa sürede bir yazılım projesini tamamlamak hâlâ delice bir programdır. Zorluğu kafamda çevirdim ve işte nasıl yaptık:
+
+1. **Aşırı Önceliklendirme**: Özellikleri kesinlikle önceliklendirerek en önemlilerinin önce tamamlanmasını sağlama
+2. **Önce Dağıtım**: çevrimiçi güncelleme işlevselliğini ilk önce inşa etme. Bu, o zamanlar tamamen yeni bir fikirdi, bu arada.
+3. **Günlük İterasyon ve Teslimat**: Canlı geliştirme ve yeni özelliklerin günlük olarak aktif kullanıcıların küçük bir çekirdeğine dağıtımı. Kullanıcı kabul testleri, geliştirme sürecinin bir parçası haline geliyor.
+
+### Büyük resimler...
+
+O zamanlar, sürücülerin hala 500mb+ sayfa resimlerini sabit disklerine yüklemesini bekleyemeyeceğimiz kadar yetersiz alana sahipti, bu yüzden yazılımın resimlerle veya resimsiz sorunsuz bir şekilde çalışması gerekiyordu. PDF hala çok hantal olduğundan, bunlar gezinme, yer imleri, tam metin arama vb. sağlamak için indekslerle birlikte TIFF resimlerinden oluşan klasörlerdi.
+
+### Düşük kaliteli OCR, ııck...
+
+Arama, sayfalara enjekte edilen tüm korkunç OCR hatalarını görmezden gelecek kadar esnek olmalıydı. Günümüzde OCR'ın ne kadar kötü olduğunu görmüyorsunuz çünkü kötü OCR, PDF dosyalarında görünmeyen bir katmanda gizleniyor. Ancak hâlâ aramayı zorlaştırıyor. En iyi OCR'ı elde etmek için, birkaç motoru birleştiren ve her kelime üzerinde oy kullanan "oylama" OCR sistemini kullandık. Bu, sonuçları iyi bir %20 daha iyi yaptı.
+
+### Ve dağıtım... hiçbir şey
+
+İlk iki gün, Erica yaz okulu turuna çıkmak zorunda kaldı. Yaptığım ilk şey, güncelleme için interneti kontrol eden bir uygulama kurmak oldu. Ardından, bir güncelleme varsa, bunu indirdi ve üzerine canlı bir yeniden kurulum yaptı (bu Windows'ta kolay değildi). Ama işe yaradı! Ve ilk günden itibaren yeni yapıları dağıtmanın ve uygulamanın otomatik olarak yapılacak yapıları uygulamanın bir mekanizmasına sahiptik. O zamandan itibaren, her gün onlarca kez güncellemeler dağıtıyordum. Erica, baş deneyimcim, uygulamanın nasıl geliştiğini görmek için günlük olarak birkaç kez kontrol ederdi. Ne eğlenceliydi!
+
+### Adım adım, her gün tamamlandı
+
+Gerçekten harikaydı. Bir hafta içinde, referansla görüntü gezintisi yaptık. İki haftada, tam metin araması. Üç haftada, yer imleri ve baskı. Her gün bir veya iki yeni dağıtım gördü ve her biri tamamlanmış fakat geliştirilmiş bir ürün oldu. Konferanstan bir hafta önce en son görüntüyü yazdık ve baskı için gönderdik. Konferanstan iki gün önce baskıcıdan 1.000 CD ile birlikte kitapçıklar, kutular ve CD ceketleri aldık.
+
+Ham ürünle birlikte karşı ülkeye doğru yola çıktık ve oraya varınca, konferansın arifesinde geceyi bir grup gençle CD paketleri monte ederek geçirdik. Sabahleyin Special Ideas'tan Justice St. Rain ile buluştuk ve ona satması için bir yığın CD verdik.
+
+{% aside %}
+ ![CD'li Kitap](./book_w_cd_200.jpg)
+{% /aside %}
+
+Ve bu, yarım yamalak bir iş de değildi, tüm paket oldukça güzel görünüyordu! OCR korkunç bir teknolojidir ama bu yaklaşım onun dezavantajlarını aşmamıza ve tüm sete tam metin erişim sağlamamıza yardımcı oldu. George Ronald Batı'nın Yıldızı'nı yeniden yayınladığında, sadece yarısını yapabildiler çünkü tam set çok büyüktü. Dolayısıyla Bahailer için tam 8.500 sayfaya erişmek uzun bir zamandan beri mümkün olmamıştı.
+
+### Test....
+
+O yılın ilerleyen zamanlarında, Haifa'daki aileyi ziyaret ediyordum ve Ruhiyyih Hanım'a aracı gösterme şansım oldu. Hemen doğum ilanını bulmamı istedi. Şiddetli bir baskı altında, çevrede dolandım ve -- tamamen şans eseri -- zorlayıcı ifadeler arasında buldum: "Montreal, Kanada'dan Bay ve Bayan W. S. Maxwell'in evine küçük bir kız çocuğu geldi."
+
+### Garip bir şekilde...
+
+Seti yeniden yayınladığım anda, Joel Marengella'nın takipçisi olan Akdi Bozulanlar tarafından, Batı'nın Yıldızı'nda Abdu'l-Baha'nın Mason Remey hakkındaki tüm olumlu ifadelerinin bir şekilde Bahailerin kollarına koşmasını sağlayacağını düşünerek irtibata geçilmeye başlandım. Ancak Mason Remey'in hikayesi, aslında ne kadar büyük bir lütuftan düştüğünü anladıkça daha da üzücü bir ibret dersi haline geliyor. Hele bir de, onun Akdin bir şampiyonu olduğunu gerçekleştirdiğinizde.
+
+Abdu'l-Baha, Mason'a "Ahdin aslanı" demişti. Trajik tarih parçalarını bilmek önemlidir. Sonuçta, kriz ve zafer birbiriyle ilişkilidir.
+
+### Teşvik edici geri bildirimler:
+
+> Batı'nın Yıldızı - Sifter'ı az önce aldım. BAYILDIM! Tüm paket harikulade bir şekilde hazırlanmış."
+
+> ... Bu yılın başında Milwaukee Konferansı'nda CD üzerinde Batı'nın Yıldızı'na sahip oldum. Eve dönünce hemen yazılımı çalıştırdım ve Albert Smiley hakkında bir arama yaptım ve Batı'nın Yıldızı'nda yayınlanan Abdu'l-Baha'dan Albert Smiley'e bir levha buldum. Sessiz ve hayranlık içinde, levhayı okudum. Hiçbir zaman bir levha bulacağımı ve o levhanın projeye karşı tüm perspektifimi değiştireceğini düşünmemiştim...."
+
+> Umarım benimki gibi birçok mektup almışsınızdır. Ürününüze olan takdirimi ifade etmek istedim... Operasyon benim için yeterince sezgisel ve basit. Şu an hissetmiyorum ki teknoloji, okuduğum dönemlerin hayatı ile benim aramda bir engel.... Tüm o ciltleri okuyabilmek modern teknolojinin gerçekten bir lütfu.... Batı'nın Yıldızı'nı okuma şansım olacağına bir zamanlar inanamazdım".

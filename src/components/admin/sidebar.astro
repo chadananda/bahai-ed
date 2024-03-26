@@ -1,0 +1,101 @@
+---
+ import { getCollection } from "astro:content";
+
+ // const isPublished = ({data}) => (!data.draft && data.datePublished<=new Date());
+ const isDev = import.meta.env.APP_ENV==='dev';
+ const articles = await getCollection("posts");
+
+ // sort articles array by data.draft then article.data.datePublished
+ articles.sort((a, b) => {
+   if (a.data.draft && !b.data.draft) return 1;
+   if (!a.data.draft && b.data.draft) return -1;
+   return new Date(b.data.datePublished) - new Date(a.data.datePublished);
+ });
+
+---
+
+<div id="sidebar_container" class="relative expanded">
+
+<!-- Floating Toggle Button using Tailwind CSS -->
+<button id="toggleSidebarBtn" aria-controls="sidebar" aria-expanded="true"
+class="z-40 bg-white border border-gray-300 rounded-full shadow-lg p-2 absolute -right-1 -top-1">
+  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-800" viewBox="0 0 20 20" fill="currentColor">
+    <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
+  </svg>
+</button>
+
+<nav id="sidebar" class="sidebar relative overflow-hidden border-4 border-l-0 border-gray-300 rounded-r-lg z-10
+ p-5 pt-0 pl-2 text-lg bg-slate-50 w-full">
+
+ <ul>
+  <li><h3>Site Planning</h3>
+    <ul>
+      <li><a href="">Branding</a></li>
+      <li><a href="">Team</a></li>
+      <li><a href="">Categories/Topics</a></li>
+      <li><a href="">Keywords/Questions</a></li>
+      <li><a href="">Content Planning</a></li>
+    </ul>
+  </li>
+
+  <li><h3>Promotion Tasks</h3>
+   <ul>
+     <li><a href="">Article Comment Tasks</a></li>
+     <li><a href="">Social Media Responses</a></li>
+     <li><a href="">Podcast Feed Promotion</a></li>
+     <li><a href="">Resource Page Promotion</a></li>
+     <li><a href="">Research Page PR Promotion</a></li>
+   </ul>
+ </li>
+
+  <li><h3><a href="/admin/edit/">Edit content</a></h3>
+    <ul>
+      {Array.isArray(articles) && articles.map((ar) => (
+        <li class={`${ar.data.draft?'draft':'published'}`}><a href={`/admin/edit/${ar.slug}`}>{ar.data.title}</a></li>
+      ))}
+    </ul>
+  </li>
+
+ </ul>
+</nav>
+</div>
+
+
+<style>
+  ul { margin-left: 0; padding-left: 0; }
+  h3 { font-size: 1.25rem; margin-bottom: 0.5rem; margin-top: .5em; }
+  ul { list-style: none; padding: 0; margin-bottom:1em;  }
+  ul li li {
+    font-size: 1rem;
+    margin-left: 0.5em;
+    line-height: 1.2;
+    margin-bottom: 0.5em;
+    display: block; /* or 'flex', depending on your layout */
+    white-space: nowrap; /* Prevents the text from wrapping */
+    overflow: hidden; /* Ensures the overflow text is hidden */
+    text-overflow: ellipsis; /* Adds ellipsis to overflow text */
+  }
+  li.draft:before { content: '🚧'; padding-right: 5px;  }
+  li.published:before { content: '\2713';  padding-right: 5px;  }
+  li a {text-decoration: underline;}
+  #sidebar_container { width: 55px; }
+  #sidebar_container.expanded { width: 250px; }
+
+</style>
+
+<script>
+  const container = document.getElementById('sidebar_container');
+  const btn = document.getElementById('toggleSidebarBtn');
+  const sidebar = document.getElementById('sidebar');
+
+  btn.addEventListener('click', function() {
+    // sidebar.classList.toggle('-translate-x-full');
+    sidebar.classList.toggle('hidden');
+    btn.setAttribute('aria-expanded', sidebar.classList.contains('hidden') ? 'false' : 'true');
+    // console.log('clicked');
+    sidebar_container.classList.toggle('expanded');
+  });
+</script>
+
+
+
