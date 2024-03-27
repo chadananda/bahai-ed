@@ -109,9 +109,10 @@ export const processItems = async (articles, site, baseUrl) => {
 
 export const generateRSSFeedObj = async (articles, language, site, baseUrl) => {
   const langname = mainLanguages[language].name;
+  const title = `${site.siteName} (${language!='en' ? langname : ''})`;
   const feed = {
     stylesheet: '/rss-podcast.xsl',
-    title: site.siteName + ` (${langname})`,
+    title: title,
     author: site.site,
     description: site.description,
     site: site.url,
@@ -133,7 +134,7 @@ export const generateRSSFeedObj = async (articles, language, site, baseUrl) => {
       `<image>
         <url>${site.logo_jpg}</url>
         <title>${site.siteName}</title>
-        <link>${baseUrl}</link>
+        <link>${site.url}</link>
       </image>`,
       `<itunes:owner><itunes:name>${site.author}</itunes:name><itunes:email>${site.email}</itunes:email></itunes:owner>`,
     ].join(' '),
