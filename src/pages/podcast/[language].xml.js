@@ -110,7 +110,8 @@ export const generateRSSFeedObj = async (articles, language, site, baseUrl) => {
         <url>${site.logo_jpg}</url>
         <title>${site.siteName}</title>
         <link>${baseUrl}</link>
-      </image>`
+      </image>`,
+      `<itunes:owner><itunes:name>${site.author}</itunes:name><itunes:email>${site.email}</itunes:email></itunes:owner>`,
     ].join(' '),
     items: await processItems(articles, site, baseUrl)
   };
