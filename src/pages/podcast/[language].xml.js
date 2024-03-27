@@ -109,7 +109,7 @@ export const processItems = async (articles, site, baseUrl) => {
 
 export const generateRSSFeedObj = async (articles, language, site, baseUrl) => {
   const langname = mainLanguages[language].name;
-  const title = site.siteName + (language!='en' ? `(${langname})` : '');
+  const title = site.siteName + language!='en' ? ` (${langname})` : '';
   const feed = {
     stylesheet: '/rss-podcast.xsl',
     title: title,
