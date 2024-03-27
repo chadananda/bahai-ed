@@ -103,7 +103,7 @@ export const generateRSSFeedObj = async (articles, language, site, baseUrl) => {
       `<itunes:category text="${site.podcast.category}"><itunes:category text="${site.podcast.subcategory}" /></itunes:category>`,
       `<itunes:image href="${site.logo_jpg}" />`,
       `<itunes:explicit>no</itunes:explicit>`,
-      `<atom:link href="${baseUrl}/rss.xml" rel="self" type="application/rss+xml" />`,
+      `<atom:link href="${baseUrl}/podcast/${language}.xml" rel="self" type="application/rss+xml" />`,
       `<image>
         <url>${site.logo_jpg}</url>
         <title>${site.siteName}</title>
