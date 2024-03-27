@@ -57,7 +57,7 @@ export const processItems = async (articles, site, baseUrl) => {
     // console.log('audioURL2', audioURL);
 
     const audioSize = localAudio ? await getArticleAudioSize(post.data?.url, post.data.audio) :
-       iso8601DurToBytes(post.data.audio_duration);
+       post.data.audio_length || iso8601DurToBytes(post.data.audio_duration);
     // console.log('audioSize', audioSize);
     // const audioSize =
     // import newImage from post.data.audio_image.src;
@@ -109,7 +109,11 @@ export const generateRSSFeedObj = async (articles, language, site, baseUrl) => {
     xmlns: {
       itunes: 'http://www.itunes.com/dtds/podcast-1.0.dtd'
     },
-    customData: [`<language>${language}</language>`].join(' '),
+    customData: [`<language>${language}</language>`,
+      `<itunes:category text="${site.podcast.category}"> <itunes:category text="${site.podcast.subcategory}" /></itunes:category>`,
+      `<itunes:image href="${ site.logo }" />`,
+      `<itunes:explicit>no</itunes:explicit>`,
+    ].join(' '),
     items: await processItems(articles, site, baseUrl)
   };
   return feed;

@@ -30,8 +30,9 @@ import { ElevenLabsClient, stream } from "elevenlabs";
 import { promisify } from 'util';
 import { exec } from 'child_process';
 const execPromise = promisify(exec);
+import site from '../data/branding.json' assert { type: 'json' };
 
-import {mainLanguages, genericStringPrompt, getAudioDuration, saveArticleMdoc} from './_script_utils.js';
+import {mainLanguages, genericStringPrompt, getAudioDuration, saveArticleMdoc, addID3toMP3, uploadS3} from './_script_utils.js';
 
 
 
@@ -324,12 +325,37 @@ const narrateAudio = async ({ destFile, data, content }) => {
 
     // Update the article with a reference to the new audio file
     const articlePath = path.join(path.dirname(destFile), language==='en'? 'index.mdoc' : `${language}.mdoc`); // let's double-check first:
-    data.audio = path.basename(destFile);
+    const audioName = path.basename(destFile);
     data.audio_duration = await getAudioDuration(destFile); // ISO 8601 format
-    saveArticleMdoc(articlePath, data, content);
 
+    // add id3 tags to audio file
+    const artist = data.author.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    const image = path.join(path.dirname(articlePath), data.image.src);
+    let id3 = {
+      title: data.title,
+      artist,
+      album: site.siteName,
+      year: new Date(data.datePublished).getFullYear(),
+      genre: site.genre,
+      comment: data.description.replace(/"/g, '\\"'),
+      publisher: site.site,
+      url: site.url + '/' + data.url,
+      language: data.language || 'en',
+      image
+    }
+    const success = await addID3toMP3(destFile, id3);
+    if (success) {
+      // get audio file size
+      data.audio_length = fs.statSync(destFile).size;
+      // upload audio to s3
+      console.log('⬆️ Uploading audio file to S3 ');
+      data.audio = await uploadS3(destFile, articleID+'/'+audioName, process.env.PODCAST_BUCKET, 'audio/mpeg');
+      // update the data file with url
+      console.log('💾 Saving article file with updated url data');
+      saveArticleMdoc(articlePath, data, content);
+    }
   } catch (error) {
-    console.error('Error generating audio with ElevenLabs:', error);
+    console.error('❌ Error generating audio with ElevenLabs:', error);
   }
 };
 
