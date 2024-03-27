@@ -61,7 +61,7 @@ export const processItems = async (articles, site, baseUrl) => {
     // console.log('audioSize', audioSize);
     // const audioSize =
     // import newImage from post.data.audio_image.src;
-    const imageURL = baseUrl + (await getImage({src: post.data.audio_image, format: 'webp'})).src
+    const imageURL = baseUrl + (await getImage({src: post.data.audio_image, format: 'jpg'})).src
     // get the author details
     const author = await getEntry(post.data.author.collection, post.data.author.id);
     // console.log('author', author);
