@@ -104,6 +104,11 @@ export const generateRSSFeedObj = async (articles, language, site, baseUrl) => {
       `<itunes:image href="${site.logo_jpg}" />`,
       `<itunes:explicit>no</itunes:explicit>`,
       `<atom:link href="${baseUrl}/rss.xml" rel="self" type="application/rss+xml" />`,
+      `<image>
+        <url>${site.logo_jpg}</url>
+        <title>${site.siteName}</title>
+        <link>${baseUrl}</link>
+      </image>`
     ].join(' '),
     items: await processItems(articles, site, baseUrl)
   };
