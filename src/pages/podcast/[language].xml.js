@@ -6,6 +6,29 @@ import rss from '@astrojs/rss';
 import { getArticleAudioSize, getArticleAudioPath, getAllLanguages } from '@utils/utils.js';
 import { getImage } from "astro:assets";
 
+const mainLanguages = {
+  es: { flag: "🇪🇸", name: "Español", dir: "ltr", en_name: "Spanish" },
+  en: { flag: "🇬🇧", name: "English", dir: "ltr", en_name: "English" },
+  zh: { flag: "🇨🇳", name: "中文", dir: "ltr", en_name: "Chinese" },
+  ar: { flag: "🇸🇦", name: "العربية", dir: "rtl", en_name: "Arabic" },
+  hi: { flag: "🇮🇳", name: "हिन्दी", dir: "ltr", en_name: "Hindi" },
+  fa: { flag: "🇮🇷", name: "فارسی", dir: "rtl", en_name: "Persian" },
+  fr: { flag: "🇫🇷", name: "Français", dir: "ltr", en_name: "French" },
+  bn: { flag: "🇧🇩", name: "বাংলা", dir: "ltr", en_name: "Bengali" },
+  ru: { flag: "🇷🇺", name: "Русский", dir: "ltr", en_name: "Russian" },
+  pt: { flag: "🇧🇷", name: "Português", dir: "ltr", en_name: "Portuguese" },
+  ur: { flag: "🇵🇰", name: "اردو", dir: "rtl", en_name: "Urdu" },
+  id: { flag: "🇮🇩", name: "Bahasa Indonesia", dir: "ltr", en_name: "Indonesian" },
+  de: { flag: "🇩🇪", name: "Deutsch", dir: "ltr", en_name: "German" },
+  ja: { flag: "🇯🇵", name: "日本語", dir: "ltr", en_name: "Japanese" },
+  sw: { flag: "🇹🇿", name: "Kiswahili", dir: "ltr", en_name: "Swahili" },
+  mr: { flag: "🇮🇳", name: "मराठी", dir: "ltr", en_name: "Marathi" },
+  he: { flag: "🇮🇱", name: "עברית", dir: "rtl", en_name: "Hebrew" },
+  ro: { flag: "🇷🇴", name: "Română", dir: "ltr", en_name: "Romanian" },
+  it: { flag: "🇮🇹", name: "Italiano", dir: "ltr", en_name: "Italian" },
+  tr: { flag: "🇹🇷", name: "Türkçe", dir: "ltr", en_name: "Turkish" }
+ };
+
 const isPublished = ({data}) => (!data.draft && data.datePublished<=new Date());
 const hasAudio = ({data}) => !!data.audio;
 const isDev = import.meta.env.APP_ENV==='dev';
@@ -85,9 +108,10 @@ export const processItems = async (articles, site, baseUrl) => {
 }
 
 export const generateRSSFeedObj = async (articles, language, site, baseUrl) => {
+  const langname = mainLanguages[language].name;
   const feed = {
     stylesheet: '/rss-podcast.xsl',
-    title: site.siteName,
+    title: site.siteName + ` (${langname})`,
     author: site.site,
     description: site.description,
     site: site.url,
