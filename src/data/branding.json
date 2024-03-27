@@ -9,6 +9,7 @@
 
   "url": "https://bahai-education.org",
   "logo": "https://bahai-education.org/favicon.svg",
+  "logo_jpg": "https://bahai-education.org/favicon.jpg",
   "vercel_project_id": "bahai-ed",
   "vercel_project_name": "bahai-ed",
   "vercel_project_domain": "bahai-ed.vercel.app",

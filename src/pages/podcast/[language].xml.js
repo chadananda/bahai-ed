@@ -62,6 +62,7 @@ export const processItems = async (articles, site, baseUrl) => {
       description: post.data.description,
       content: post.data.abstract,
       author: author.data.name,
+      description: post.data.abstract,
       enclosure: { url: audioURL, type: "audio/mpeg", length: audioSize },
       link: `${baseUrl}/${post.data?.url}`,
       commentsUrl: `${baseUrl}/${post.data?.url}#comments`,
@@ -87,8 +88,9 @@ export const generateRSSFeedObj = async (articles, language, site, baseUrl) => {
   const feed = {
     stylesheet: '/rss-podcast.xsl',
     title: site.siteName,
+    author: site.site,
     description: site.description,
-    site: baseUrl,
+    site: site.url,
     trailingSlash: false,
     language,
     xmlns: {
@@ -99,7 +101,7 @@ export const generateRSSFeedObj = async (articles, language, site, baseUrl) => {
     customData: [
       `<language>${language}</language>`,
       `<itunes:category text="${site.podcast.category}"><itunes:category text="${site.podcast.subcategory}" /></itunes:category>`,
-      `<itunes:image href="${site.logo}" />`,
+      `<itunes:image href="${site.logo_jpg}" />`,
       `<itunes:explicit>no</itunes:explicit>`,
       `<atom:link href="${baseUrl}/rss.xml" rel="self" type="application/rss+xml" />`,
     ].join(' '),
