@@ -163,13 +163,14 @@ export const getRelatedPosts = async (slug) => {
  const thisPost = await getPostFromSlug(slug);
  const topicsSet = new Set(thisPost.data.topics); // without repitition
  const hasIntersection = (set, arr) => arr.some(item => set.has(item));
+ const isPublished = ({data}) => (!data.draft && data.datePublished<=new Date());
  // get all posts, filtered to those who share the same topics
  const relatedPosts = await getCollection("posts", (entry)=>{
    let isIntersection = hasIntersection(topicsSet, entry.data.topics);
    let isSameArticle = entry.id === thisPost.id;
    let isSameLanguage = entry.data.language === thisPost.data.language;
    // Now use the hasIntersection function by passing the Set and the array
-   return isIntersection && !isSameArticle && isSameLanguage;
+   return isIntersection && !isSameArticle && isSameLanguage && isPublished(entry);
  });
  return relatedPosts;
 }
