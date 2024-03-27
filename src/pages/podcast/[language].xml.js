@@ -99,6 +99,8 @@ export const generateRSSFeedObj = async (articles, language, site, baseUrl) => {
       atom: 'http://www.w3.org/2005/Atom'
     },
     customData: [
+      `<description>${site.description}</description>`,
+      `<itunes:author>${site.author}</itunes:author>`,
       `<language>${language}</language>`,
       `<itunes:category text="${site.podcast.category}"><itunes:category text="${site.podcast.subcategory}" /></itunes:category>`,
       `<itunes:image href="${site.logo_jpg}" />`,
