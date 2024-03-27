@@ -47,28 +47,15 @@ const ISO8601ToiTunes = (isoDuration) => {
 
 export const processItems = async (articles, site, baseUrl) => {
   const items = await Promise.all(articles.map(async post => {
-
     const localAudio = post.data.audio.startsWith('http') ? false : true;
-    // console.log('localAudio', localAudio);
-
     // marshall audio file
-    // console.log('marshalling audio file');
     const audioURL = localAudio ? baseUrl + (await getArticleAudioPath(post.data.url, post.data.audio)) : post.data.audio;
-    // console.log('audioURL2', audioURL);
-
     const audioSize = localAudio ? await getArticleAudioSize(post.data?.url, post.data.audio) :
        post.data.audio_length || iso8601DurToBytes(post.data.audio_duration);
-    // console.log('audioSize', audioSize);
-    // const audioSize =
-    // import newImage from post.data.audio_image.src;
     const imageURL = baseUrl + (await getImage({src: post.data.audio_image, format: 'jpg'})).src
     // get the author details
     const author = await getEntry(post.data.author.collection, post.data.author.id);
-    // console.log('author', author);
     const itunes_duration = ISO8601ToiTunes(post.data.audio_duration);
-
-    // console.log('duration: ' +post.data.audio_duration, 'itunes_duration: ' + itunes_duration);
-
     return {
       title: post.data.title,
       pubDate: new Date(post.data.datePublished).toUTCString(),
@@ -79,7 +66,6 @@ export const processItems = async (articles, site, baseUrl) => {
       link: `${baseUrl}/${post.data?.url}`,
       commentsUrl: `${baseUrl}/${post.data?.url}#comments`,
       categories: post.data.topics,
-      // image: imageURL,
       customData: [
         // `<image src="${ imageURL }" />`
         `<itunes:image href="${ imageURL }" />`,
@@ -94,7 +80,6 @@ export const processItems = async (articles, site, baseUrl) => {
       ].join(` `)
     };
   }));
-  // console.log('items', items);
   return items;
 }
 
@@ -107,17 +92,23 @@ export const generateRSSFeedObj = async (articles, language, site, baseUrl) => {
     trailingSlash: false,
     language,
     xmlns: {
-      itunes: 'http://www.itunes.com/dtds/podcast-1.0.dtd'
+      itunes: 'http://www.itunes.com/dtds/podcast-1.0.dtd',
+      podcast: 'https://podcastindex.org/namespace/1.0',
+      atom: 'http://www.w3.org/2005/Atom'
     },
-    customData: [`<language>${language}</language>`,
-      `<itunes:category text="${site.podcast.category}"> <itunes:category text="${site.podcast.subcategory}" /></itunes:category>`,
-      `<itunes:image href="${ site.logo }" />`,
+    customData: [
+      `<language>${language}</language>`,
+      `<itunes:category text="${site.podcast.category}"><itunes:category text="${site.podcast.subcategory}" /></itunes:category>`,
+      `<itunes:image href="${site.logo}" />`,
       `<itunes:explicit>no</itunes:explicit>`,
+      `<atom:link href="${baseUrl}/rss.xml" rel="self" type="application/rss+xml" />`,
     ].join(' '),
     items: await processItems(articles, site, baseUrl)
   };
+
   return feed;
-}
+};
+
 
 
 export async function GET({ params, request }) {
