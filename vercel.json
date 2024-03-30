@@ -32,9 +32,14 @@
 
    {"source": "/Qingdao.htm", "destination": "/the-dawn-breakers-resources-for-the-study-of-nabils-narrative","permanent": true},
    {"source": "/short-prayers.pdf", "destination": "/learning-arabic-with-adventure-stories-novelarabic","permanent": true},
-   {"source": "/memorize-quotes ", "destination": "/the-dawn-breakers-resources-for-the-study-of-nabils-narrative","permanent": true},
+   {"source": "/memorize-quotes", "destination": "/the-dawn-breakers-resources-for-the-study-of-nabils-narrative","permanent": true},
    {"source": "/news/acuto-discourse-abdul-baha-resources", "destination": "/the-dawn-breakers-resources-for-the-study-of-nabils-narrative","permanent": true},
    {"source": "/news/nakhjavani-abs-talk-scholarship-power-understanding", "destination": "/the-dawn-breakers-resources-for-the-study-of-nabils-narrative","permanent": true},
+
+{"source": "/materials/iqan/dunbar_interview.htm", "destination": "/dunbar-interview-companion-study-kitab-i-iqan","permanent": true},
+{"source": "/iqan.html", "destination": "/dunbar-interview-companion-study-kitab-i-iqan","permanent": true},
+
+
 
    {"source": "/node/38.html","destination": "/the-dawn-breakers-resources-for-the-study-of-nabils-narrative","permanent": true}
  ]
