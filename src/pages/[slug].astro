@@ -12,6 +12,10 @@ import PodcastPlayer from "@components/article/PodcastPlayer.astro";
 import PostComments from "@components/article/PostComments.astro";
 import AuthorBio from "@components/article/authorCard.astro";
 
+// we are manually processing content so that we can inject corrections
+// import { preprocessContent } from '@utils/preprocess-content.js';
+// import { render } from 'astro:markdoc';
+
 export async function getStaticPaths() {
   const isPublished = ({data}) => (!data.draft && data.datePublished <= new Date());
   const isDev = import.meta.env.APP_ENV === 'dev';
@@ -22,10 +26,17 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props; // Get the entry directly from the prop on render
+// Preprocess the content before passing it to Markdoc
+// Assuming `entry.content` holds the raw Markdoc content
+// const preprocessedContent = preprocessContent(entry.content);
 const { Content, headings } = await entry.render();
-const author = await getEntry('team', entry.data.author.id);
+// const { Content, headings } = await render(preprocessedContent, entry.data);
+
+
+const author = !!entry.data.author ?  await getEntry('team', entry.data.author?.id): false;
 const category = await getEntry('categories', entry.data.category.id);
 const topics = await filterTopics(entry.data.topics); // because not all topics are created yet
+
 ---
 
 <Layout meta={Astro.props} headings={headings}>
@@ -39,9 +50,9 @@ const topics = await filterTopics(entry.data.topics); // because not all topics 
       <div class="flex gap-2 mt-3 items-center justify-center text-sm flex-wrap">
 
         <div class="name-date">
-          <span class="text-slate-500">
-            <a href={`/authors/${author.id}`} aria-label={author.data.name}> {author.data.name} </a>
-          </span>
+          {!!author && <span class="text-slate-500">
+            <a href={`/authors/${author?.id}`} aria-label={author?.data.name}> {author?.data.name} </a>
+          </span>}
           <span class="text-slate-500">•</span>
           <time class="text-slate-500" datetime={entry.data.datePublished.toISOString()}>
             {entry.data.datePublished.toDateString()}
@@ -82,9 +93,11 @@ const topics = await filterTopics(entry.data.topics); // because not all topics 
      <div class="mx-auto prose mt-6 max-w-3xl prose-headings:mb-2 prose-headings:mt-8"
      ><Content meta={entry.data} /></div>
 
-     <div class="max-w-3xl mx-auto">
-       <AuthorBio slug={entry.data.author.id} size="bio" />
-     </div>
+     {!!author &&
+      <div class="max-w-3xl mx-auto">
+        <AuthorBio slug={entry.data.author?.id} size="bio" />
+      </div>
+     }
 
      <Container class="!max-w-2xl">
        <PostComments slug={entry.data?.url} />

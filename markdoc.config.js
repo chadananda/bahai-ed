@@ -6,6 +6,19 @@ export default defineMarkdocConfig({
       ...nodes.image, // Apply Markdoc's defaults for other options
       render: component('./src/components/article/mdoc_image.astro'),
     },
+    // 'paragraph': {
+    //   ...nodes.paragraph,
+    //   render: component('./src/components/article/textPreprocessor.astro'),
+    //   attributes: {
+		// 		content: { type: String }
+		// 	},
+    //   transform(node, config) {
+    //     console.log('bruhhh')
+    //     const attributes = node.transformAttributes(config)
+    //     const children = node.transformChildren(config)
+    //     return new Tag(this.render, { ...attributes }, children)
+    //   },
+    // }
   },
 
   tags: {

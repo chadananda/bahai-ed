@@ -36,7 +36,7 @@ if (!entry) {
 }
 
 const article = await entry.render(); // needed?
-const author = await getEntry('team', entry.data.author.id);
+const author = await getEntry('team', entry.data.author?.id);
 const category = await getEntry('categories', entry.data.category.id);
 const topics = await getEntries(entry.data.topics);
 

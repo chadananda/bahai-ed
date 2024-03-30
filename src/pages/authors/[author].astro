@@ -21,7 +21,7 @@ const isDev = import.meta.env.APP_ENV==='dev';
 const allPosts = await getCollection("posts", (ar) => isPublished(ar) || isDev);
 
 // get all posts which are not in draft mode && match author
-const posts = allPosts.filter((post) => post.data.author.id===thisAuthorSlug);
+const posts = allPosts.filter((post) => post.data.author?.id===thisAuthorSlug);
 ---
 
 <Layout pageTitle={thisAuthorSlug}>

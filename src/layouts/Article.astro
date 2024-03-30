@@ -12,6 +12,7 @@ import ArticleJSONLD  from "@components/article/ArticleJSONLD.astro"; // validat
 // fyi, check your opengraph here:  https://www.opengraph.xyz/
 import Container from "@components/container.astro";
 
+
 // vercel speed insights, helpful for SEO
 import  SpeedInsights  from "@vercel/speed-insights/astro"
 import { getArticleURL, mainLanguages as langs } from '@utils/utils.js';
@@ -22,8 +23,6 @@ const {image, description, title} = props;
 const {footerMargin = true } = Astro.props;
 const language = props.language || "en";
 const dir = langs[language].dir;
-
-
 
 const pageURL = getArticleURL(Astro);
 const siteURL = new URL(pageURL).origin.replace(/\/$/, '');

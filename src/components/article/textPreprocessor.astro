@@ -1,0 +1,26 @@
+---
+const { content } = Astro.props;
+console.log('Astro.props', Astro.props);
+
+
+// let text
+// src/components/article/textPreprocessor.astro
+// const preprocessText = (text) => {
+//   let result = text;
+//   // Apply text transformations here
+//   // Example: smart quotes and m-dashes
+//   result = result.replace(/"([^"]*)"/g, '“$1”') // double quotes
+//                  .replace(/'([^']*)'/g, '‘$1’'); // single quotes
+//   result = result.replace(/ -- /g, '—'); // Replace double hyphens with m-dashes
+//   return result;
+// };
+
+// let text = preprocessText(children)
+
+// export function render(data) {
+//   console.log('this is never reached', data);
+
+//   return preprocessText('');
+// }
+---
+<>{content}</>

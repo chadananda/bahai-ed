@@ -21,7 +21,7 @@ if (!link.startsWith('http')) {
 }
 
  // add these images later
- var thumb = '';
+ var thumb = "";
  if (type == "Audio Narration") {
    thumb = "/article_assets/resource-audio.svg"
 //  } else if (type == "Video Narration") {
@@ -34,8 +34,8 @@ if (!link.startsWith('http')) {
    thumb = "/article_assets/resource-software.svg"
  } else if (type == "ZIP Archive") {
    thumb = "/article_assets/resource-zip.szg"
-//  } else if (type == "Image") {
-//    thumb = "/article_assets/image_thumb.webp"
+ } else if (type == "Link") {
+   thumb = "/article_assets/resource-general.svg"
  } else if (type == "Other") {
    thumb = "/article_assets/resource-general.svg"
  } else {
@@ -86,10 +86,15 @@ if (image) {
 
   <div class="box-right items-center justify-end relative w-auto hidden sm:flex">
     <a href={downloadURL} aria-label={type}  download target="_blank" class="resource-link no-underline w-full h-full flex justify-center items-center position-relative">
+
       { thumb && (
-      <img src={thumb} alt="thumbnail" class="resource-thumbnail h-20 opacity-50 m-2">
+        <img src={thumb} alt="thumbnail" class="resource-thumbnail h-20 opacity-80 m-2">
       )}
-      <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" viewBox="0 0 24 24" width="48" height="48" class="download-button absolute inset-0 m-auto opacity-50 mt-10" preserveAspectRatio="xMidYMid meet" style="border-radius: 12px;"><g><rect fill="none" height="24" width="24" rx="2" ry="2"/></g><g><path d="M5,20h14v-2H5V20z M19,9h-4V3H9v6H5l7,7L19,9z" /></g></svg>
+
+      { type!='Link' && (
+        <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" viewBox="0 0 24 24" width="48" height="48" class="download-button absolute inset-0 m-auto opacity-50 mt-10" preserveAspectRatio="xMidYMid meet" style="border-radius: 12px;"><g><rect fill="none" height="24" width="24" rx="2" ry="2"/></g><g><path d="M5,20h14v-2H5V20z M19,9h-4V3H9v6H5l7,7L19,9z" /></g></svg>
+      )}
+
     </a>
   </div>
 

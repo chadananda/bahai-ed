@@ -11,7 +11,7 @@
    .filter(article =>
      article.data.title.toLowerCase().includes(filter.toLowerCase()) ||
      article.data.description.toLowerCase().includes(filter.toLowerCase()) ||
-     article.data.author.id.toLowerCase().includes(filter.toLowerCase())
+     article.data.author?.id.toLowerCase().includes(filter.toLowerCase())
    )
    .sort((a, b) => {
      if (a.data[sortKey] < b.data[sortKey]) return -1 * sortOrder;
@@ -58,7 +58,7 @@
           href={`/admin/edit/${article.slug}`}>{article.data.title}</a> ✏️</td>
        <td>{article.data.description}</td>
        <td><a class="text-blue-800 underline"
-          href={`/admin/edit_team/${article.data.author.id}`}>{article.data.author.id}</a> ✏️</td>
+          href={`/admin/edit_team/${article.data.author?.id}`}>{article.data.author?.id}</a> ✏️</td>
        <td>{article.data.draft ? 'Yes' : 'No'}</td>
      </tr>
    {/each}

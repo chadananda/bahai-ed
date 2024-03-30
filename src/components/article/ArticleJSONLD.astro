@@ -14,7 +14,7 @@ const { title, description, desc_125, keywords, language, video_main, post_type,
 
 // console.log('catref', catref);
 const category = await getEntry('categories', Astro.props.category.id);
-const author = await getEntry('team', Astro.props.author.id);
+const author = !!Astro.props.author ? await getEntry('team', Astro.props.author.id) : false;
 // const topics = await getEntries(Astro.props.topics);
 const topics = await filterTopics(Astro.props.topics); // because topics are no longer references
 // console.log('topicsList', topics);
@@ -41,7 +41,7 @@ const pageURL = getArticleURL(Astro);
 //Astro.url.href.replace('[::1]', 'localhost').replace(/\/$/, '') //.replace(/:(\d+)/, ':3000')
 const siteURL = new URL(pageURL).origin.replace(/\/$/, '');
 
-const authorSlug = author.data.name ? author.id : brand.siteName;
+const authorSlug = author?.data?.name ? author.id : brand.siteName;
 const authorURL = `${siteURL}/author/${authorSlug}`;
 
 // get original image?
@@ -93,8 +93,8 @@ const schema = {
   description: description,
   keywords: keywords,
   author: {
-    "@type": author.data.type,
-    name: author.data.name,
+    "@type": author?.data?.type || 'editor',
+    name: author?.data?.name || brand.author,
     url: authorURL,
   },
   publisher: {
@@ -195,8 +195,10 @@ if (podcast) openGraphHeaders.audio = {
 
 ---
 
+<>
 <SEO title={title} description={description} canonical={pageURL}
   twitter={twitterHeaders} openGraph={openGraphHeaders} extend={metaHeaders} />
 
 <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+</>
 

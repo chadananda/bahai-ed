@@ -77,14 +77,14 @@ export const processItems = async (articles, site, baseUrl) => {
        post.data.audio_length || iso8601DurToBytes(post.data.audio_duration);
     const imageURL = baseUrl + (await getImage({src: post.data.audio_image, format: 'jpg'})).src
     // get the author details
-    const author = await getEntry(post.data.author.collection, post.data.author.id);
+    const author = !!post.data.author ? await getEntry(post.data.author.collection, post.data.author?.id) : false;
     const itunes_duration = ISO8601ToiTunes(post.data.audio_duration);
     return {
       title: post.data.title,
       pubDate: new Date(post.data.datePublished).toUTCString(),
       description: post.data.description,
       content: post.data.abstract,
-      author: author.data.name,
+      author: author?.data.name || site.author,
       description: post.data.abstract,
       enclosure: { url: audioURL, type: "audio/mpeg", length: audioSize },
       link: `${baseUrl}/${post.data?.url}`,
@@ -96,7 +96,7 @@ export const processItems = async (articles, site, baseUrl) => {
         `<itunes:duration>${itunes_duration}</itunes:duration>`,
         `<itunes:explicit>no</itunes:explicit>`,
         `<itunes:subtitle>${post.data.desc_125}</itunes:subtitle>`,
-        `<itunes:author>${author?.data.name}</itunes:author>`,
+        `<itunes:author>${author?.data.name || site.author}</itunes:author>`,
         `<itunes:summary>${post.data.abstract}</itunes:summary>`,
         `<itunes:keywords>${post.data.keywords?.join(', ')}</itunes:keywords>`,
         // needs itunes:category and subcategory

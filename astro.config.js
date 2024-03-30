@@ -84,12 +84,18 @@ export default defineConfig({
   prefetch: { defaultStrategy: 'viewport', prefetchAll: !isDev },
   vite: {
     build: {
-      minify: false,
+      // minify: false,
     },
     logLevel: 'info',
     server: {
       watch: {
-        ignored: ['.vscode/*', '.astro/*', 'node_modules/*', 'dist/*', 'public/*']
+        ignored: [
+          '**/node_modules/**', '**/.vscode/**', '**/.vercel/**', '**/dist/**', '**/public/**', '**/.astro/**', '.env', '.git', '.DS_Store', '.aider.chat.history.md', '.aider*',
+          // 'src/content/topics/*', 'src/content/categories/*', 'src/content/faqs/*',
+          // 'src/content/proposals/*', 'src/content/structure/*', 'src/content/subtopics/*',
+          // 'src/content/team/*', '**/**'
+
+        ]
       },
       logLevel: 'info',
     }

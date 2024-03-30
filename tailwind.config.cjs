@@ -14,6 +14,12 @@ module.exports = {
       },
       typography: (theme) => ({
         DEFAULT: {
+          quoteless: {
+            css: {
+              'blockquote p:first-of-type::before': { content: 'none' },
+              'blockquote p:first-of-type::after': { content: 'none' },
+            },
+          },
           css: {
             maxWidth: '750px !important',
             fontSize: "1.1rem",
