@@ -26,8 +26,8 @@ const isPublished = pubdate <= new Date() && !post.data.draft;
   class={ `overflow-hidden ${small ? 'w-[200px]' : 'w-[302px]'} ` }>
   <a href={articleLink} aria-label={post.data.title}>
     <Picture
-      src={image.src}
-      alt={image.alt}
+      src={image?.src || ''}
+      alt={image?.alt || ''}
       formats={["avif", "webp", "jpg"]}
       sizes={small ? "(max-width: 200px) 100vw, 200px" : "(max-width: 300px) 100vw, 300px"}
       class={`object-cover rounded-lg shadow-lg border border-gray-200 ${small ? 'w-[200px] h-[133px] opacity-75' : 'w-[300px] h-[200px]'}`+
@@ -52,14 +52,16 @@ const isPublished = pubdate <= new Date() && !post.data.draft;
         )}
 
         </h2>
+
       ) : (
+
         <h2 class="text-xl font-semibold leading-snug tracking-tight mt-1" transition:persist> {post.data.title} </h2>
       )}
 
       {!small && (
         <div class="text-sm mt-3 flex gap-2">
 
-          {!!author && (<span class="text-gray-600"><a href={authorURL} aria-label={author.data.name}>{author.data.name} </a></span><span class="text-gray-600">• </span>)}
+          {!!author && (<span class="text-gray-600"><a href={authorURL} aria-label={author?.data.name}>{author?.data.name} </a></span><span class="text-gray-600">• </span>)}
 
           <time class="text-gray-600" datetime={datePublished}> {datePublished} </time>
         </div>

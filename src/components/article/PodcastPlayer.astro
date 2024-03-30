@@ -12,10 +12,14 @@ const {datePublished, audio, title, description, audio_duration: duration, title
 const slug = await getArticleSlugFromURL(Astro.url.href);
 const episodeNumber = meta.episode_number || 1;
 // fall back on the article image if no audio image is provided
-const image = meta.audio_image || meta.image.src;
 
-let authorName = meta.author? (await getEntry('team', Astro.props.meta.author?.id)).name : site.author;
+const image = meta.image.src;
+// console.log('PodcastPlayer.astro image', image);
+
+let authorName = !!meta.author ? (await getEntry('team', meta.author?.id)).data.name : site.site;
+// let authorName = (await getEntry('team', meta.author?.id)).data.name;
 // const {data:author} = await getEntry('team', Astro.props.meta.author.id);
+// console.log('PodcastPlayer.astro meta.author', authorName);
 
 const pageURL = getArticleURL(Astro);
 const baseUrl = new URL(pageURL).origin.replace(/\/$/, '');
@@ -27,6 +31,7 @@ if (!audioURL.startsWith('http')) {  // convert file path to URL
   audioURL = baseUrl + audioPath;
 }
 
+// this is broken. audio_image might be a url
 const imageURL = baseUrl+image.src; // build script copies to this path?
 
 // this player will be used more than once per page, so we need to generate unique IDs for each instance
@@ -86,10 +91,13 @@ border-4 border-gray-300 p-1 noprint
 ">
   <!-- Image and play button, the left column  -->
   <div class="image-container sm:w-48 h-24 sm:h-48 mb-2 sm:mb-0 cursor-pointer - group relative">
-    <Image src={image} alt={authorName} format="jpg" quality="low"
-      class="rounded-md object-cover w-full sm:w-48 h-24 sm:h-48 m-0 p-0 border-2 border-gray-400 opacity-70"
-      widths={[120, 188, 300, 372, 788, 1000, 1280]}
-    />
+
+    {!!image && (
+      <Image src={image} alt={authorName} format="jpg" quality="low"
+        class="rounded-md object-cover w-full sm:w-48 h-24 sm:h-48 m-0 p-0 border-2 border-gray-400 opacity-70"
+        widths={[120, 188, 300, 372, 788, 1000, 1280]}
+      />
+    )}
 
     <!-- Player button centered over the image -->
     <div class="playerbutton absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">

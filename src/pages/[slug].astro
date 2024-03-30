@@ -55,7 +55,7 @@ const topics = await filterTopics(entry.data.topics); // because not all topics 
           </span>}
           <span class="text-slate-500">•</span>
           <time class="text-slate-500" datetime={entry.data.datePublished.toISOString()}>
-            {entry.data.datePublished.toDateString()}
+            {entry.data.datePublished?.toDateString()}
           </time>
         </div>
 
@@ -71,14 +71,15 @@ const topics = await filterTopics(entry.data.topics); // because not all topics 
 
      <div class="mx-auto max-w-10xl">
       <div class="relative pt-[40%] rounded-xl mt-6 overflow-hidden shadow-xl border border-gray-200">
+        {!!entry.data.image && (
         <Picture class="cover-image absolute top-0 left-0 w-full h-full object-cover"
           formats={["webp", "jpg"]}
-          src={entry.data.image.src}
-          alt={entry.data.image.alt}
+          src={entry.data.image?.src}
+          alt={entry.data.image?.alt}
           width="760" quality="low"
           transition:name={`post-img-${entry.slug}`}
           widths={[120, 188, 300, 372, 788, 1000, 1280]}
-         />
+         /> )}
       </div>
      </div>
 
