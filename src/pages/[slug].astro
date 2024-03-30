@@ -55,8 +55,9 @@ const topics = await filterTopics(entry.data.topics); // because not all topics 
             <span class="text-slate-500">
               <a href={`/authors/${author?.id}`} aria-label={author?.data.name}> {author?.data.name} </a>
             </span>
+            <span class="text-slate-500">•</span>
           )}
-          <span class="text-slate-500">•</span>
+
           <time class="text-slate-500" datetime={entry.data.datePublished.toISOString()}>
             {entry.data.datePublished?.toDateString()}
           </time>
