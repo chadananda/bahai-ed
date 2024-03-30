@@ -32,13 +32,13 @@ const siteMapConfig = {
 };
 
 const minifyConfig = {
-  do_not_minify_doctype: false,
-  ensure_spec_compliant_unquoted_attribute_values: false,
-  keep_closing_tags: false,
+  do_not_minify_doctype: true,
+  ensure_spec_compliant_unquoted_attribute_values: true,
+  keep_closing_tags: true,
   keep_comments: false,
-  keep_html_and_head_opening_tags: false,
+  keep_html_and_head_opening_tags: true,
   keep_input_type_text_attr: false,
-  keep_spaces_between_attributes: false,
+  keep_spaces_between_attributes: true,
   keep_ssi_comments: false,
   minify_css: true,
   minify_js: true,

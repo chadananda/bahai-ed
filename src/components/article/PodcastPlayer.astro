@@ -85,16 +85,16 @@ const schema = {
 
 
 <!-- Our Podcast player container -->
-<div id={playerID} class="podcast-player min-h-48 bg-gray-100 shadow-md rounded-lg w-full my-10
+<div id={playerID} class="podcast-player h-full sm:h-48 sm:min-h-48 sm:max-h-48 bg-gray-100 shadow-md rounded-lg w-full my-10
 border-4 border-gray-300 p-1 noprint
 - flex flex-col sm:flex-row sm:flex-nowrap
 ">
   <!-- Image and play button, the left column  -->
-  <div class="image-container sm:w-48 h-24 sm:h-48 mb-2 sm:mb-0 cursor-pointer - group relative">
+  <div class="image-container sm:w-44 sm:max-h-44 sm:h-44 mb-2 sm:mb-0 min-w-[20%] cursor-pointer - group relative">
 
     {!!image && (
       <Image src={image} alt={authorName} format="jpg" quality="low"
-        class="rounded-md object-cover w-full sm:w-48 h-24 sm:h-48 m-0 p-0 border-2 border-gray-400 opacity-70"
+        class="rounded-md object-cover w-full sm:w-44 h-44 sm:h-44 m-0 p-0 min-w-[30%] border-2 border-gray-400 opacity-70"
         widths={[120, 188, 300, 372, 788, 1000, 1280]}
       />
     )}

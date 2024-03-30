@@ -45,19 +45,22 @@ import RelatedArticles from "@components/article/relatedArticles.astro";
     <!-- <ViewTransitions /> -->
   </head>
 
-  <body>
-    <Navbar />
+  <body class="w-screen min-w-full">
+    <Navbar class=""  />
 
     <!-- one column mobile, two column med, three column lg  -->
-    <div class="grid grid-cols-[5px_auto_5px] md:grid-cols-[240px_auto_5px] lg:grid-cols-[240px_auto_220px] relative">
-      <div class="left-column relative">
+    <!-- <div class="grid grid-cols-[5px_auto_5px] md:grid-cols-[240px_auto_5px] lg:grid-cols-[240px_auto_220px] relative"> -->
+
+      <div class="grid grid-cols-[5px_auto_5px] md:grid-cols-[240px_auto_5px] lg:grid-cols-[240px_auto_220px] relative ">
+
+      <div class="left-column relative ">
         <TOC headings={Astro.props.headings}/>
       </div>
-      <div class="content relative" lang={language} dir={dir}>
+      <div class="content relative " lang={language} dir={dir}>
         <slot />
       </div>
-      <div class="right-column text-center relative">
-        <div class="hidden lg:block">
+      <div class="right-column text-center relative ">
+        <div class="hidden lg:block ">
         <RelatedArticles slug={Astro.props.meta.entry.slug} />
         </div>
       </div>
