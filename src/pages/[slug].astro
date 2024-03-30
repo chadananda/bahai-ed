@@ -40,7 +40,8 @@ const topics = await filterTopics(entry.data.topics); // because not all topics 
 ---
 
 <Layout meta={Astro.props} headings={headings}>
-  <Container>
+  <Container class="max-w-screen">
+
     <div class="mx-auto max-w-3xl text-center mt-3">
       <span class="text-blue-500 uppercase tracking-wider text-sm font-medium">
         <a href={`/categories/${category.id}`} aria-label={category.data.category}>{category.data.category}</a>
@@ -68,8 +69,9 @@ const topics = await filterTopics(entry.data.topics); // because not all topics 
             </span>
           ))}
         </div>
+
       </div>
-     </div>
+    </div>
 
      <div class="mx-auto max-w-10xl">
       <div class="relative pt-[40%] rounded-xl mt-6 overflow-hidden shadow-xl border border-gray-200">
@@ -79,7 +81,7 @@ const topics = await filterTopics(entry.data.topics); // because not all topics 
           src={entry.data.image?.src}
           alt={entry.data.image?.alt}
           width="760" quality="low"
-          transition:name={`post-img-${entry.slug}`}
+          // transition:name={`post-img-${entry.slug}`}
           widths={[120, 188, 300, 372, 788, 1000, 1280]}
          /> )}
       </div>
@@ -93,7 +95,7 @@ const topics = await filterTopics(entry.data.topics); // because not all topics 
        {!!entry.data.audio && <PodcastPlayer meta={entry.data} slug={entry.data?.url} />  }
      </div>
 
-     <div class="mx-auto prose mt-6 max-w-3xl prose-headings:mb-2 prose-headings:mt-8"
+     <div class="prose mx-auto mt-6 max-w-3xl prose-headings:mb-2 prose-headings:mt-8"
      ><Content meta={entry.data} /></div>
 
      {!!author &&
@@ -102,9 +104,10 @@ const topics = await filterTopics(entry.data.topics); // because not all topics 
       </div>
      }
 
-     <Container class="!max-w-2xl">
+     <!-- postComments is causing layout breakage. we have to disable until we can figure out why -->
+     <!-- <div class="max-w-3xl mx-auto">
        <PostComments slug={entry.data?.url} />
-     </Container>
+     </div> -->
 
   </Container>
 </Layout>

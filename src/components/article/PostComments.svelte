@@ -127,7 +127,6 @@ const getAvatarColor = name => {
 
 
 
-
 {#each indentedPosts as post}
  <div class={`comment mt-0 level${post.indentLevel} ${post.starred?'starred':''} ${post.arrowType} relative `} id={post.postid}>
 
@@ -173,8 +172,8 @@ const getAvatarColor = name => {
                 class="shadow-sm focus:ring-indigo-600 focus:border-indigo-500 mt-1 p-3 block w-full sm:text-sm border border-gray-300 rounded-md overflow-hidden"
                 placeholder="Write your reply..." required></textarea>
             <div class="flex gap-2 mt-0 pt-2">
-                <input type="text" bind:value={name} class="shadow-sm focus:ring-indigo-600 focus:border-indigo-500 p-1 px-3 flex-1 sm:text-sm border border-gray-300 rounded-md" placeholder="Full Name" required />
-                <input type="email" bind:value={email} class="shadow-sm focus:ring-indigo-600 focus:border-indigo-500 p-1 px-3 flex-1 sm:text-sm border border-gray-300 rounded-md" placeholder="Email (optional)" />
+                <input type="text" bind:value={name} class="shadow-sm focus:ring-indigo-600 focus:border-indigo-500 p-1 px-3 md:flex-1 sm:text-sm border border-gray-300 rounded-md" placeholder="Full Name" required />
+                <!-- <input type="email" bind:value={email} class="shadow-sm focus:ring-indigo-600 focus:border-indigo-500 p-1 px-3 flex-1 sm:text-sm border border-gray-300 rounded-md" placeholder="Email (optional)" /> -->
                 <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600">
                     Post<span class="hidden sm:inline">&nbsp;Reply</span>
                 </button>
@@ -194,23 +193,23 @@ const getAvatarColor = name => {
  {/each}
 
 <!-- Main Comment Form for new comments at the bottom -->
-<div class="new-comment-form mt-8">
+<div class="new-comment-form mt-8 overflow-hidden">
 {#if $activeReplyId === null}
 <form on:submit|preventDefault={(e) => submitComment(e)} class="space-y-4 p-2 m-5 border border-gray-300 rounded-md shadow-md bg-slate-100 overflow-hidden">
     <textarea bind:value={content} rows="3" class="shadow-sm focus:ring-indigo-600 focus:border-indigo-500 mt-1 p-3 block w-full sm:text-sm border border-gray-300 rounded-md" placeholder="Write a comment..." required></textarea>
     <div class="flex gap-2 mt-0 pt-2">
-        <input type="text" bind:value={name} class="shadow-sm focus:ring-indigo-600 focus:border-indigo-500 p-1 px-3 flex-1 sm:text-sm border border-gray-300 rounded-md" placeholder="Full Name" required />
-        <input type="email" bind:value={email} class="shadow-sm focus:ring-indigo-600 focus:border-indigo-500 p-1 px-3 flex-1 sm:text-sm border border-gray-300 rounded-md" placeholder="Email (optional)" />
+        <input type="text" bind:value={name} class="shadow-sm focus:ring-indigo-600 focus:border-indigo-500 p-1 px-3 flex-shrink sm:text-sm border border-gray-300 rounded-md" placeholder="Full Name" required />
         <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 overflow-hidden line-clamp-1">
             Post<span class="hidden sm:inline">&nbsp;Comment</span>
         </button>
     </div>
-    <!-- Hidden Fields (Honeypots) -->
     <input type="text" name="website"  bind:value={website} style="display: none;">
     <input type="text" name="phone" bind:value={phone} style="display: none;">
 </form>
 {/if}
 </div>
+
+
 
 <style>
   .avatar {

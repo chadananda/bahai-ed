@@ -27,7 +27,6 @@ const commentsID = `comments-${Math.random().toString(36).substr(2, 9)}`;
 ---
 
 <div id={commentsID} dir="ltr">
-  <!-- Render the Svelte component with fetched data and additional props -->
   <PostCommentsWithReplies client:visible
    slug={slug} context={context} posts={comments} apiEndpoint={apiEndpoint} />
 </div>

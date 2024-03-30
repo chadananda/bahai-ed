@@ -38,15 +38,13 @@ import RelatedArticles from "@components/article/relatedArticles.astro";
 <html lang={language}>
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- <link rel="icon" type="image/svg+xml" href="/favicon.svg" /> -->
-    <!-- <link rel="sitemap" href="/sitemap-index.xml" /> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <ArticleJSONLD {...props} />
     <!-- <ViewTransitions /> -->
   </head>
 
-  <body class="w-screen min-w-full">
-    <Navbar class=""  />
+  <body>
+    <Navbar />
 
     <!-- one column mobile, two column med, three column lg  -->
     <!-- <div class="grid grid-cols-[5px_auto_5px] md:grid-cols-[240px_auto_5px] lg:grid-cols-[240px_auto_220px] relative"> -->
@@ -69,9 +67,9 @@ import RelatedArticles from "@components/article/relatedArticles.astro";
     <Footer margin={footerMargin} />
     <script type="module" src="/js/appendLink.js"></script>
     <script type="module" src="/js/externalLinks.js"></script>
-  </body>
 
-<SpeedInsights />
+   <SpeedInsights />
+  </body>
 </html>
 
 
