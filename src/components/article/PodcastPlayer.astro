@@ -4,15 +4,18 @@ import { Twitter, Facebook, Linkedin } from 'simple-icons-astro';
 import { Image } from 'astro:assets';
 import { getEntry } from 'astro:content';
 import { getArticleAudioPath, getArticleSlugFromURL, getArticleURL } from '@utils/utils.js';
+import site from '@data/branding.json';
 
-const meta = Astro.props.meta
+const meta = Astro.props.meta;
 const {datePublished, audio, title, description, audio_duration: duration, title: seriesName } = meta;
 // const slug = Astro.url.href.split('/').pop();
 const slug = await getArticleSlugFromURL(Astro.url.href);
 const episodeNumber = meta.episode_number || 1;
 // fall back on the article image if no audio image is provided
 const image = meta.audio_image || meta.image.src;
-const {data:author} = await getEntry('team', Astro.props.meta.author.id);
+
+let authorName = meta.author? (await getEntry('team', Astro.props.meta.author?.id)).name : site.author;
+// const {data:author} = await getEntry('team', Astro.props.meta.author.id);
 
 const pageURL = getArticleURL(Astro);
 const baseUrl = new URL(pageURL).origin.replace(/\/$/, '');
@@ -54,7 +57,7 @@ const schema = {
   },
   author: {
     "@type": "Person",
-    name: author.name,
+    name: authorName,
   },
   datePublished: datePublished,
   timeRequired: duration,
@@ -83,7 +86,7 @@ border-4 border-gray-300 p-1 noprint
 ">
   <!-- Image and play button, the left column  -->
   <div class="image-container sm:w-48 h-24 sm:h-48 mb-2 sm:mb-0 cursor-pointer - group relative">
-    <Image src={image} alt={author.name} format="jpg" quality="low"
+    <Image src={image} alt={authorName} format="jpg" quality="low"
       class="rounded-md object-cover w-full sm:w-48 h-24 sm:h-48 m-0 p-0 border-2 border-gray-400 opacity-70"
       widths={[120, 188, 300, 372, 788, 1000, 1280]}
     />
@@ -111,7 +114,7 @@ border-4 border-gray-300 p-1 noprint
     <div class="text-details flex flex-col justify-center flex-grow">
       <div class="playertext w-full overflow-hidden m-0 sm:pl-3">
         <div class="text-base sm:text-lg font-semibold">{title}</div>
-        <div class="text-gray-600 text-xs sm:text-sm font-light sm:pl-2">by {author.name}</div>
+        <div class="text-gray-600 text-xs sm:text-sm font-light sm:pl-2">by {authorName}</div>
         <div class="text-gray-600 text-sm sm:text-md">{description}</div>
       </div>
     </div>
