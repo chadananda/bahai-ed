@@ -104,10 +104,10 @@ const topics = await filterTopics(entry.data.topics); // because not all topics 
       </div>
      }
 
-     <!-- postComments is causing layout breakage. we have to disable until we can figure out why -->
-     <!-- <div class="max-w-3xl mx-auto">
+     <!-- postComments is causing layout breakage on mobile. So I hid it in mobile until we can figure out why -->
+     <div class="hidden md:block max-w-3xl mx-auto relative">
        <PostComments slug={entry.data?.url} />
-     </div> -->
+     </div>
 
   </Container>
 </Layout>
