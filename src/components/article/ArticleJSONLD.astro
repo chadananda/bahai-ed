@@ -155,9 +155,12 @@ const twitterHeaders = twitLargeImage ? {
   imageHeight: twitLargeImage?.height,
 } : null;
 
+console.log('coverImage?.url,', coverImage?.url);
+
 var openGraphHeaders = {
   basic: {
     url: pageURL,
+    secure_url: pageURL, // if https available
     type: post_type.toLowerCase(),
     title: title,
     description: description, // max 155 characters
