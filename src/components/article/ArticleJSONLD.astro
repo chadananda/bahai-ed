@@ -10,7 +10,7 @@ import { getArticleAudioPath, getArticleTranslations, getArticleURL } from '@uti
 
 // type Props = CollectionEntry<'article'>['data'];
 
-const { title, description, desc_125, keywords, language, video_main, post_type, audio, audio_duration, url:slug } = Astro.props;
+const { title, description, desc_125, keywords, language, video_main, post_type, audio, audio_duration, url:slug, image } = Astro.props;
 
 // console.log('catref', catref);
 const category = await getEntry('categories', Astro.props.category.id);
@@ -18,7 +18,7 @@ const author = !!Astro.props.author ? await getEntry('team', Astro.props.author.
 // const topics = await getEntries(Astro.props.topics);
 const topics = await filterTopics(Astro.props.topics); // because topics are no longer references
 // console.log('topicsList', topics);
-const image = Astro.props.image?.src?.fsPath; // image path of processed image
+// const image = Astro.props.image; // image path of processed image
 
 // for some reason dateModified is not always rendering correctly in Astro
 let datePublished = Astro.props.datePublished;
@@ -38,20 +38,19 @@ datePublished = toIsoStringWithTimezone(datePublished);
 dateModified = toIsoStringWithTimezone(dateModified);
 
 const pageURL = getArticleURL(Astro);
-//Astro.url.href.replace('[::1]', 'localhost').replace(/\/$/, '') //.replace(/:(\d+)/, ':3000')
 const siteURL = new URL(pageURL).origin.replace(/\/$/, '');
 
 const authorSlug = author?.data?.name ? author.id : brand.siteName;
 const authorURL = `${siteURL}/author/${authorSlug}`;
 
-// get original image?
-// const image = image.src.fsPath;
-
 // format image for large twitter card
 let twitLarge, twitLargeImage;
-// 2:1 aspect ratio, min 300x157, max 4096x4096 JPG, PNG, WEBP, and GIF
-if (image) twitLarge = await getImage({src:image, format:"webp", width:600, height:314});
-twitLargeImage = twitLarge ? { url:  `${siteURL}${twitLarge.src}`, width: twitLarge.attributes.width,
+console.log('image', image);
+if (image) twitLarge = await getImage({ src:image.src, format:"webp", width:600, height:314 });
+console.log('twitLarge', twitLarge);
+
+twitLargeImage = twitLarge ? { url:  `${siteURL}${twitLarge.src}`,
+  width: twitLarge.attributes.width,
   height: twitLarge.attributes.height,
 } : false;
 
@@ -61,14 +60,22 @@ var video = video_main ? {
 } : null;
 
 
+// const imagePath = !!post.data.image ? (await getImage({src: post.data.audio_image, format: 'jpg'})).src : ''
+// // const imageURL = baseUrl + imagePath
+
+
+// console.log('image', image);
+
 let largeImage, coverImage: {url: '', width: 0, height:0, alt:''};
 if (image) {
-  largeImage = await getImage({ src: image, format: "jpeg", width: 1200, height: 600, });
+  largeImage = await getImage({ src: image.src, format: "jpeg", width: 1200, height: 600, });
   coverImage = {
     url: `${siteURL}${largeImage.src}`, alt: desc_125,
     width: largeImage.attributes.width, height: largeImage.attributes.height
   };
 } else console.error('Null image in', slug, image);
+
+// console.log('coverImage', coverImage);
 
 let podcast = null;
 if (audio) {
@@ -155,7 +162,7 @@ const twitterHeaders = twitLargeImage ? {
   imageHeight: twitLargeImage?.height,
 } : null;
 
-console.log('coverImage,', coverImage);
+// console.log('coverImage,', coverImage);
 
 var openGraphHeaders = {
   basic: {
