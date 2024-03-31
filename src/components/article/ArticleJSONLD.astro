@@ -45,9 +45,9 @@ const authorURL = `${siteURL}/author/${authorSlug}`;
 
 // format image for large twitter card
 let twitLarge, twitLargeImage;
-console.log('image', image);
+// console.log('image', image);
 if (image) twitLarge = await getImage({ src:image.src, format:"webp", width:600, height:314 });
-console.log('twitLarge', twitLarge);
+// console.log('twitLarge', twitLarge);
 
 twitLargeImage = twitLarge ? { url:  `${siteURL}${twitLarge.src}`,
   width: twitLarge.attributes.width,
@@ -79,7 +79,7 @@ if (image) {
 
 let podcast = null;
 if (audio) {
-  console.log('ArticleJSONLD, looking for article path for slug: ', slug);
+  // console.log('ArticleJSONLD, looking for article path for slug: ', slug);
   const audioFilePath = await getArticleAudioPath(slug, audio);
   podcast =  {
     audioURL: `${siteURL}${audioFilePath}`,
