@@ -55,7 +55,7 @@ export default defineConfig({
   output: 'hybrid',
   // output: 'server',
   adapter: vercel({
-    imageService: true,
+    imageService: false,
     webAnalytics: { enabled: true },
     // functionPerRoute: true, // does not work with hobby version of vercel
     // serviceEntryPoint: '@astrojs/image/sharp',

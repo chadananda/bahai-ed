@@ -63,7 +63,7 @@ var video = video_main ? {
 
 let largeImage, coverImage: {url: '', width: 0, height:0, alt:''};
 if (image) {
-  largeImage = await getImage({ src: image, format: "webp", width: 1200, height: 600, });
+  largeImage = await getImage({ src: image, format: "jpeg", width: 1200, height: 600, });
   coverImage = {
     url: `${siteURL}${largeImage.src}`, alt: desc_125,
     width: largeImage.attributes.width, height: largeImage.attributes.height
@@ -155,7 +155,7 @@ const twitterHeaders = twitLargeImage ? {
   imageHeight: twitLargeImage?.height,
 } : null;
 
-console.log('coverImage?.url,', coverImage?.url);
+console.log('coverImage,', coverImage);
 
 var openGraphHeaders = {
   basic: {
