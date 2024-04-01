@@ -60,6 +60,8 @@ export const getPublishedArticles = async (lang='') => {
   const isPublished = (p) => !p.data.draft && p.data.datePublished<=new Date();
   const isLangMatch = (p) => !!lang ? p.data.language === lang : true;
   const articles = await getCollection('posts', (p)=>isPublished(p) && isLangMatch(p));
+  // sort by date
+  articles.sort((a, b) => b.data.datePublished - a.data.datePublished);
   return articles;
 }
 
@@ -172,6 +174,8 @@ export const getRelatedPosts = async (slug) => {
    // Now use the hasIntersection function by passing the Set and the array
    return isIntersection && !isSameArticle && isSameLanguage && isPublished(entry);
  });
+ // sort posts by date
+ relatedPosts.sort((a, b) => b.data.datePublished - a.data.datePublished);
  return relatedPosts;
 }
 
