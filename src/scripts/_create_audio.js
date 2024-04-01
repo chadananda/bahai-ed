@@ -329,7 +329,7 @@ const narrateAudio = async ({ destFile, data, content }) => {
     data.audio_duration = await getAudioDuration(destFile); // ISO 8601 format
 
     // add id3 tags to audio file
-    const artist = data.author.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    const artist = (data.author || site.author)?.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
     const image = path.join(path.dirname(articlePath), data.image.src);
     let id3 = {
       title: data.title,
@@ -353,6 +353,10 @@ const narrateAudio = async ({ destFile, data, content }) => {
       // update the data file with url
       console.log('💾 Saving article file with updated url data');
       saveArticleMdoc(articlePath, data, content);
+      // now remove mp3 destFile
+      fs.unlinkSync(destFile);
+      // now remove script file
+      fs.unlinkSync(destFile+'-script.txt');
     }
   } catch (error) {
     console.error('❌ Error generating audio with ElevenLabs:', error);
@@ -372,7 +376,10 @@ const getArticleList = async () => {
   const audioFile = (data, ar) => path.join(path.dirname(ar), `${data.language || 'en'}.mp3`);
   const audioFileNotExists = (data, ar) => !fs.existsSync(audioFile(data, ar));
   const isPublished = (data) => !data.draft && new Date(data.datePublished) <= new Date();
-  const needsAudio = (data, ar) =>  data.narrator==='auto' && (!data.audio || audioFileNotExists(data, ar));
+  // needs audio if 'auto' and no audio file exists and no remote file
+  const hasLocalFile = (data,ar) => data.audio && audioFileNotExists(data, ar);
+  const hasRemoteFile = (data) => data.audio && data.audio.startsWith('http');
+  const needsAudio = (data, ar) => data.narrator==='auto' && !hasLocalFile(data,ar) && !hasRemoteFile(data);
   const langFound = (data) => !!mainLanguages[data.language || 'en'];
   // const isArabic = (data) => (data.language || 'en') === 'ar';
   console.log('All Articles:', articles.length);
