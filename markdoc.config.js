@@ -6,11 +6,15 @@ export default defineMarkdocConfig({
       ...nodes.image, // Apply Markdoc's defaults for other options
       render: component('./src/components/article/mdoc_image.astro'),
     },
-    // 'paragraph': {
+    paragraph: {
+      ...nodes.paragraph,
+      render: component('./src/components/article/textPreprocessor.astro'),
+      // attributes: { content: { type: String } },
+    },
+    // blockquote: {
+    //   ...nodes.blockquote,
     //   render: component('./src/components/article/textPreprocessor.astro'),
-    //   attributes: {
-		// 		content: { type: String }
-		// 	},
+    //   attributes: { content: { type: String } },
     // }
   },
 

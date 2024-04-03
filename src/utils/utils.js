@@ -57,9 +57,11 @@ export const loadArticleRaw = async (slug, type='posts') => {
 // tools to translate a url into a file path for processing
 
 export const getPublishedArticles = async (lang='') => {
-  const isPublished = (p) => !p.data.draft && p.data.datePublished<=new Date();
+  const isBlank = (p) => p.data.url.toLowerCase().trim() === 'blank';
+  const isDev = import.meta.env.APP_ENV==='dev';
+  const isPublished = (p) => (!p.data.draft && p.data.datePublished<=new Date()) || isDev;
   const isLangMatch = (p) => !!lang ? p.data.language === lang : true;
-  const articles = await getCollection('posts', (p)=>isPublished(p) && isLangMatch(p));
+  const articles = await getCollection('posts', (p)=>isPublished(p) && isLangMatch(p) && !isBlank(p));
   // sort by date
   articles.sort((a, b) => b.data.datePublished - a.data.datePublished);
   return articles;

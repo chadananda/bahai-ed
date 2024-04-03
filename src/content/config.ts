@@ -152,6 +152,6 @@ const comments = defineCollection({
 
 
 //    This key should match your collection directory name in "src/content"
-export const collections = { comments, posts, team, categories, topics, subtopics, faqs };
+export const collections = { comments, posts, team, categories, topics, faqs };
 
 
