@@ -2,7 +2,7 @@
 export const prerender = false; // ie. SSR
 
 import { Octokit } from "@octokit/rest"; // github api
-import brand from '@data/branding.json';
+import brand from '@data/site.json';
 const GITHUB_PERSONAL_ACCESS_TOKEN = process.env.GITHUB_PERSONAL_ACCESS_TOKEN;
 const GITHUB_OWNER = brand.github_project_url.split('/')[3];
 const GITHUB_REPO =  brand.github_project_url.split('/')[4];

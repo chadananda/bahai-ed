@@ -28,10 +28,9 @@ import { exec } from 'child_process';
 const execPromise = promisify(exec);
 import AWS from 'aws-sdk';
 // import { splitExtensions } from "@tiptap/core";
-import site from '../data/branding.json' assert { type: 'json' };
+import site from '../data/site.json' assert { type: 'json' };
 import https from 'https';
 import { createWriteStream } from 'fs';
-// import { getEntry } from 'astro:content';
 
 dotenv.config();
 const openai = new OpenAI({ apiKey: process.env.OPENAI });

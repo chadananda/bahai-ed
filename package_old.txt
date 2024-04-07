@@ -97,7 +97,7 @@ Unused devDependencies
 * inquirer
 Missing dependencies
 * fs-extra: ./syncAssets.js
-* @data/branding.json: ./src/utils/db.js
+* @data/site.json: ./src/utils/db.js
 * astro:content: ./src/utils/db.js
 * zod: ./src/utils/openai_request.js
 * @utils/authCheck: ./src/pages/api/article.js

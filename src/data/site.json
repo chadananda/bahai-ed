@@ -6,7 +6,7 @@
   "description": "I think religion can be described as a school with a curriculum of study and a heck of a lot of project assignments. ",
   "description_long": "Religion is like a school with a curriculum of study -- and life is the field assignment.  ",
   "author": "Chad Jones",
-
+  "languages": ["en", "zh", "hi", "es", "fr", "ar", "bn", "ru", "pt", "ur", "id", "de", "ja", "sw", "mr", "he", "fa", "ro", "it", "tr"],
   "url": "https://bahai-education.org",
   "logo": "https://bahai-education.org/favicon.svg",
   "logo_jpg": "https://bahai-education.org/favicon.jpeg",

@@ -5,14 +5,14 @@ export const prerender = false;
 
 import { saveCommentPost } from '@utils/db.js';
 import { sanitizeInput, isValidEmail } from '@utils/utils.js';
-import { getEntry } from "astro:content";
+import { getDataCollectionEntry } from '@utils/utils.js';
 
 console.log('Just entered /api/post_comment')
 
 async function getArticleCommentsLastPostDate(slug) {
   let anHourAgo = new Date(Date.now() - 3600 * 1000).toISOString();
   try {
-    const entry = await getEntry('comments', `${slug}.json`);
+    const entry = await getDataCollectionEntry('comments', slug);
     return entry?.data?.lastPostDate || anHourAgo;
   } catch { return anHourAgo; }
 }

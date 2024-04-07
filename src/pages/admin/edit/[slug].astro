@@ -4,8 +4,10 @@ import { checkUser } from '@utils/authCheck.js';
 const user = await checkUser(Astro.request);
 if (!user || !user?.authenticated) return Astro.redirect('/login');
 
-import { getEntry, getEntries } from "astro:content";
-import { getPostFromSlug } from '@utils/utils.js';
+// import { getEntries } from "astro:content";
+import { getPostFromSlug, getDataCollectionEntry } from '@utils/utils.js';
+import { filterTopics } from '@utils/dataUtils.astro';
+// import { getPublishedArticles, getDataCollectionEntry } from "@utils/utils.js";
 import Layout from "@layouts/AdminLayout.astro";
 
 import ArticleConcept from '@components/admin/ArticleConcept.astro';
@@ -26,7 +28,6 @@ import { loadArticleRaw } from '@utils/utils.js';
 // Get the entry directly from the prop on render
 const slug = Astro.params.slug;
 
-//const entry = await getEntry('posts', slug);
 const entry = await getPostFromSlug(slug)
 
 if (!entry) {
@@ -36,9 +37,13 @@ if (!entry) {
 }
 
 const article = await entry.render(); // needed?
-const author = await getEntry('team', entry.data.author?.id);
-const category = await getEntry('categories', entry.data.category.id);
-const topics = await getEntries(entry.data.topics);
+const author = await getDataCollectionEntry('team', entry.data.author?.id);
+const category = await getDataCollectionEntry('categories', entry.data.category.id);
+
+// we'll need to fix this to get the topics
+// maybe use getfilteredTopics?
+// const topics = await getEntries(entry.data.topics);
+const topics = await filterTopics(entry.data.topics);
 
 const {content, meta} = await loadArticleRaw(slug);
 ---

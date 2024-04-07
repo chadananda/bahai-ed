@@ -4,12 +4,12 @@ import { checkUser } from '@utils/authCheck.js';
 const user = await checkUser(Astro.request);
 if (!user || !user?.authenticated) return Astro.redirect('/login');
 
-import { getCollection, getEntry } from "astro:content";
+import { getDataCollectionEntry } from '@utils/utils.js';
 import Layout from "@layouts/AdminLayout.astro";
 import Container from "@components/container.astro";
 import PostThumb from "@components/article/postThumb.astro";
 import AuthorCard from "@components/article/authorCard.astro";
-import { checkUser } from '@utils/authCheck.js';
+// import { checkUser } from '@utils/authCheck.js';
 
 // allow the user to edit users and cretate users with validation from the ZOD object
 // import { team } from '@content/config.ts';

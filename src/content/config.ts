@@ -49,18 +49,8 @@ const categories = defineCollection({
   schema: ({ image }) => z.object({
     category: z.string(),
     category_slug: z.string().default(''),
-    traffic: z.number().default(0),
-    image: z.object({
-      src: image().refine((img) => img.width >= 400, {
-        message: "Image must be at least 400 pixels wide!",
-      }),
-      alt: z.string(),
-    }),
+    image: z.string().default(''),
     description: z.string(),
-    topics: z.record(z.object({
-      topic: z.string(),
-      description: z.string(),
-    })),
   }),
 });
 

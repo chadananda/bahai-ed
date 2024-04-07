@@ -1,11 +1,11 @@
 ---
 import Button from "./ui/button.astro";
-import brand from "@data/branding.json";
+import site from "@data/site.json";
 ---
 
 <!-- // This is a working contact form //
      To make this contact form work, create your free access key from https://web3forms.com/
-       paste the key in your branding.json file under key name "web3forms_access_key"
+       paste the key in your site.json file under key name "web3forms_access_key"
      Then you will get all form submissions in your email inbox. -->
 <form
   action="https://api.web3forms.com/submit"
@@ -13,7 +13,7 @@ import brand from "@data/branding.json";
   id="form"
   class="needs-validation"
   novalidate>
-  <input type="hidden" name="access_key" value={brand.web3forms_access_key} />
+  <input type="hidden" name="access_key" value={site.web3forms_access_key} />
   <!-- Create your free access key from https://web3forms.com/ -->
   <input type="checkbox" class="hidden" style="display:none" name="botcheck" />
   <div class="mb-5">

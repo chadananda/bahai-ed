@@ -4,9 +4,8 @@ export const prerender = false;
 
 import { getPendingComments, deletePendingComments, getPendingArticlePosts, deletePendingPosts } from '@utils/db';
 import { moderateComments } from '@utils/openai_request';
-// import { getEntry } from "astro:content";
-import { getPostFromSlug } from '@utils/utils';
-import brand from '@data/branding.json';
+import { getPostFromSlug, getDataCollectionEntry } from '@utils/utils';
+import brand from '@data/site.json';
 
 import yaml from 'js-yaml';
 import matter from 'gray-matter';
@@ -110,7 +109,7 @@ async function getArticleDescription(slug) {
 }
 
 // async function getArticleCommentsLastPostDate(slug) {
-//   let commentsEntry = await getEntry('comments', slug);
+//   let commentsEntry = await getDataCollectionEntry('comments', slug);
 //   return commentsEntry?.data?.lastPostDate;
 // }
 

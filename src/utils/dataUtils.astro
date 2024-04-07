@@ -1,15 +1,14 @@
 ---
 // @utils/dataUtile.astro -- functions for processing data collections
 
-import { getEntry } from 'astro:content';
+import { getDataCollectionEntry } from '@utils/utils.js';
 
 export async function filterTopics(topics) {
   // Filter the topics array based on whether each topic exists in the 'topics' collection
   const filteredTopics = await Promise.all(
     topics.map(async (topic) => {
       try {
-        let entry = await getEntry('topics', topic);
-        return entry;
+        return await getDataCollectionEntry('topics', topic);
       } catch (error) { return false; }
     })
   );

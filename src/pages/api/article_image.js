@@ -3,9 +3,8 @@ export const prerender = false; // ie. SSR
 
 import { checkUser } from '@utils/authCheck';
 // import { saveArticle } from '@utils/db';
-import { getEntry } from "astro:content";
 import yaml from 'js-yaml';
-// import brand from '@data/branding.json';
+// import brand from '@data/site.json';
 import fs from 'fs';
 import matter from 'gray-matter';
 import path from 'path';
@@ -21,7 +20,7 @@ export const POST = async ({ request }) => {
   // if (!slug && (content || meta)) return new Response('Slug, content or meta required', { status: 400 });
 
   // stop, this needs to be changed to getPostFromSlug
-  // var article = await getEntry('posts', slug);
+  // var article = await getPostFromSlug(slug);
   // if (!article && (content && meta)) return new Response('If new article, both content AND meta required', { status: 400 });
   // // replace out data and content of article if exists
   // if (article) {

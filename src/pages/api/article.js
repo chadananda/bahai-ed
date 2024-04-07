@@ -3,10 +3,9 @@ export const prerender = false; // ie. SSR
 
 import { checkUser } from '@utils/authCheck';
 // import { saveArticle } from '@utils/db';
-// import { getEntry } from "astro:content";
 import { getPostFromSlug } from '@utils/utils';
 import yaml from 'js-yaml';
-// import brand from '@data/branding.json';
+// import brand from '@data/site.json';
 import fs from 'fs';
 import matter from 'gray-matter';
 import path from 'path';
@@ -46,7 +45,6 @@ export const GET = async ({ request }) => {
   if (!slug) return new Response('Article slug required', { status: 400 });
   // const article = await getCurrentArticlePost(slug);
   const article = await getPostFromSlug(slug);
-  // const article = await getEntry('posts', slug);
   // console.log('article:', article);
   return new Response(JSON.stringify(article), {
     status: 200,

@@ -1,12 +1,11 @@
 ---
 import { Picture } from 'astro:assets';
-import { getEntry } from 'astro:content';
-import { getArticleURL } from '@utils/utils.js';
+import { getArticleURL, getDataCollectionEntry } from '@utils/utils.js';
 
-const { post, small } = Astro.props
+const { post, small, class: customClasses } = Astro.props
 const articleLink = `/${post.data?.url}`;
-const author = post.data.author ? await getEntry('team', post.data.author?.id) : false;
-const category = await getEntry('categories', post.data.category.id);
+const author = post.data.author ? await getDataCollectionEntry('team', post.data.author?.id) : false;
+const category = await getDataCollectionEntry('categories', post.data.category.id);
 
 const image = post.data.image;
 // const pageURL = Astro.url.href.replace('[::1]', 'localhost').replace(/\/$/, '')
@@ -19,11 +18,8 @@ const datePublished = pubdate.toLocaleDateString('en-US', {year:'numeric', month
 const isPublished = pubdate <= new Date() && !post.data.draft;
 ---
 
-<!--  if prop small then  -->
-
-
 <div id={uniqueID}
-  class={ `overflow-hidden ${small ? 'w-[200px]' : 'w-[302px]'} ` }>
+  class={`${customClasses} overflow-hidden ${small ? 'w-[200px]' : 'w-[302px]'} ` }>
   <a href={articleLink} aria-label={post.data.title}>
     <Picture
       src={image?.src || ''}

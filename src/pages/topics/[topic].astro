@@ -1,48 +1,39 @@
 ---
 export const prerender = true;
 
-import { getCollection, getEntry } from "astro:content";
 import Layout from "@layouts/Layout.astro";
 import PostThumb from "@components/article/postThumb.astro";
 import Container from "@components/container.astro";
 import Sectionhead from "@components/sectionhead.astro";
 import TopicFAQ from '@components/article/topicFAQ.astro';
+import { getDataCollection, getDataCollectionEntry, getPublishedArticles } from "@utils/utils.js";
 
 export async function getStaticPaths() {
-  const allTopics = await getCollection("topics");
+  const allTopics = await getDataCollection("topics");
   return allTopics.map((topic) => ({params: { topic: topic.id } }));
 }
 
-let { topic } = Astro.params;
-const topicEntry = await getEntry('topics', topic);
-const description = topicEntry?.data.description;
+const slug = Astro.params.topic;
+const topic = await getDataCollectionEntry('topics', slug);
 
-
-const isPublished = ({data}) => (!data.draft && data.datePublished<=new Date());
-const isDev = import.meta.env.APP_ENV==='dev';
-const allPosts = await getCollection("posts", (ar) => {
-  return (isPublished(ar) || isDev) ;
-});
-
-// Filter posts based on the slugified tag or category
-const posts = allPosts.filter(({data}) => data.topics.map((topic) => topic).includes(topic));
-
+const topicsMatch = ({data}) => data.topics.map((topic) => topic).includes(slug);
+const posts = (await getPublishedArticles()).filter(topicsMatch);
 // load faq data by collection type and slug?
-const faqs = await getEntry('faqs', topic);
+const faqs = await getDataCollectionEntry('faqs', slug);
 ---
 
-<Layout title={topic} description={description}>
+<Layout title={slug} description={topic?.data.description}>
    { !!faqs && (<TopicFAQ faqs={faqs} max=8 />)}
    { !faqs && (
      <Sectionhead>
        <Fragment slot="title"> Article Topics </Fragment>
-       <Fragment slot="desc"> Posts associated with “{topic}” </Fragment>
+       <Fragment slot="desc"> Posts associated with “{slug}” </Fragment>
      </Sectionhead>
    )}
   <Container class="w-full mx-5 sm:mx-15">
     <main class="flex flex-wrap justify-center gap-20 mt-5">
       {Array.isArray(posts) && posts.map((post) => (
-        <div class="flex-none articlePost"
+        <div class="flex-none articlePost hidden"
             data-title={post.data.title}
             data-tags={post.data.tags.join(',')}
             data-language={post.data.language}>

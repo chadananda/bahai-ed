@@ -1,7 +1,6 @@
 ---
 export const prerender = true;
 
-import { getCollection, getEntry } from "astro:content";
 import { filterTopics } from "@utils/dataUtils.astro";
 import Layout from "@layouts/Article.astro";
 import Container from "@components/container.astro";
@@ -11,7 +10,7 @@ import TLDR from "@components/article/TLDR.astro";
 import PodcastPlayer from "@components/article/PodcastPlayer.astro";
 import PostComments from "@components/article/PostComments.astro";
 import AuthorBio from "@components/article/authorCard.astro";
-import { getPublishedArticles } from "@utils/utils.js";
+import { getPublishedArticles, getDataCollectionEntry } from "@utils/utils.js";
 
 
 export async function getStaticPaths() {
@@ -23,8 +22,8 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props; // Get the entry directly from the prop on render
 const { Content, headings } = await entry.render();
-const author = !!entry.data.author ?  await getEntry('team', entry.data.author?.id): false;
-const category = await getEntry('categories', entry.data.category.id);
+const author = !!entry.data.author ?  await getDataCollectionEntry('team', entry.data.author?.id): false;
+const category = await getDataCollectionEntry('categories', entry.data.category.id);
 const topics = await filterTopics(entry.data.topics); // because not all topics are created yet
 ---
 

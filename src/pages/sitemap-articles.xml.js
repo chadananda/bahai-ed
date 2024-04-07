@@ -2,7 +2,7 @@
 export const prerender = true;
 
 import { getPublishedArticles, getArticleTranslations } from '@utils/utils.js';
-import { url as siteURL }  from '@data/branding.json';
+import { url as siteURL }  from '@data/site.json';
 
 export async function GET() {
   const SITE = siteURL.endsWith('/') ? siteURL : siteURL + '/';

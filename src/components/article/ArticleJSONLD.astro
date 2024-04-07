@@ -1,20 +1,18 @@
 ---
 // ArticleJSONLD.astro - a component to generate structured data for an article
 
-import brand from '@data/branding.json';
+import brand from '@data/site.json';
 import { SEO, TwitterCardType } from "astro-seo";
 import { getImage } from "astro:assets";
-import { getEntry } from "astro:content";
 import { filterTopics } from "@utils/dataUtils.astro";
-import { getArticleAudioPath, getArticleTranslations, getArticleURL } from '@utils/utils.js';
+import { getArticleAudioPath, getArticleTranslations, getArticleURL, getDataCollectionEntry } from '@utils/utils.js';
 
 // type Props = CollectionEntry<'article'>['data'];
 
 const { title, description, desc_125, keywords, language, video_main, post_type, audio, audio_duration, url:slug, image } = Astro.props;
 
-// console.log('catref', catref);
-const category = await getEntry('categories', Astro.props.category.id);
-const author = !!Astro.props.author ? await getEntry('team', Astro.props.author.id) : false;
+const category = await getDataCollectionEntry('categories', Astro.props.category.id);
+const author = !!Astro.props.author ? await getDataCollectionEntry('team', Astro.props.author.id) : false;
 // const topics = await getEntries(Astro.props.topics);
 const topics = await filterTopics(Astro.props.topics); // because topics are no longer references
 // console.log('topicsList', topics);
@@ -58,13 +56,6 @@ var video = video_main ? {
   url: video_main.videoURL, title: video_main.title, description: video_main.description,
   duration: video_main.duration, image: video_main.image, transcript: video_main.transcript,
 } : null;
-
-
-// const imagePath = !!post.data.image ? (await getImage({src: post.data.audio_image, format: 'jpg'})).src : ''
-// // const imageURL = baseUrl + imagePath
-
-
-// console.log('image', image);
 
 let largeImage, coverImage: {url: '', width: 0, height:0, alt:''};
 if (image) {

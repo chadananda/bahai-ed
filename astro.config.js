@@ -9,28 +9,25 @@ import vercel from '@astrojs/vercel/serverless';
 
 import svelte from '@astrojs/svelte';
 import markdoc from "@astrojs/markdoc";
-import brand from './src/data/branding.json'; // for branding
+import site from './src/data/site.json'; // for branding
 // import icon from "astro-icon";
 import minify from 'astro-min';
 // import compress from "astro-compress";
 // import partytown from '@astrojs/partytown';
 import react from "@astrojs/react";
+import db from "@astrojs/db";
 const isDev = process.env.NODE_ENV === 'development';
-
-
 const siteMapConfig = {
-  filter: (url) => {
+  filter: url => {
     // Define the base paths to include in the sitemap
-    const includedBasePaths = [ '/',  '/about/', '/contact/', '/privacy/' ];
+    const includedBasePaths = ['/', '/about/', '/contact/', '/privacy/'];
     // Define the directory paths to include in the sitemap
-    const includedDirectories = [ '/topics/',  '/categories/', '/authors/' ];
+    const includedDirectories = ['/topics/', '/categories/', '/authors/'];
     const pathname = new URL(url).pathname;
-    return includedBasePaths.includes(pathname) ||
-           includedDirectories.some(dir => pathname.startsWith(dir));
-  },
-  // additionalSitemaps: [ brand.url + '/sitemap_articles.xml' ]
+    return includedBasePaths.includes(pathname) || includedDirectories.some(dir => pathname.startsWith(dir));
+  }
+  // additionalSitemaps: [ site.url + '/sitemap_articles.xml' ]
 };
-
 const minifyConfig = {
   do_not_minify_doctype: true,
   ensure_spec_compliant_unquoted_attribute_values: true,
@@ -51,12 +48,14 @@ const minifyConfig = {
 
 // https://astro.build/config
 export default defineConfig({
-  site: brand.url,
+  site: site.url,
   output: 'hybrid',
   // output: 'server',
   adapter: vercel({
     imageService: false,
-    webAnalytics: { enabled: true },
+    webAnalytics: {
+      enabled: true
+    }
     // functionPerRoute: true, // does not work with hobby version of vercel
     // serviceEntryPoint: '@astrojs/image/sharp',
     // imagesConfig: {
@@ -64,24 +63,23 @@ export default defineConfig({
     //   formats: ["image/webp", "image/jpg"],
     // },
   }),
-  integrations: [
-    tailwind(),
-    //mdx(),
-    sitemap(siteMapConfig),
-    svelte(),
-    markdoc({
-      allowHTML: true
-    }),
-    //  icon(),
-    //  compress(),
-     minify(minifyConfig),
-    // partytown()
-    react()
-  ],
+  integrations: [tailwind(),
+  //mdx(),
+  sitemap(siteMapConfig), svelte(), markdoc({
+    allowHTML: true
+  }),
+  //  icon(),
+  //  compress(),
+  minify(minifyConfig),
+  // partytown()
+  react(), db()],
   experimental: {
     // contentCollectionCache: true,
   },
-  prefetch: { defaultStrategy: 'viewport', prefetchAll: !isDev },
+  prefetch: {
+    defaultStrategy: 'viewport',
+    prefetchAll: !isDev
+  },
   vite: {
     build: {
       // minify: false,
@@ -89,17 +87,13 @@ export default defineConfig({
     logLevel: 'info',
     server: {
       watch: {
-        ignored: [
-          '**/node_modules/**', '**/.vscode/**', '**/.vercel/**', '**/dist/**', '**/public/**', '**/.astro/**', '.env', '.git', '.DS_Store', '.aider.chat.history.md', '.aider*',
-          // 'src/content/topics/*', 'src/content/categories/*', 'src/content/faqs/*',
-          // 'src/content/proposals/*', 'src/content/structure/*', 'src/content/subtopics/*',
-          // 'src/content/team/*', '**/**'
-
+        ignored: ['**/node_modules/**', '**/.vscode/**', '**/.vercel/**', '**/dist/**', '**/public/**', '**/.astro/**', '.env', '.git', '.DS_Store', '.aider.chat.history.md', '.aider*'
+        // 'src/content/topics/*', 'src/content/categories/*', 'src/content/faqs/*',
+        // 'src/content/proposals/*', 'src/content/structure/*', 'src/content/subtopics/*',
+        // 'src/content/team/*', '**/**'
         ]
       },
-      logLevel: 'info',
+      logLevel: 'info'
     }
   }
 });
-
-

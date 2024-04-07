@@ -1,8 +1,9 @@
 ---
-import { getEntry } from "astro:content";
+
+import { getDataCollectionEntry } from '@utils/utils.js';
 
 // this is broken
-const postComments = await getEntry("comments", Astro.props.slug);
+const postComments = await getDataCollectionEntry("comments", Astro.props.slug);
 
 import Reply from "@components/article/_PostCommentsReply.astro"
 

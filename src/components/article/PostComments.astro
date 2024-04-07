@@ -1,9 +1,9 @@
 ---
 // PostComments.astro - Wrapper for the Svelte component which will render comments
 
-import { getEntry } from 'astro:content';
 import PostCommentsWithReplies from './PostComments.svelte';
-import { getPostFromSlug } from '@utils/utils.js';
+import { getPostFromSlug, getDataCollectionEntry } from '@utils/utils.js';
+
 
 // Props
 const slug = Astro.props.slug;
@@ -13,7 +13,7 @@ const articleEntry = await getPostFromSlug(slug);
 const context = articleEntry?.data?.description; // Accessing the description field
 
 // Fetch comments
-const commentsEntry = await getEntry('comments', slug);
+const commentsEntry = await getDataCollectionEntry('comments', slug);
 const comments = commentsEntry?.data?.comments || [];
 
 // API endpoint

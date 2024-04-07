@@ -1,12 +1,13 @@
 // utils.js
-
 import slugifier from 'slugify';
-import { getCollection } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 // export a slugify function
 import path from 'path';
 import fs from 'fs';
 import matter from 'gray-matter';
-import brand from '@data/branding.json'
+import site from '@data/site.json'
+import { getImage } from "astro:assets";
+import { db, Categories, eq } from 'astro:db';
 
 export const slugify = (text) => {
   return slugifier(text,  {
@@ -44,7 +45,6 @@ export const isValidEmail = (email) => {
 }
 
 export const loadArticleRaw = async (slug, type='posts') => {
-  //const entry = await getEntry(type, slug);
   const entry = await getPostFromSlug(slug);
   const filepath = path.join(process.cwd(), 'src/content', entry.collection, entry.id);
   console.log('loadArticleRaw filepath:', filepath);
@@ -56,12 +56,13 @@ export const loadArticleRaw = async (slug, type='posts') => {
 
 // tools to translate a url into a file path for processing
 
-export const getPublishedArticles = async (lang='') => {
+export const getPublishedArticles = async (lang='', filter=()=>true) => {
   const isBlank = (p) => p.data.url.toLowerCase().trim() === 'blank';
   const isDev = import.meta.env.APP_ENV==='dev';
   const isPublished = (p) => (!p.data.draft && p.data.datePublished<=new Date()) || isDev;
   const isLangMatch = (p) => !!lang ? p.data.language === lang : true;
-  const articles = await getCollection('posts', (p)=>isPublished(p) && isLangMatch(p) && !isBlank(p));
+  const articles = (await getCollection('posts', (p)=>isPublished(p) && isLangMatch(p) && !isBlank(p)))
+  .filter(filter);
   // sort by date
   articles.sort((a, b) => b.data.datePublished - a.data.datePublished);
   return articles;
@@ -95,7 +96,7 @@ export const getArticleImageURL = async (slug, filename, full=false) => {
   filename = filename.replace('./', '');
   let image = await getArticleImage(slug, filename);
   if (image) path = image.src;
-  if (full) return brand.url + path;
+  if (full) return site.url + path;
    else return path
 }
 export const getArticleAssetURL = async (slug, filename, full=false) => {
@@ -103,11 +104,31 @@ export const getArticleAssetURL = async (slug, filename, full=false) => {
   let ar = await getPostFromSlug(slug);
   filename = filename.replace('./', '');
   path = '/posts/' + ar.id.split('/')[0] + '/' + filename;
-  if (full) return brand.url + path;
+  if (full) return site.url + path;
    else return path
 }
 
-
+export const getDataCollectionImage = async (collection, filename, imageType={format: 'jpg', width: 1000, height: 700}) => {
+  const {width, height, format} = imageType;
+  if (filename.startsWith('http')) {
+    //  https://bahai-education.org/_astro/bahai-literature.BmmHKzrh_2072vy.webp
+    // later, when we use an image CDN, we can modify the url to set the size & format
+    let finalImage = {width, height, format: format || filename.split('.').pop(), src: filename, isExternal: true}
+    // console.log('finalImage http', finalImage);
+    return finalImage
+  }
+  const imagekey = `/src/content/${collection.collection}/${filename.replace('./', '')}`;
+  const images = await import.meta.glob('/src/content/*/*.{jpeg,jpg,png,gif,webp,avif,svg}');
+  const image = images[imagekey];
+  if (!image) return console.error(`Image not found: ${imagekey}:`);
+  try {
+    const src = (await image())?.default;
+    const dest = await getImage({ src, format, width, height }); // process according to request
+    const finalImage = { src: dest.src,  width: dest.attributes.width, height: dest.attributes.height, format: dest.format || format };
+    // console.log('finalImage', finalImage);
+    return finalImage;
+  } catch (e) { console.error('getDataCollectionImage', e); return null; }
+}
 
 export const getArticleImage = async (slug, filename) => {
   // return null;
@@ -217,6 +238,8 @@ export const mainLanguages = {
 };
 
 
+
+
 // import { getSitemapArticles } from '@utils/utils.js';
 export const getSitemapArticles = async () => {
   const isPublished = (data) => !data.draft && data.datePublished <= new Date();
@@ -235,6 +258,39 @@ export const getSitemapArticles = async () => {
   const sitemapArticles = await Promise.all(sitemapArticlesPromises);
   return sitemapArticles;
 };
+
+// in order to migrate data collections to the DB, we need to write a
+// wrapper function which fetches both the data collection and the data entry
+export const getDataCollection = async (collection, filter = () => true) => {
+  const local = await getCollection(collection, filter);
+  let table = null;
+  let dbMatches = [];
+  if (collection === 'categories') table = Categories;
+  //  else if (collection === 'faqs') table = Faqs;
+  //  else if (collection === 'keywords') table = Keywords;
+  //  else if (collection === 'team') table = Team;
+
+  if (table) dbMatches = (await db.select().from(table)).map(row=>({id: row.category_slug, collection, data: row})).filter(filter);
+  // Create a map to override local items with dbMatches based on id
+  const merged = new Map(dbMatches.map(item => [item.id, item]));
+  local.forEach(item => merged.set(item.id, item)); // Local items are added, but don't override existing dbMatches
+  return Array.from(merged.values());
+}
+
+export const getDataCollectionEntry = async (collection, id) => {
+  let match = null
+  let table = null;
+  if (collection === 'categories') table = Categories;
+  //  else if (collection === 'faqs') table = Faqs;
+  //  else if (collection === 'keywords') table = Keywords;
+  //  else if (collection === 'team') table = Team;
+
+  // first try to fetch from the database
+  if (table) match = (await db.select().from(table).where(  eq(table.category_slug, id) ))[0];
+  if (match) match = { id, collection, data: match } // format like an astro content entry
+   else match = await getEntry(collection, id); // fall back on file system
+  return match;
+}
 
 
 

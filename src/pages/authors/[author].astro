@@ -1,38 +1,33 @@
 ---
 export const prerender = true;
-import { getCollection } from "astro:content";
+
 import Layout from "@layouts/Layout.astro";
 import Container from "@components/container.astro";
 import PostThumb from "@components/article/postThumb.astro";
 import AuthorCard from "@components/article/authorCard.astro";
+import { getPublishedArticles, getDataCollection } from "@utils/utils.js";
 
 // export paths for all the authors
 export async function getStaticPaths() {
-  const authors = await getCollection("team", ({data}) => !data.draft);
-  let paths = authors.map(({ data }) => ({ params: { author: data.name_slug } }));
-  // console.log("Author paths: ", paths);
-  return paths;
+  const authors = await getDataCollection("team", ({data}) => !data.draft);
+  return authors.map(({ data }) => ({ params: { author: data.name_slug } }));
 };
 
 // this author param
-const { author: thisAuthorSlug }= Astro.params;
-const isPublished = ({data}) => (!data.draft && data.datePublished<=new Date());
-const isDev = import.meta.env.APP_ENV==='dev';
-const allPosts = await getCollection("posts", (ar) => isPublished(ar) || isDev);
-
-// get all posts which are not in draft mode && match author
-const posts = allPosts.filter((post) => post.data.author?.id===thisAuthorSlug);
+const slug = Astro.params.author;
+const authorMatches = (post) => post.data.author?.id===slug;
+const posts = (await getPublishedArticles()).filter(authorMatches);
 ---
 
-<Layout pageTitle={thisAuthorSlug}>
+<Layout pageTitle={slug}>
   <Container>
 
-     <AuthorCard slug={thisAuthorSlug} size="md" />
+     <AuthorCard slug={slug} size="md" />
 
       <main class="mt-16">
         <div class="flex flex-wrap justify-center gap-20">
           {Array.isArray(posts) && posts.map((post) => (
-            <div class="flex-none articlePost"
+            <div class="flex-none articlePost hidden"
                 style={{ width: '300px' }}
                 data-title={post.data.title}
                 data-tags={post.data.tags.join(',')}
@@ -50,14 +45,7 @@ const posts = allPosts.filter((post) => post.data.author?.id===thisAuthorSlug);
   </Container>
 </Layout>
 
-<!-- {Array.isArray(posts) && posts.map((post) => (
-  <div class="flex-none articlePost"
-      data-title={post.data.title}
-      data-tags={post.data.tags.join(',')}
-      data-language={post.data.language}>
-    <PostThumb post={post} />
-  </div>
-))} -->
+
 
 <script type="text/javascript">
   // script to hide articles based on language

@@ -1,6 +1,5 @@
 import { createClient } from '@vercel/postgres';
-import brand from '@data/branding.json';
-// import { getEntry } from "astro:content";
+import brand from '@data/site.json';
 import { getPostFromSlug } from '@utils/utils';
 // import for hashPassword
 import bcrypt from 'bcryptjs';

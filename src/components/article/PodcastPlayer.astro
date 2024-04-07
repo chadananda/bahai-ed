@@ -2,9 +2,8 @@
 // Import Simple Icons
 import { Twitter, Facebook, Linkedin } from 'simple-icons-astro';
 import { Image } from 'astro:assets';
-import { getEntry } from 'astro:content';
-import { getArticleAudioPath, getArticleSlugFromURL, getArticleURL } from '@utils/utils.js';
-import site from '@data/branding.json';
+import { getArticleAudioPath, getArticleSlugFromURL, getArticleURL, getDataCollectionEntry } from '@utils/utils.js';
+import site from '@data/site.json';
 
 const meta = Astro.props.meta;
 const {datePublished, audio, title, description, audio_duration: duration, title: seriesName } = meta;
@@ -16,10 +15,7 @@ const episodeNumber = meta.episode_number || 1;
 const image = meta.image.src;
 // console.log('PodcastPlayer.astro image', image);
 
-let authorName = !!meta.author ? (await getEntry('team', meta.author?.id)).data.name : site.site;
-// let authorName = (await getEntry('team', meta.author?.id)).data.name;
-// const {data:author} = await getEntry('team', Astro.props.meta.author.id);
-// console.log('PodcastPlayer.astro meta.author', authorName);
+let authorName = !!meta.author ? (await getDataCollectionEntry('team', meta.author?.id)).data.name : site.site;
 
 const pageURL = getArticleURL(Astro);
 const baseUrl = new URL(pageURL).origin.replace(/\/$/, '');

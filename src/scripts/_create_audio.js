@@ -30,7 +30,7 @@ import { ElevenLabsClient, stream } from "elevenlabs";
 import { promisify } from 'util';
 import { exec } from 'child_process';
 const execPromise = promisify(exec);
-import site from '../data/branding.json' assert { type: 'json' };
+import site from '../data/site.json' assert { type: 'json' };
 
 import {mainLanguages, genericStringPrompt, getAudioDuration, saveArticleMdoc, addID3toMP3, uploadS3} from './_script_utils.js';
 

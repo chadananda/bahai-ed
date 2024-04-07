@@ -1,13 +1,12 @@
 ---
 import { Picture, getImage } from 'astro:assets';
-import { getEntry } from 'astro:content';
-import { getArticleURL } from '@utils/utils.js';
+import { getArticleURL, getDataCollectionEntry } from '@utils/utils.js';
+
 
 if (!Astro.props.slug) console.error("Warning: no author slug provided!");
 
-const author = await getEntry('team', Astro.props.slug)
+const author = await getDataCollectionEntry('team', Astro.props.slug)
 var { image, name, type, worksFor, description, sameAs, name_slug } = author.data;
-
 
 const pageURL = getArticleURL(Astro);
 const siteURL = new URL(pageURL).origin.replace(/\/$/, '');

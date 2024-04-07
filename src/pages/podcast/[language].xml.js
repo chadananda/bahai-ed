@@ -1,9 +1,8 @@
 export const prerender = true;
 
-import { getCollection, getEntry } from 'astro:content';
-import site from '@data/branding.json';
+import site from '@data/site.json';
 import rss from '@astrojs/rss';
-import { getArticleAudioSize, getArticleAudioPath, getAllLanguages } from '@utils/utils.js';
+import { getArticleAudioSize, getArticleAudioPath, getAllLanguages, getPublishedArticles } from '@utils/utils.js';
 import { getImage } from "astro:assets";
 
 const mainLanguages = {
@@ -29,15 +28,16 @@ const mainLanguages = {
   tr: { flag: "🇹🇷", name: "Türkçe", dir: "ltr", en_name: "Turkish" }
  };
 
-const isPublished = ({data}) => (!data.draft && data.datePublished<=new Date());
+// const isPublished = ({data}) => (!data.draft && data.datePublished<=new Date());
 const hasAudio = ({data}) => !!data.audio;
-const isDev = import.meta.env.APP_ENV==='dev';
+// const isDev = import.meta.env.APP_ENV==='dev';
 
 export const getPodcastArticles = async (lang) => {
-  const posts = await getCollection("posts", (ar) => {
-    return isPublished(ar) && hasAudio(ar) && (ar.data.language===lang);
-  });
-  return posts;
+  // const posts = await getCollection("posts", (ar) => {
+  //   return isPublished(ar) && hasAudio(ar) && (ar.data.language===lang);
+  // });
+  // return posts;
+  return await getPublishedArticles(lang, hasAudio);
 }
 
 export async function getStaticPaths() {
@@ -77,8 +77,12 @@ export const processItems = async (articles, site, baseUrl) => {
        post.data.audio_length || iso8601DurToBytes(post.data.audio_duration);
     const imagePath = !!post.data.audio_image ? (await getImage({src: post.data.audio_image, format: 'jpg'})).src : ''
     const imageURL = baseUrl + imagePath
-    // get the author details
-    const author = !!post.data.author ? await getEntry(post.data.author?.collection, post.data.author?.id) : false;
+
+    let author = false
+    if (!!post.data.author) {
+      author = await getDataCollectionEntry(post.data.author?.collection, post.data.author?.id);
+    }
+
     const itunes_duration = ISO8601ToiTunes(post.data.audio_duration);
     return {
       title: post.data.title,
