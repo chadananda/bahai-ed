@@ -28,15 +28,8 @@ const mainLanguages = {
   tr: { flag: "🇹🇷", name: "Türkçe", dir: "ltr", en_name: "Turkish" }
  };
 
-// const isPublished = ({data}) => (!data.draft && data.datePublished<=new Date());
 const hasAudio = ({data}) => !!data.audio;
-// const isDev = import.meta.env.APP_ENV==='dev';
-
 export const getPodcastArticles = async (lang) => {
-  // const posts = await getCollection("posts", (ar) => {
-  //   return isPublished(ar) && hasAudio(ar) && (ar.data.language===lang);
-  // });
-  // return posts;
   return await getPublishedArticles(lang, hasAudio);
 }
 

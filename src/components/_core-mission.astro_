@@ -1,5 +1,4 @@
 ---
-import { getCollection } from "astro:content";
 import { Picture } from "astro:assets";
 import EmployeeImg from "../assets/employee.jpg";
 // import { Icon } from 'astro-icon/components'

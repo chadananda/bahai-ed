@@ -4,14 +4,16 @@ import { checkUser } from '@utils/authCheck.js';
 const user = await checkUser(Astro.request);
 if (!user || !user?.authenticated) return Astro.redirect('/login');
 
-import { getCollection } from 'astro:content';
+import { getDataCollection } from '@utils/utils.js';
 import Layout from  "@layouts/AdminLayout.astro";
 import Container from "@components/container.astro";
 import Sectionhead from "@components/sectionhead.astro";
 import AuthorCard from "@components/article/authorCard.astro";
 
-const authors = await getCollection("team")
+const authors = await getDataCollection("team")
+// note: why do this twice, isn't author.id already the slug?
 const author_slugs = authors.map((author) => author.data.name_slug);
+// console.log(authors.map(a) => a.id);
 ---
 
 <Layout pageTitle="Edit Team Members">

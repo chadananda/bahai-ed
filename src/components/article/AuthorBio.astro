@@ -8,9 +8,7 @@ const authorImg = (await getArticleImage(slug, image));
 
 
 const pageURL = getArticleURL(Astro);
-// const pageURL = Astro.url.href.replace('[::1]', 'localhost').replace(/\/$/, '') //.replace(/:(\d+)/, ':3000')
 const siteURL = new URL(pageURL).origin.replace(/\/$/, '');
-//const imageURL = authorImg ? siteURL + (await authorImg)?.default?.src : '';
 const imageURL = authorImg ? siteURL +  authorImg.src : '';
 const uniqueID = 'id-' + Math.random().toString(36).slice(2, 11);
 const AuthorBioIDURL = `${pageURL}#${uniqueID}`;

@@ -81,9 +81,13 @@ export default defineConfig({
     prefetchAll: !isDev
   },
   vite: {
+    optimizeDeps: {
+			exclude: ["oslo", "astro:db"]
+		},
     build: {
       // minify: false,
     },
+
     logLevel: 'info',
     server: {
       watch: {

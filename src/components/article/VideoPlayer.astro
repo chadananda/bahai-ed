@@ -24,17 +24,8 @@ const videoid = ((videoURL.match(/(?:youtu.be\/|youtube(-nocookie)?.com\/(?:watc
 const imageURL = `https://img.youtube.com/vi/${videoid}/mqdefault.jpg`
 const embedURL = `https://www.youtube.com/embed/${videoid}`
 
-// console.log('videoURL:', videoURL)
-// console.log('videoid:', videoid)
-// console.log('embedURL:', embedURL)
-// console.log('imageURL:', imageURL)
-
-// console.log(imageURL)
-
 const pageURL = getArticleURL(Astro);
-// const pageURL = Astro.url.href.replace('[::1]', 'localhost').replace(/\/$/, '') //.replace(/:(\d+)/, ':3000')
 const transcriptURL = pageURL+transcript;
-// const audioURL = pageURL+audio;
 
 // this player will be used more than once per page, so we need to generate unique IDs for each instance
 const uniqueID = Math.random().toString(36).slice(2, 11);
@@ -47,7 +38,6 @@ const twitterLink = `https://twitter.com/intent/tweet?text=${encodedDesc}&url=${
 const facebookLink = `https://www.facebook.com/sharer/sharer.php?u=${encodedPageURL}`;
 const linkedinLink = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedPageURL}`;
 const emailLink = `mailto:?subject=Interesting%20Page&body=Check%20this%20out:%20${encodedPageURL}`;
-
 
 const schema = {
   "@context": "https://schema.org",

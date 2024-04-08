@@ -1,16 +1,16 @@
 ---
-export const prerender = false;
+export const prerender = false; // SSR
+
 import { checkUser } from '@utils/authCheck.js';
 const user = await checkUser(Astro.request);
 if (!user || !user?.authenticated) return Astro.redirect('/login');
 
 // Import the Svelte component
 import ArticleTable from '@components/admin/articleTable.svelte';
-import { getCollection } from "astro:content";
 import Layout from "@layouts/AdminLayout.astro";
-import { checkUser } from '@utils/authCheck.js';
+import { getAllArticles } from '@utils/utils.js';
 
-const articles = await getCollection("posts");
+const articles = await getAllArticles();
 ---
 
 <Layout title="Article">

@@ -10,7 +10,9 @@
      "@layouts/*": ["./src/layouts/*"],
      "@styles/*": ["./src/styles/*"],
      "@utils/*": ["./src/utils/*"],
-     "@api/*": ["./src/pages/api/*"]
+     "@api/*": ["./src/pages/api/*"],
+     "@db/*": ["./db/*"],
+     "@lib/*": ["lib/*"],
    }
  },
  "include": ["src/**/*.astro", "src/**/*.js", "src/**/*.ts", "src/**/*.d.ts", "public/article_assets/initializePlyr.js"]

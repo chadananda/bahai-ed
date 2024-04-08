@@ -1,12 +1,9 @@
 ---
-import { getCollection } from "astro:content";
 import { Picture } from "astro:assets";
 import brand from "@data/site.json"
+import { getDataCollection } from '@utils/utils.js';
 
-// Filter team entries with 'draft: false' & date before current date
-const publishedTeamMembers = await getCollection("team", ({ data }) => {
-  return !data.draft && data.datePublished < new Date();
-});
+const publishedTeamMembers = getDataCollection("team", ({ data }) => !data.draft);
 ---
 
 

@@ -4,10 +4,8 @@ import { checkUser } from '@utils/authCheck.js';
 const user = await checkUser(Astro.request);
 if (!user || !user?.authenticated) return Astro.redirect('/login');
 
-// import { getEntries } from "astro:content";
 import { getPostFromSlug, getDataCollectionEntry } from '@utils/utils.js';
 import { filterTopics } from '@utils/dataUtils.astro';
-// import { getPublishedArticles, getDataCollectionEntry } from "@utils/utils.js";
 import Layout from "@layouts/AdminLayout.astro";
 
 import ArticleConcept from '@components/admin/ArticleConcept.astro';
@@ -19,15 +17,8 @@ import ArticleOutput from '@components/admin/ArticleOutput.astro';
 
 import { loadArticleRaw } from '@utils/utils.js';
 
-// Generate a new path for every collection entry
-// export async function getStaticPaths() {
-//   const posts = await getCollection("posts");
-//   return posts.map((entry) => ({ params: {slug: entry.slug}, props: {entry}, }));
-// }
-
 // Get the entry directly from the prop on render
 const slug = Astro.params.slug;
-
 const entry = await getPostFromSlug(slug)
 
 if (!entry) {

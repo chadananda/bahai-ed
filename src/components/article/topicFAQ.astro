@@ -10,9 +10,7 @@
  import q from '../../assets/q.png';
  import { getArticleURL} from '../../utils/utils.js';
 
-//  const pageTitle =
 const pageURL = getArticleURL(Astro);
-// const pageURL = Astro.url.href.replace('[::1]', 'localhost').replace(/\/$/, '') //.replace(/:(\d+)/, ':3000')
 const siteURL = new URL(pageURL).origin.replace(/\/$/, '');
 const uniqueID = 'id-' + Math.random().toString(36).slice(2, 11);
 const datePublished = new Date()
