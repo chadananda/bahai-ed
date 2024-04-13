@@ -7,7 +7,7 @@ import fs from 'fs';
 import matter from 'gray-matter';
 import site from '@data/site.json'
 import { getImage } from "astro:assets";
-import { db, Categories, eq } from 'astro:db';
+import { db, Categories, eq, Team, Users } from 'astro:db';
 
 export const slugify = (text) => {
   return slugifier(text,  {
@@ -295,5 +295,51 @@ export const getDataCollectionEntry = async (collection, id) => {
   return match;
 }
 
+/**
+ * Exportable component to render a JSON object as an HTML table with Tailwind CSS for compactness.
+ * @param data - The JSON object to be rendered as a table.
+ * @param columns - Array with names for the columns.
+ * @returns A string containing the HTML markup for the table.
+ */
+export const JSONTable = (data, columns = ['Key', 'Value']) => {
 
+  console.log('JSONTable', data);
+  if (!data) {
+    console.error('JSONTable: no data provided');
+    return '';
+  }
+
+  let tableRows = "";
+  Object.keys(data).forEach((key) => {
+    tableRows += `<tr class="border-b last:border-b-0">
+                    <td class="px-2 py-1 text-sm">${key}</td>
+                    <td class="px-2 py-1 text-sm whitespace-nowrap">${JSON.stringify(data[key], null, 2)}</td>
+                  </tr>`;
+  });
+  return `
+    <table class="w-full text-left table-fixed">
+      <thead>
+        <tr class="bg-gray-100">
+          <th class="w-1/3 px-2 py-1 text-xs font-semibold">${columns[0]}</th>
+          <th class="w-2/3 px-2 py-1 text-xs font-semibold">${columns[1]}</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white">
+        ${tableRows}
+      </tbody>
+    </table>
+  `;
+};
+
+
+
+export const getTeamMembers = async () => {
+  // drizzle does not merge tables, so we need to do it manually -- we just need the user role
+  const members = (await db.select().from(Team).innerJoin(Users, eq(Team.id, Users.id)))
+    .map(m => ({ ...m.Team, role: m.Users.role }));
+
+  // maybe add in the data collection users?
+
+  return members;
+}
 

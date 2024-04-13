@@ -15,8 +15,6 @@ const transformText = (html, fixers) => {
 
 const htmlContent = await Astro.slots.render('default');
 
-const content = transformText(htmlContent, [
-    fixTypography
-]);
+const content = transformText(htmlContent, [ fixTypography  ]);
 ---
 <p set:html={content}></p>

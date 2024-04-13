@@ -1,27 +1,24 @@
 {
   "site": "bahai-education.org",
   "siteName": "Baha'i Education",
+  "url": "https://bahai-education.org",
+
   "title": "A personal blog on the subject of deepening and teaching the Baha'i Faith",
   "subtitle": "Exploring ideas and resources for deepening and teaching the Baha'i Faith",
   "description": "I think religion can be described as a school with a curriculum of study and a heck of a lot of project assignments. ",
   "description_long": "Religion is like a school with a curriculum of study -- and life is the field assignment.  ",
-  "author": "Chad Jones",
-  "languages": ["en", "zh", "hi", "es", "fr", "ar", "bn", "ru", "pt", "ur", "id", "de", "ja", "sw", "mr", "he", "fa", "ro", "it", "tr"],
-  "url": "https://bahai-education.org",
-  "logo": "https://bahai-education.org/favicon.svg",
-  "logo_jpg": "https://bahai-education.org/favicon.jpeg",
-  "vercel_project_id": "bahai-ed",
-  "vercel_project_name": "bahai-ed",
-  "vercel_project_domain": "bahai-ed.vercel.app",
-  "vercel_project_url": "https://bahai-ed.vercel.app",
-  "vercel_project_dashboard": "https://vercel.com/chadananda/bahai-ed/deployments",
-  "github_project_url": "https://github.com/chadananda/bahai-ed",
+
   "company": "bahai-education.org",
   "address": "7890 Boren Ln, Granite Bay CA 95746",
   "email": "chadananda@gmail.com",
   "phone": "",
-  "web3forms_access_key": "a7763c6b-35e2-4a39-9d3e-d165cec6f2e8",
   "genre": "Religion & Spirituality",
+  "logo": "https://bahai-education.org/favicon.svg",
+  "logo_jpg": "https://bahai-education.org/favicon.jpeg",
+
+  "author": "Chad Jones",
+  "author_image": "https://bahai-education.org/site/chad-jones.jpg",
+  "author_bio": "Alaskan fisherman, global explorer and software developer with a thirst for adventure and cultural exploration.",
 
   "youtube": {
     "channel": "UCJ5h9jIq6xv6T9XwzZX3qWQ",
@@ -43,5 +40,16 @@
   "podcast": {
     "category": "Religion & Spirituality",
     "subcategory": "Spirituality"
-  }
+  },
+
+  "languages": ["en", "zh", "hi", "es", "fr", "ar", "bn", "ru", "pt", "ur", "id", "de", "ja", "sw", "mr", "he", "fa", "ro", "it", "tr"],
+
+  "vercel_project_id": "bahai-ed",
+  "vercel_project_name": "bahai-ed",
+  "vercel_project_domain": "bahai-ed.vercel.app",
+  "vercel_project_url": "https://bahai-ed.vercel.app",
+  "vercel_project_dashboard": "https://vercel.com/chadananda/bahai-ed/deployments",
+  "github_project_url": "https://github.com/chadananda/bahai-ed",
+  "web3forms_access_key": "a7763c6b-35e2-4a39-9d3e-d165cec6f2e8"
+
 }

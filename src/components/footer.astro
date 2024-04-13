@@ -1,28 +1,24 @@
 ---
 import Container from "@components/container.astro";
-// import { Icon } from 'astro-icon/components'
 
 const { margin } = Astro.props;
 
 import brand from "@data/site.json";
-
-// const isDev = import.meta.env.DEV;
-// console.log(import.meta.env.DEV)
-
 import SiteLogo from "@components/siteLogo.astro";
 
 import {companyLinks, productLinks, resourceLinks} from "@data/siteLinks.json";
 ---
 
-<footer class:list={[ "py-14 bg-slate-100 border-t border-slate-100 noprint", margin && "mt-10" ]}>
+<footer class:list={[ "py-8 bg-slate-100 border-t border-slate-100 noprint", margin && "mt-10" ]}>
   <Container>
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-      <div class="sm:col-span-2 md:col-span-3 lg:col-span-2">
+    <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 gap-8">
+
+      <div class="sm:col-span-1 md:col-span-3 lg:col-span-3 ">
         <SiteLogo />
-        <p class="mt-4 text-sm text-slate-700 max-w-xs"> {brand.description_long} </p>
+        <p class="mt-2 text-sm text-slate-700 max-w-xs"> {brand.description_long} </p>
         <div class="flex gap-3 mt-4 items-center">
 
-          <a href="https://twitter.com/surjithctly" name="Twitter link"
+          <a href="https://twitter.com/" name="Twitter link"
             target="_blank"
             rel="noopener noreferrer"
             class="bg-slate-200 hover:bg-slate-300 rounded w-6 h-6 inline-flex items-center justify-center text-slate-500">
@@ -48,12 +44,13 @@ import {companyLinks, productLinks, resourceLinks} from "@data/siteLinks.json";
         </div>
       </div>
     { !!companyLinks.length && (
+
       <div>
-        <h3 class="font-medium text-sm text-slate-800">Company</h3>
-        <div class="flex flex-col mt-3">
+        <h3 class="font-medium text-sm text-slate-800 underline">Company</h3>
+        <div class="flex flex-col mt-1">
           {companyLinks.map((item) => (
               <a href={item.path || "#"} aria-label="Company link"
-                class="py-2 text-sm text-slate-600 hover:text-indigo-600">
+                class="py-1 text-sm text-slate-600 hover:text-indigo-600">
                 {item.title}
               </a>
           ))}
@@ -63,11 +60,11 @@ import {companyLinks, productLinks, resourceLinks} from "@data/siteLinks.json";
 
     { !!productLinks.length && (
       <div>
-        <h3 class="font-medium text-sm text-slate-800">Product</h3>
-        <div class="flex flex-col mt-3">
+        <h3 class="font-medium text-sm text-slate-800 underline">Tools</h3>
+        <div class="flex flex-col mt-1">
           {productLinks.map((item) => (
               <a href={item.path || "#"} aria-label="Product link"
-                class="py-2 text-sm text-slate-600 hover:text-indigo-600">
+                class="py-1 text-sm text-slate-600 hover:text-indigo-600">
                 {item.title}
               </a>
           ))}
@@ -77,12 +74,12 @@ import {companyLinks, productLinks, resourceLinks} from "@data/siteLinks.json";
 
    { !!resourceLinks.length && (
       <div>
-        <h3 class="font-medium text-sm text-slate-800">Resources</h3>
-        <div class="flex flex-col mt-3">
+        <h3 class="font-medium text-sm text-slate-800 underline">Resources</h3>
+        <div class="flex flex-col mt-1">
           {resourceLinks.map((item) => (
               <a
                 href={item.path || "#"} aria-label="Resource link"
-                class="py-2 text-sm text-slate-600 hover:text-indigo-600">
+                class="py-1 text-sm text-slate-600 hover:text-indigo-600">
                 {item.title}
               </a>
           ))}
@@ -93,7 +90,7 @@ import {companyLinks, productLinks, resourceLinks} from "@data/siteLinks.json";
     </div>
   </Container>
 
-  <div class="mt-14 pt-8 px-5 border-t border-slate-200">
+  <div class="mt-8 pt-8 px-5 border-t border-slate-200">
     <Container>
       <p class="text-center text-sm text-slate-600 [text-wrap:balance]">
         Copyright © {new Date().getFullYear()} {brand.site} &mdash; All rights reserved.

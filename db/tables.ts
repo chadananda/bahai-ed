@@ -1,13 +1,5 @@
 import { defineTable, column, NOW } from "astro:db";
 
-// export const Session = defineTable({
-// 	columns: {
-// 		id: column.text({ primaryKey: true }),
-// 		userId: column.number({ references: () => User.columns.id }),
-// 		expiresAt: column.number(),
-// 	},
-// });
-
 // export const User = defineTable({
 // 	columns: {
 // 		id: column.number({ primaryKey: true }),
@@ -26,53 +18,57 @@ export const Categories = defineTable({
  columns: {
    category: column.text(),
    category_slug: column.text({ primaryKey: true }),
-   image: column.text({ nullable: true }),
+   image: column.text({ optional: true }),
    description: column.text(),
  }
 });
 
 
 // Define your tables
-export const UserAttributes = defineTable({
+export const Team = defineTable({
  // FYI, these are fields for populating the structured data for a person
- columns: {
-   id: column.text({ primaryKey: true }), // sluggified name
-   name: column.text(),
-   title: column.text(),
-   image_src: column.text(),
-   image_alt: column.text(),
-   external: column.boolean(),
-   contact: column.text(),
-   isFictitious: column.boolean(),
-   jobTitle: column.text(),
-   type: column.text(), // default: Person
-   url: column.text(),
-   worksFor_type: column.text(),
-   worksFor_name: column.text(),
-   description: column.text(),
-   sameAs_linkedin: column.json(),
-   sameAs_twitter: column.json(),
-   sameAs_facebook: column.json(),
-   description_125: column.text(),
-   description_250: column.text(),
-   biography: column.text(),
- }
+  columns: {
+    id: column.text({ primaryKey: true }), // user name slug
+    name: column.text({ optional: true }),
+    title: column.text({ optional: true }),
+    image_src: column.text({ optional: true }),
+    image_alt: column.text({ optional: true }),
+    external: column.boolean({ optional: true }),
+    contact: column.text({ optional: true }),
+    isFictitious: column.boolean({optional: true}),
+    jobTitle: column.text({ optional: true }),
+    type: column.text({ optional: true }), // default: Person
+    url: column.text({ optional: true }),
+    worksFor_type: column.text({ optional: true }),
+    worksFor_name: column.text({ optional: true }),
+    description: column.text({ optional: true }),
+    sameAs_linkedin: column.text({ optional: true }),
+    sameAs_twitter: column.text({ optional: true }),
+    sameAs_facebook: column.text({ optional: true }),
+    description_125: column.text({ optional: true }),
+    description_250: column.text({ optional: true }),
+    biography: column.text({ optional: true }),
+  }
 });
 
 export const Users = defineTable({
  columns: {
-   id: column.text({ primaryKey: true }),
-   slug: column.text({ unique: true }),
-   email: column.text(),
-   username: column.text(),
-   hashed_password: column.text(),
- }
+   id: column.text({ primaryKey: true }),  // user name slug
+   name: column.text({ optional: true }), // full name
+   email: column.text({ optional: true }),
+   hashed_password: column.text({ optional: true }),
+   role: column.text({ optional: true }),
+ },
+ indexes: [ { on: ["id", "email"], unique: true } ]
 })
 
 export const Sessions = defineTable({
  columns: {
-   id: column.number({ primaryKey: true }),
-   userId: column.number({ references: () => Users.columns.id }),
-   expiresAt: column.number(),
- }
+   id: column.text(),
+   userId: column.text({ optional: true }), // user name slug
+   expiresAt: column.date({ optional: true }),
+   fresh: column.boolean({ optional: true }),
+ },
+ indexes: [ { on: ["id"], unique: true } ]
 })
+

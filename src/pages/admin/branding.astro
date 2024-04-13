@@ -1,0 +1,31 @@
+---
+export const prerender = false;
+
+import Layout from '@layouts/AdminLayout.astro';
+import site from '@data/site.json';
+import { JSONTable } from '@utils/utils.js';
+
+const user  = Astro.locals?.user
+// this page is only for admins
+if (!['admin','superadmin'].includes(user?.role)) return Astro.redirect('/admin');
+
+const table = JSONTable(site);
+---
+<Layout user={user} >
+  <div class="mx-20 w-full prose">
+
+    <h1> Site Planning: site.json Branding File </h1>
+    <p class="ml-2 -mt-8"> <a href="/">home</a> / <a href="/admin">admin</a> / branding </p>
+
+
+    <p> The file <b><tt>src/data/site.json</tt></b> contains the non-secret branding information for this website. The first step in setting up a new website is to modify all the values in this file.</p>
+
+    <p> <b>Note:</b> these are the pubilc values for the website. The private values (such as API keys) go in the an <b><tt>.env</tt></b> file which must never be checked into a code repository.  </p>
+
+    <p> Here are the values contained in the file: </p>
+
+    <div set:html={table}></div>
+ </div>
+</Layout>
+
+

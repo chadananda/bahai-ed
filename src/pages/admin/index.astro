@@ -1,23 +1,21 @@
 ---
 export const prerender = false;
-import { checkUser } from '@utils/authCheck.js';
-const user = await checkUser(Astro.request);
-if (!user || !user?.authenticated) return Astro.redirect('/login');
 
+import { db, eq, Team } from 'astro:db';
 import Layout from '@layouts/AdminLayout.astro';
-// const user = Astro.locals.user;
-import Logout from '@components/logout.astro';
+
+const user = Astro.locals.user;
+const member = (await db.select().from(Team).where(eq(Team.id, user.id)))[0];
+// user must be a team member in order to use admin area
+if (!member) return Astro.redirect('/login');
 ---
-<Layout>
+<Layout user={user} >
   <div class="mx-auto text-center w-full">
 
-    <h1 class="text-xl"> Admin Dashboard </h1>
+    <h1 class="text-xl"> Admin Dashboard: {user?.role} </h1>
 
     {user && (
-      <ul>
-        <li>   {user.name},  {user.email}, {user.role}  </li>
-      </ul>
-      <Logout />
+      <pre>{JSON.stringify(user, null, 2)}</pre>
     )}
     {!user && (
       <h2 class="text-lg"> No user object found </h2>

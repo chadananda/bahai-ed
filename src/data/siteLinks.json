@@ -7,9 +7,18 @@
   "companyLinks": [
  ],
  "productLinks": [
+  {"title": "Ocean 1.0 - Interfaith Search", "path": "/the-ocean-adventure", "children": null},
+  {"title": "Ocean 2.0 - Interfaith Library", "path": "/ocean-2-interfaith-reader", "children": null},
+  {"title": "Sifter - Star of the West", "path": "/sifter-star-of-the-west", "children": null}
+
  ],
  "resourceLinks": [
+  {"title": "Dawn-Breakers Resources", "path": "/the-dawn-breakers-resources-for-the-study-of-nabils-narrative", "children": null},
+  {"title": "Kitáb-i-Íqán Resources", "path": "/dunbar-interview-companion-study-kitab-i-iqan", "children": null},
+  {"title": "little Badasht", "path": "/little-badasht-a-dawn-breakers-bootcamp-for-youth", "children": null}
  ]
+
+
 }
 
 
