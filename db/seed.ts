@@ -1,7 +1,16 @@
 import { db, Categories, Users, Team } from 'astro:db';
 import * as argon2 from 'argon2';
-import { slugify }  from '@utils/utils.js';
+// import { slugify }  from '../src/utils/utils.js';
 import site from '@data/site.json';
+import slugifier from 'slugify';
+
+const slugify = (text) => {
+	return slugifier(text,  {
+			lower: true, // convert to lower case
+			strict: true, // strip special characters except replacement
+			remove: /[*+~.()'"!:@]/g, // remove characters that match regex, replace with replacement
+	})
+}
 
 export default async function() {
 

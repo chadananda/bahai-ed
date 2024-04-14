@@ -1,7 +1,7 @@
 // src/pages/robots.txt.js
 export const prerender = true;
 
-import {url as siteUrl} from '@data/branding';
+import {url as siteUrl} from '@data/site.json';
 
 export async function GET() {
   const content = `

@@ -2,7 +2,7 @@ export const prerender = true;
 
 import site from '@data/site.json';
 import rss from '@astrojs/rss';
-import { getArticleAudioSize, getArticleAudioPath, getAllLanguages, getPublishedArticles } from '@utils/utils.js';
+import { getArticleAudioSize, getArticleAudioPath, getAllLanguages, getPublishedArticles, getDataCollectionEntry } from '@utils/utils.js';
 import { getImage } from "astro:assets";
 
 const mainLanguages = {
@@ -29,6 +29,7 @@ const mainLanguages = {
  };
 
 const hasAudio = ({data}) => !!data.audio;
+
 export const getPodcastArticles = async (lang) => {
   return await getPublishedArticles(lang, hasAudio);
 }

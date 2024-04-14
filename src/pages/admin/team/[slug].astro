@@ -1,0 +1,17 @@
+---
+export const prerender = false;
+
+import { getTeamMembers } from "@utils/utils";
+
+export async function getStaticPaths() {
+  const members = await getTeamMembers();
+  return members.map((user) => {
+    return { params: { slug: user.id }, props: { user } };
+  });
+}
+
+const { user } = Astro.props;
+
+---
+
+<h1>User Edit Page: {user?.name}</h1>

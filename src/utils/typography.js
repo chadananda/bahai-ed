@@ -1,15 +1,10 @@
 // src/utils/typography.js
 
-export const fixTypography = text => {
- const fixers = [fixSmartQuotes, fixMDash, fixBahaITerms, fixCommonBahaiWords, fixPlaceNames, fixTransliteration];
- fixers.forEach(fix => node.nodeValue = fix(node.nodeValue));
-}
+export const fixSmartQuotes = text => text.replace(/(\W|^)"(\S)/g, '$1“$2').replace(/(\S)"(\W|$)/g, '$1”$2').replace(/(\W|^)'(\S)/g, '$1‘$2').replace(/(\S)'(\W|$)/g, '$1’$2');
 
-const fixSmartQuotes = text => text.replace(/(\W|^)"(\S)/g, '$1“$2').replace(/(\S)"(\W|$)/g, '$1”$2').replace(/(\W|^)'(\S)/g, '$1‘$2').replace(/(\S)'(\W|$)/g, '$1’$2');
+export const fixMDash = text => text.replace(/--/g, '—');
 
-const fixMDash = text => text.replace(/--/g, '—');
-
-const fixBahaITerms = text => {
+export const fixBahaITerms = text => {
    return text
        .replace(/\bbah[aá]['’]?[íi]s?\b/ig, match => match.toLowerCase().endsWith('s') ? "Bahá’ís" : "Bahá’í")
        .replace(/\bbah[aá]['’]?u['’]?ll[aá]h['’]s?\b/ig, match => match.toLowerCase().endsWith('s') ? "Bahá’u’lláh’s" : "Bahá’u’lláh")
@@ -23,7 +18,7 @@ const fixBahaITerms = text => {
        .replace(/'/g, "’");
 };
 
-const fixCommonBahaiWords = text => {
+export const fixCommonBahaiWords = text => {
    return text
        .replace(/\b[R]i[ḍd]v[aá]n\b/g, "Riḍván") // رضوان
        .replace(/\b[A]kk[aá]\b/g, "Akká") // عكاء
@@ -45,7 +40,7 @@ const fixCommonBahaiWords = text => {
 };
 
 
-const fixPlaceNames = text => {
+export const fixPlaceNames = text => {
    return text
        .replace(/\bT(e|i)hr(a|á)n\b/g, "Tihrán") // تهران
        .replace(/\bM(a|á)shh(a|á)d\b/g, "Mas̱ẖhad") // مشهد
@@ -67,10 +62,20 @@ const fixPlaceNames = text => {
        .replace(/\bMuhammad\b/g, "Muḥammad"); // محمد
 };
 
-const fixTransliteration = text => {
-return text
+export const fixTransliteration = text => {
+  return text
     .replace(/([HhDdZzSsTtZz])\.([A-Za-z])/g, "$1̣$2")
     .replace(/([KkSsDdGgTtZz])_([Hh])/g, "$1̱$2")
     .replace(/([AaIiUu])\^/g, m => ({ 'A^': 'Á', 'a^': 'á', 'I^': 'Í', 'i^': 'í', 'U^': 'Ú', 'u^': 'ú' })[m]);
 };
+
+//export const fixTypography = [fixSmartQuotes, fixMDash, fixBahaITerms, fixCommonBahaiWords, fixPlaceNames, fixTransliteration];
+
+
+
+export const allFixes = [fixSmartQuotes, fixBahaITerms, fixCommonBahaiWords, fixPlaceNames, fixTransliteration];
+
+const applyTypographicFixes = (text, fixes=allFixes) => {
+    return fixes.reduce((acc, fix) => fix(acc), text);
+}
 

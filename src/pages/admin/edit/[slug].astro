@@ -2,7 +2,7 @@
 export const prerender = false;
 import { checkUser } from '@utils/authCheck.js';
 const user = await checkUser(Astro.request);
-if (!user || !user?.authenticated) return Astro.redirect('/login');
+// if (!user || !user?.authenticated) return Astro.redirect('/login');
 
 import { getPostFromSlug, getDataCollectionEntry } from '@utils/utils.js';
 import { filterTopics } from '@utils/dataUtils.astro';
