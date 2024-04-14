@@ -1,7 +1,7 @@
 ---
 export const prerender = true;
 
-import { filterTopics } from "@utils/dataUtils.astro";
+// import { filterTopics } from "@utils/dataUtils.astro";
 import Layout from "@layouts/Article.astro";
 import Container from "@components/container.astro";
 import { Picture } from 'astro:assets';
@@ -10,7 +10,7 @@ import TLDR from "@components/article/TLDR.astro";
 import PodcastPlayer from "@components/article/PodcastPlayer.astro";
 import PostComments from "@components/article/PostComments.astro";
 import AuthorBio from "@components/article/authorCard.astro";
-import { getPublishedArticles, getDataCollectionEntry } from "@utils/utils.js";
+import { getPublishedArticles, getDataCollectionEntry, filterTopics } from "@utils/utils.js";
 
 
 export async function getStaticPaths() {

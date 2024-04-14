@@ -343,3 +343,17 @@ export const getTeamMembers = async () => {
   return members;
 }
 
+export async function filterTopics(topics) {
+  // Filter the topics array based on whether each topic exists in the 'topics' collection
+  const filteredTopics = await Promise.all(
+    topics.map(async (topic) => {
+      try {
+        return await getDataCollectionEntry('topics', topic);
+      } catch (error) { return false; }
+    })
+  );
+  return filteredTopics.filter(Boolean);
+  // Return the filtered topics or the nonexistent topics based on the 'exists' parameter
+  // return exists ? existingTopics : topics.filter(topic => !existingTopics.includes(topic));
+}
+

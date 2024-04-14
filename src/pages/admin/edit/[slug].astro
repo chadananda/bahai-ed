@@ -1,11 +1,11 @@
 ---
 export const prerender = false;
-import { checkUser } from '@utils/authCheck.js';
-const user = await checkUser(Astro.request);
+// import { checkUser } from '@utils/_authCheck.js_';
+// const user = await checkUser(Astro.request);
 // if (!user || !user?.authenticated) return Astro.redirect('/login');
 
 import { getPostFromSlug, getDataCollectionEntry } from '@utils/utils.js';
-import { filterTopics } from '@utils/dataUtils.astro';
+// import { filterTopics } from '@utils/dataUtils.astro';
 import Layout from "@layouts/AdminLayout.astro";
 
 import ArticleConcept from '@components/admin/ArticleConcept.astro';
@@ -15,7 +15,7 @@ import ArticleEditor from '@components/admin/TipTap/Editor.svelte';
 import ArticleExtras from '@components/admin/ArticleExtras.astro';
 import ArticleOutput from '@components/admin/ArticleOutput.astro';
 
-import { loadArticleRaw } from '@utils/utils.js';
+import { loadArticleRaw, filterTopics } from '@utils/utils.js';
 
 // Get the entry directly from the prop on render
 const slug = Astro.params.slug;

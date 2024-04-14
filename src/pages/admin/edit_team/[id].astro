@@ -1,6 +1,6 @@
 ---
 export const prerender = false;
-import { checkUser } from '@utils/authCheck.js';
+import { checkUser } from '@utils/_authCheck.js_';
 const user = await checkUser(Astro.request);
 if (!user || !user?.authenticated) return Astro.redirect('/login');
 

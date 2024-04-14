@@ -74,7 +74,7 @@ export default defineConfig({
   // partytown()
   react(), db()],
   experimental: {
-    // contentCollectionCache: true,
+    contentCollectionCache: false,
   },
   prefetch: {
     defaultStrategy: 'viewport',

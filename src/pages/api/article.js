@@ -1,7 +1,7 @@
 // src/pages/api/article.js
 export const prerender = false; // ie. SSR
 
-import { checkUser } from '@utils/authCheck';
+import { checkUser } from '@utils/_authCheck.js_';
 // import { saveArticle } from '@utils/db';
 import { getPostFromSlug } from '@utils/utils';
 import yaml from 'js-yaml';

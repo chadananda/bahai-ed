@@ -13,7 +13,6 @@ const slugify = (text) => {
 }
 
 export default async function() {
-
 	// Seed initial admin user
 	await db.insert(Users).values([{
 		id: slugify(site.author),
