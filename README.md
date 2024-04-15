@@ -41,11 +41,6 @@ This is a website for me to post my ramblings and get feedback from friends and 
   - `handlePasswordReset()`: Manages password reset requests and email sending.
 
 ## Utility Functions (`/src/utils/`)
-- **`db.js`**:
-  - `connectDB()`: Establishes a connection to the PostgreSQL database.
-- **`jwtUtil.js`**:
-  - `generateToken()`: Generates a JWT token.
-  - `verifyToken()`: Verifies a JWT token.
 
 ## Frontend Pages (`/src/pages/`)
 - **`auth/login.astro`**:
@@ -75,8 +70,6 @@ Develop a comprehensive login system for an Astro Vercel site with PostgreSQL, f
    - `setup.js`: check for database setup, also for user table
 
 2. **Database Connection and Models (`/src/utils/`):**
-   - `db.js`: Establish a PostgreSQL database connection.
-   - `userModel.js`: Define user-related database operations (create, query).
 
 3. **JWT Utility (`/src/utils/jwtUtil.js`):**
    - Implement functions for generating and verifying JWT tokens.

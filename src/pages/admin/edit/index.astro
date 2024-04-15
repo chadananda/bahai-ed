@@ -1,10 +1,6 @@
 ---
 export const prerender = false; // SSR
 
-import { checkUser } from '@utils/_authCheck.js_';
-const user = await checkUser(Astro.request);
-if (!user || !user?.authenticated) return Astro.redirect('/login');
-
 // Import the Svelte component
 import ArticleTable from '@components/admin/articleTable.svelte';
 import Layout from "@layouts/AdminLayout.astro";

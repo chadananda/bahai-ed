@@ -3,7 +3,6 @@
 //
 export const prerender = false;
 
-import { saveCommentPost } from '@utils/db.js';
 import { sanitizeInput, isValidEmail } from '@utils/utils.js';
 import { getDataCollectionEntry } from '@utils/utils.js';
 
@@ -37,7 +36,7 @@ export const POST = async ({ request }) => {
 
     if (validSubmission) {
        let lastPostDateString = await getArticleCommentsLastPostDate(slug)
-       await saveCommentPost(sanitizedPost);
+      //  await saveCommentPost(sanitizedPost);
 
       // Parse the last post date string as a Date object
       let lastPostDate = new Date(lastPostDateString);

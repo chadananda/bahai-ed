@@ -97,12 +97,7 @@ Unused devDependencies
 * inquirer
 Missing dependencies
 * fs-extra: ./syncAssets.js
-* @data/site.json: ./src/utils/db.js
-* astro:content: ./src/utils/db.js
 * zod: ./src/utils/openai_request.js
-* @utils/authCheck: ./src/pages/api/article.js
 * @utils/github_tools: ./src/pages/api/article.js
-* @utils/db.js: ./src/pages/api/post_comment.js
 * @utils/utils.js: ./src/pages/api/post_comment.js
-* @utils/db: ./src/pages/api/process_posts.js
 * @utils/openai_request: ./src/pages/api/process_posts.js

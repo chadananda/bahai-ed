@@ -182,7 +182,7 @@ export const getArticleTranslations = async (slug, all=false) => {
     if (all) return idmatch(post.id);
      else return idmatch(post.id) && post.id !== entry.id;
   });
-  console.log('matching translations', translations.length);
+  // console.log('matching translations', translations.length);
   return translations;
 }
 
