@@ -111,14 +111,30 @@ export const getArticleAssetURL = async (slug, filename, full=false) => {
    else return path
 }
 
+export const transformS3Url = (url, width = null, height = null, format = 'webp', quality = 80) => {
+  if (!url.includes('.s3.')) return url;
+  const imagePath = new URL(url).pathname;
+  let params = [];
+  if (width) params.push(`w=${width}`);
+  if (height) params.push(`h=${height}`);
+  // params.push(`fm=${format}`, `q=${quality}`);
+  params.push(`fm=${format}`, `q=${quality}`, `fit=crop`, `crop=faces`);
+  return `${site.img_base_url}${imagePath}?${params.join('&')}`;
+}
+
 export const getDataCollectionImage = async (collection, filename, imageType={format: 'jpg', width: 1000, height: 700}) => {
   const {width, height, format} = imageType;
   if (filename.startsWith('http')) {
     //  https://bahai-education.org/_astro/bahai-literature.BmmHKzrh_2072vy.webp
     // later, when we use an image CDN, we can modify the url to set the size & format
-    let finalImage = {width, height, format: format || filename.split('.').pop(), src: filename, isExternal: true}
+    let finalImage;
+    if (filename.includes(".s3.")) { // add s3 bucket later to be more specific
+      let finalFormat = format || filename.split('.').pop();
+      let newUrl = transformS3Url(filename, width, height, finalFormat, 80);
+      finalImage = {width, height, format: finalFormat, src: newUrl, isExternal: true}
+    } else finalImage = {width, height, format: format || filename.split('.').pop(), src: filename, isExternal: true}
     // console.log('finalImage http', finalImage);
-    return finalImage
+    return finalImage;
   }
   const imagekey = `/src/content/${collection.collection}/${filename.replace('./', '')}`;
   const images = await import.meta.glob('/src/content/*/*.{jpeg,jpg,png,gif,webp,avif,svg}');
@@ -343,7 +359,7 @@ export const getTeamMembers = async () => {
   return members;
 }
 
-export async function filterTopics(topics) {
+export const filterTopics = async (topics) => {
   // Filter the topics array based on whether each topic exists in the 'topics' collection
   const filteredTopics = await Promise.all(
     topics.map(async (topic) => {
@@ -356,4 +372,6 @@ export async function filterTopics(topics) {
   // Return the filtered topics or the nonexistent topics based on the 'exists' parameter
   // return exists ? existingTopics : topics.filter(topic => !existingTopics.includes(topic));
 }
+
+
 

@@ -17,7 +17,7 @@
   "logo_jpg": "https://bahai-education.org/favicon.jpeg",
 
   "author": "Chad Jones",
-  "author_image": "https://bahai-education.org/site/chad-jones.jpg",
+  "author_image": "https://blogw-assets.s3.us-west-1.amazonaws.com/team/chad-jones.jpg",
   "author_bio": "Alaskan fisherman, global explorer and software developer with a thirst for adventure and cultural exploration.",
 
   "youtube": {
@@ -50,6 +50,7 @@
   "vercel_project_url": "https://bahai-ed.vercel.app",
   "vercel_project_dashboard": "https://vercel.com/chadananda/bahai-ed/deployments",
   "github_project_url": "https://github.com/chadananda/bahai-ed",
-  "web3forms_access_key": "a7763c6b-35e2-4a39-9d3e-d165cec6f2e8"
+  "web3forms_access_key": "a7763c6b-35e2-4a39-9d3e-d165cec6f2e8",
+  "img_base_url": "https://bahai-ed.imgix.net"
 
 }

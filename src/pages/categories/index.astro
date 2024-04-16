@@ -4,9 +4,7 @@ export const prerender = true;
 import Layout from "@layouts/Layout.astro";
 import Container from "@components/container.astro";
 import Sectionhead from "@components/sectionhead.astro";
-// import { slugify } from "@utils/utils.js";
 import { getDataCollection } from "@utils/utils.js";
-
 import CategoryCard from "@components/article/categoryCard.astro";
 
 const categories = await getDataCollection("categories")

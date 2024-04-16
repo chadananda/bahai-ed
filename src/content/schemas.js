@@ -45,6 +45,7 @@ export const post_schema = ({ image }) =>
       .transform((str) => new Date(str))
       .default(""), // do we need?
 
+    // image: z.string().nullable().default("")
     image: z.object({
       src: image().refine((img) => img.width >= 300, {
         message: "Main image must be at least 300 pixels wide!",

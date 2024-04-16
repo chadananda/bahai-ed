@@ -9,9 +9,7 @@ import chad from "@assets/chad-jones.jpg";
 import ArticleSelector from '@components/article/articleSelector.astro';
 import { getPublishedArticles } from '@utils/utils.js';
 
-
 const articles = await getPublishedArticles();
-
 ---
 
 <Layout title="Article">
@@ -20,6 +18,7 @@ const articles = await getPublishedArticles();
 <div class="text-center p-5 max-w-7xl mx-auto border rounded-lg shadow-md bg-slate-50">
   <h2 class="text-lg italic md:text-3xl font-bold text-gray-600"
     style="font-family: Merriweather" >
+
     <Image src={chad} alt="Chad Jones" style={{
       float: 'left', // Float the image to the left
       borderRadius: '50%', // Crop the image to a circle
@@ -28,8 +27,10 @@ const articles = await getPublishedArticles();
       opacity: '0.75', // Reduce the opacity of the image
       objectFit: 'cover', // Ensure the image covers the crop area without stretching
       width: '75px', // Set the desired width of the image
-      height: '75px' // Set the desired height of the image (same as width for a circle)
+      height: '75px', // Set the desired height of the image (same as width for a circle)
+      marginTop: '-.25em'
     }} loading="lazy" />
+
     Welcome to my Bahá’í education blog
   </h2>
   <p class="text-sm md:text-sm text-gray-700 dark:text-gray-400 mt-2">

@@ -18,9 +18,7 @@ const team = defineCollection({
     name_slug: z.string().default(''), // slugified version
     title: z.string(),
     image: z.object({
-      src: image().refine((img) => img.width >= 200,{
-        message: "Image must be at least 200 pixels wide!",
-      }),
+      src: z.string().nullable().default(''),
       alt: z.string().nullable().default(''),
     }),
     external: z.boolean().nullable().default(false), // internal or external writer
