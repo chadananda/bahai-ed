@@ -1,6 +1,7 @@
 category: Bahá’í Faith
 category_slug: bahai-faith
-image: ./bahai-faith.png
+image: >-
+  https://blogw-assets.s3.us-west-1.amazonaws.com/categories/content/bahai-faith.png
 description: >-
   The Bahá'í Faith is a monotheistic religion emphasizing the spiritual unity of
   all humankind. Originating with the teachings of Bahá'u'lláh in 19th-century
@@ -9,74 +10,173 @@ description: >-
   individual search for truth, equality of men and women, and harmonious
   development of science and religion.
 topics:
-
   bahaullahs-revelation:
     topic: Bahá'u'lláh's Revelation
     description: >-
       The foundational figure of the Bahá'í Faith, who declared His mission in
       1863 and authored numerous theological and spiritual writings forming the
-      core of Bahá'í belief. Unique to the Baha'i faith is the concept of a dual-revelation, in which the revelation of Baha'u'llah is seen as a continuation of the revelation of the Bab. The writings of Abdu'l-Baha and Shoghi Effendi, although having equal authority and validity, are not viewed as having the same nature as the writings of Baha'u'llah and the Bab. The period of Abdu'l-Baha and Shoghi Effendi is a time of interpretation, not revelation. It is the fulfillment of the prophecy that the "day will not be followed by night".
-
+      core of Bahá'í belief. Unique to the Baha'i faith is the concept of a
+      dual-revelation, in which the revelation of Baha'u'llah is seen as a
+      continuation of the revelation of the Bab. The writings of Abdu'l-Baha and
+      Shoghi Effendi, although having equal authority and validity, are not
+      viewed as having the same nature as the writings of Baha'u'llah and the
+      Bab. The period of Abdu'l-Baha and Shoghi Effendi is a time of
+      interpretation, not revelation. It is the fulfillment of the prophecy that
+      the "day will not be followed by night".
   hands-of-the-cause-of-god:
     topic: Hands of the Cause of God
     description: >-
       A title given to the foremost disciples of Bahá'u'lláh, recognized by
       their outstanding contributions to the spread and establishment of the
-      Bahá'í Faith internationally. The Hands of the Cause, while not in any way authoritative or infallible, were nevertheless called to a life of heroism and sacrifice. As such, their stories are a source of inspiration for Bahai's today.
-
+      Bahá'í Faith internationally. The Hands of the Cause, while not in any way
+      authoritative or infallible, were nevertheless called to a life of heroism
+      and sacrifice. As such, their stories are a source of inspiration for
+      Bahai's today.
   bahai-institutions:
     topic: Bahá'í Institutions
     description: >-
       The Bahá'í administrative bodies, firstly established by Bahá'u'lláh, now
       existing at the local, national, and international levels to oversee
-      community affairs. They are unique in the range of institutions insasmuch as their range and scope have been defined by the Central Figures of the Faith -- resulting in the nucleus of a future system of governance which does not have the natural tendency to wander from it's core mandate and purpose. The purpose of the Baha'i institutions is to protect the rights of the individual which is the key to promotion of unity and peace. This idea of protection of fundamental rights is the Aristotalian ideal of "Justice", the foundation of civilization and the keynote of Baha'i administration.
-
+      community affairs. They are unique in the range of institutions insasmuch
+      as their range and scope have been defined by the Central Figures of the
+      Faith -- resulting in the nucleus of a future system of governance which
+      does not have the natural tendency to wander from it's core mandate and
+      purpose. The purpose of the Baha'i institutions is to protect the rights
+      of the individual which is the key to promotion of unity and peace. This
+      idea of protection of fundamental rights is the Aristotalian ideal of
+      "Justice", the foundation of civilization and the keynote of Baha'i
+      administration.
   bahai-fast-and-naw-ruz:
     topic: Bahá'í Fast and Naw-Rúz
     description: >-
       Annual period from March 2 to 20, when Bahá'ís fast from sunrise to
       sunset, engaging in spiritual reflection and preparation for the Bahá'í
-      New Year, Naw-Rúz. Baha'i fasting is a time of spiritual renewal and meditation. The interpretive writings of Shoghi Effendi and Abdu'l-Baha provide a wealth of guidance on the spiritual significance of the fast. It is not dour time of mourning and self-denial but a celebration of the preeminence of the spirit over the mind and the mind over the body and God's will over all. It is, Shoghi Effendi explained, our greatest tool for the spiritual development of the soul. In the heavens of the religion of God, the sun is fasting and the moon, obligatory prayer.
-
+      New Year, Naw-Rúz. Baha'i fasting is a time of spiritual renewal and
+      meditation. The interpretive writings of Shoghi Effendi and Abdu'l-Baha
+      provide a wealth of guidance on the spiritual significance of the fast. It
+      is not dour time of mourning and self-denial but a celebration of the
+      preeminence of the spirit over the mind and the mind over the body and
+      God's will over all. It is, Shoghi Effendi explained, our greatest tool
+      for the spiritual development of the soul. In the heavens of the religion
+      of God, the sun is fasting and the moon, obligatory prayer.
   bahai-houses-of-worship:
     topic: Bahá'í Houses of Worship
     description: >-
       The Bahá'í temples, symbolic of the Faith's principles, are dedicated to
       the oneness of religion and humanity, characterized by nine-sided
-      structures open to all. They are symbolic of the center of human life -- of how the point of unity for the community is the remembrance of God. In a world that is rapidly devolving into those who remember God vs those who forget God, the Baha'i temple (literally Mashriqu'l-Adhkar, the Dawning Place of the Remembrance of God) is a symbol that the remembrance of God is the center of human life and the source of all unity and peace.
-
+      structures open to all. They are symbolic of the center of human life --
+      of how the point of unity for the community is the remembrance of God. In
+      a world that is rapidly devolving into those who remember God vs those who
+      forget God, the Baha'i temple (literally Mashriqu'l-Adhkar, the Dawning
+      Place of the Remembrance of God) is a symbol that the remembrance of God
+      is the center of human life and the source of all unity and peace.
   bahai-world-peace-teachings:
     topic: Bahá'í World Peace Teachings
     description: >-
-      Baha'is are often associated with our teachings on world peace. These teachings have a fundamentally spritual motivation (we are all children of one God) and a fundamentally practical approach (such as ending war by enacting settled borders and a system of arbitration and enforcement to outlaw war). This is a system of world governance, but unlike the various fascistic movements, a system build on decentralization of political power rather than centralization and based on limitation of government power to the sphere of Justice rather than the unlimited, unrbidled power of the state which has wreaked so much havoc in the 20th century. This unique combination of international order and decentralizing governance to the local level is absolutely unique to the Baha'i vision. Although it includes a vision of global order, yet it also includes a federalist model of such decentralization as to make Thomas Jefferson blush.
-
+      Baha'is are often associated with our teachings on world peace. These
+      teachings have a fundamentally spritual motivation (we are all children of
+      one God) and a fundamentally practical approach (such as ending war by
+      enacting settled borders and a system of arbitration and enforcement to
+      outlaw war). This is a system of world governance, but unlike the various
+      fascistic movements, a system build on decentralization of political power
+      rather than centralization and based on limitation of government power to
+      the sphere of Justice rather than the unlimited, unrbidled power of the
+      state which has wreaked so much havoc in the 20th century. This unique
+      combination of international order and decentralizing governance to the
+      local level is absolutely unique to the Baha'i vision. Although it
+      includes a vision of global order, yet it also includes a federalist model
+      of such decentralization as to make Thomas Jefferson blush.
   bahai-holy-days:
     topic: Bahá'í Holy Days
     description: >-
       A collection of globally celebrated days within the Bahá'í calendar
-      commemorating significant events in the history of the Faith. The Baha'i calendar is one of the great gifts of the Bab, who's every detail was a poetic symmetry dedicated to the praise of God. His calendar breaks the year into 19 months of 19 days with a 4-5 intercalary period dedicated to the remembrance of the unknowable, unlimited, uniquely transcendent essence of God (refered to as the Há-hút). In his unique solar calendar, he wrapped up each year with a month of fasting and prayer, a month named after Himself. This month of fasting prepares the way for the month of springtime and renewal, the month of Bahá, the month of the Baha'i New Year.
-
+      commemorating significant events in the history of the Faith. The Baha'i
+      calendar is one of the great gifts of the Bab, who's every detail was a
+      poetic symmetry dedicated to the praise of God. His calendar breaks the
+      year into 19 months of 19 days with a 4-5 intercalary period dedicated to
+      the remembrance of the unknowable, unlimited, uniquely transcendent
+      essence of God (refered to as the Há-hút). In his unique solar calendar,
+      he wrapped up each year with a month of fasting and prayer, a month named
+      after Himself. This month of fasting prepares the way for the month of
+      springtime and renewal, the month of Bahá, the month of the Baha'i New
+      Year.
   bahai-interpretive-texts:
     topic: Bahá'í Interpretive Texts
     description: >-
-      The passing of Baha'u'llah ended a period of nearly 50 years of continuous and progressive revelation as the twin prophets unveiled to mankind a priceless heritage of hundreds of tablets, books, poems, treatises and commentaries. Following this period (from 1844-1892) came the incomparable ministry of Abdu'l-Baha, styled by Baha'u'llah "the Master". His interpretations and explanations unfolded further to the world the endless gifts of an unprecedented dispensation. The passing of 'Abdu'l-Baha was followed by the ministry of Shoghi Effendi, who further unfolded the implications of Baha'u'llah's anticipated World Order. A radical order in which Justice was to be made the purpose and scope of collective power. This later period was the period of interpretation, not revelation. It was the fulfillment of the prophecy that the "day will not be followed by night". Now that the administrative order has been established, divine authority has carried forward, but not the sphere of interpretation. As explained by Shoghi Effend: “...it is made indubitably clear and evident that the Guardian of the Faith has been made the Interpreter of the Word and that the Universal House of Justice has been invested with the function of legislating on matters not expressly revealed in the teachings. The interpretation of the Guardian, functioning within his own sphere, is as authoritative and binding as the enactments of the International House of Justice, whose exclusive right and prerogative is to pronounce upon and deliver the final judgment on such laws and ordinances as Bahá’u’lláh has not expressly revealed.”
-
+      The passing of Baha'u'llah ended a period of nearly 50 years of continuous
+      and progressive revelation as the twin prophets unveiled to mankind a
+      priceless heritage of hundreds of tablets, books, poems, treatises and
+      commentaries. Following this period (from 1844-1892) came the incomparable
+      ministry of Abdu'l-Baha, styled by Baha'u'llah "the Master". His
+      interpretations and explanations unfolded further to the world the endless
+      gifts of an unprecedented dispensation. The passing of 'Abdu'l-Baha was
+      followed by the ministry of Shoghi Effendi, who further unfolded the
+      implications of Baha'u'llah's anticipated World Order. A radical order in
+      which Justice was to be made the purpose and scope of collective power.
+      This later period was the period of interpretation, not revelation. It was
+      the fulfillment of the prophecy that the "day will not be followed by
+      night". Now that the administrative order has been established, divine
+      authority has carried forward, but not the sphere of interpretation. As
+      explained by Shoghi Effend: “...it is made indubitably clear and evident
+      that the Guardian of the Faith has been made the Interpreter of the Word
+      and that the Universal House of Justice has been invested with the
+      function of legislating on matters not expressly revealed in the
+      teachings. The interpretation of the Guardian, functioning within his own
+      sphere, is as authoritative and binding as the enactments of the
+      International House of Justice, whose exclusive right and prerogative is
+      to pronounce upon and deliver the final judgment on such laws and
+      ordinances as Bahá’u’lláh has not expressly revealed.”
   bahai-community-life:
     topic: Bahá'í Community Life
     description: >-
-      At the center of Baha'i community life is the administrative institution of the "Nineteen Day Feast", established by the Bab, this monthly celebration combines a devotional gathering, an administrative meeting and a social gathering into one regular event. Providing critical communication and interaction between the local governing body and the community as well as serving as a regular time of spiritual renewal and fellowship. The Nineteen Day Feast is the center of Baha'i community life. Parallel to this is the 19-day fireside, a private gathering each believer has in his own home for friends and neighbors for the purpose of developing friendships and, if they are interested, introducing them to the Baha'i Faith. Aside from these two key activities, numerous administrative activities fill the calendar, from Local Spiritual Assembly meetings to Holy Day celebrations to children's classes and study groups. Most community activity will have an educational aspect as study and learning are at the center of the pattern of Baha'i life -- a pattern which consists of 1) Study of the Word of God, 2) Prayer, 3) Meditation on the Teachings and 4) Spiritual Action.
-
+      At the center of Baha'i community life is the administrative institution
+      of the "Nineteen Day Feast", established by the Bab, this monthly
+      celebration combines a devotional gathering, an administrative meeting and
+      a social gathering into one regular event. Providing critical
+      communication and interaction between the local governing body and the
+      community as well as serving as a regular time of spiritual renewal and
+      fellowship. The Nineteen Day Feast is the center of Baha'i community life.
+      Parallel to this is the 19-day fireside, a private gathering each believer
+      has in his own home for friends and neighbors for the purpose of
+      developing friendships and, if they are interested, introducing them to
+      the Baha'i Faith. Aside from these two key activities, numerous
+      administrative activities fill the calendar, from Local Spiritual Assembly
+      meetings to Holy Day celebrations to children's classes and study groups.
+      Most community activity will have an educational aspect as study and
+      learning are at the center of the pattern of Baha'i life -- a pattern
+      which consists of 1) Study of the Word of God, 2) Prayer, 3) Meditation on
+      the Teachings and 4) Spiritual Action.
   bahai-doctrinal-literature:
     topic: Bahá'í Doctrinal Literature
     description: >-
-      Bahá'í doctrinal literature includes the writings of the three Central Figures and the Guardian of the Bahá'í Faith who was appointed by Abdu'l-Baha as the authorized interpreter of the Bahá'í writings. After the passing of Shoghi Effendi, no further source of Bahai doctrinal literature exists, although the Universal House of Justice plays an important role in providing supplementary legislation. Key doctrinal literature include the works of the central figures, which have been helpfully organized by Shoghi Effendi into "best known works" lists for individual study, as well as the published letters of Shoghi Effendi and his published books, God Passes By (an outline of the first hundred years) and the Dawn-Breakers, a narrative history of the Bab's revelation. This book was written by Nabil, a close companion of the Bab, with help from Baha'u'llah, with editing by Abdu'l-Baha and finalized in English by Shoghi Effendi. As such, it is the only book in the Baha'i canon which was not directly written by one of the Central Figures or Shoghi Effendi.
-
+      Bahá'í doctrinal literature includes the writings of the three Central
+      Figures and the Guardian of the Bahá'í Faith who was appointed by
+      Abdu'l-Baha as the authorized interpreter of the Bahá'í writings. After
+      the passing of Shoghi Effendi, no further source of Bahai doctrinal
+      literature exists, although the Universal House of Justice plays an
+      important role in providing supplementary legislation. Key doctrinal
+      literature include the works of the central figures, which have been
+      helpfully organized by Shoghi Effendi into "best known works" lists for
+      individual study, as well as the published letters of Shoghi Effendi and
+      his published books, God Passes By (an outline of the first hundred years)
+      and the Dawn-Breakers, a narrative history of the Bab's revelation. This
+      book was written by Nabil, a close companion of the Bab, with help from
+      Baha'u'llah, with editing by Abdu'l-Baha and finalized in English by
+      Shoghi Effendi. As such, it is the only book in the Baha'i canon which was
+      not directly written by one of the Central Figures or Shoghi Effendi.
   bahai-history:
     topic: Bahá'í History
     description: >-
       The history of the Bahá'í Faith, from its origins in 19th-century Persia
       to its emergence as a global religion, including the lives of its Central
-      Figures and the development of its institutions. The official history of the early years was told by Nabil in a work commissioned by Baha'u'llah. Although imperfect as a history, yet the incluion of so many eyewitness accounts as well as the contributions made by Baha'u'llah and Abdu'l-Baha give it a unique value. Beyond this there are many wonderful sources of Baha'i history, from stories related by Abdu'l-Baha to pilgrims (Memorials of the Faithful) to the many biographies of the Central Figures and their companions by Baha'i authors. Notable are works of Hasan Balyuzi, Moojan Momen, Adib Taherzadeh, and Fazel Mazindarani. It is my hope to provide a range of study guides and helpful resources for the beginning student of Baha'i history including timelines and translations of key documents.
-
-
-
+      Figures and the development of its institutions. The official history of
+      the early years was told by Nabil in a work commissioned by Baha'u'llah.
+      Although imperfect as a history, yet the incluion of so many eyewitness
+      accounts as well as the contributions made by Baha'u'llah and Abdu'l-Baha
+      give it a unique value. Beyond this there are many wonderful sources of
+      Baha'i history, from stories related by Abdu'l-Baha to pilgrims (Memorials
+      of the Faithful) to the many biographies of the Central Figures and their
+      companions by Baha'i authors. Notable are works of Hasan Balyuzi, Moojan
+      Momen, Adib Taherzadeh, and Fazel Mazindarani. It is my hope to provide a
+      range of study guides and helpful resources for the beginning student of
+      Baha'i history including timelines and translations of key documents.
