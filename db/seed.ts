@@ -50,7 +50,7 @@ export default async function() {
 	await db.insert(Categories).values([{
 			category: 'Bahá’í Literature',
 			category_slug: 'bahai-literature',
-			image: 'https://bahai-education.org/_astro/bahai-literature.BmmHKzrh_2072vy.webp',
+			image: 'https://blogw-assets.s3.us-west-1.amazonaws.com/categories/content/bahai-education.png',
 			description: `Doctrinal Bahá’í Literature includes scripture and authoritative interpretation.
 This includes teachings, laws, and principles in hundreds of books and letters revealed by the
 faith’s central figures — Bahá’u’lláh, the Báb, and
