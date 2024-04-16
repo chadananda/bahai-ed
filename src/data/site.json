@@ -51,6 +51,7 @@
   "vercel_project_dashboard": "https://vercel.com/chadananda/bahai-ed/deployments",
   "github_project_url": "https://github.com/chadananda/bahai-ed",
   "web3forms_access_key": "a7763c6b-35e2-4a39-9d3e-d165cec6f2e8",
-  "img_base_url": "https://bahai-ed.imgix.net"
+  "img_base_url": "https://bahai-ed.imgix.net",
+  "imgix_dashboard": "https://dashboard.imgix.com/sources/661ec5ae04acc066b24e664f"
 
 }
