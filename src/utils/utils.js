@@ -273,7 +273,7 @@ export const getDataCollection = async (collection, filter = () => true) => {
   //  else if (collection === 'keywords') table = Keywords;
   //  else if (collection === 'team') table = Team;
 
-  if (table) dbMatches = (await db.select().from(table)).map(row=>({id: row.category_slug, collection, data: row})).filter(filter);
+  // if (table) dbMatches = (await db.select().from(table)).map(row=>({id: row.category_slug, collection, data: row})).filter(filter);
   // Create a map to override local items with dbMatches based on id
   const merged = new Map(dbMatches.map(item => [item.id, item]));
   local.forEach(item => merged.set(item.id, item)); // Local items are added, but don't override existing dbMatches
@@ -289,7 +289,7 @@ export const getDataCollectionEntry = async (collection, id) => {
   //  else if (collection === 'team') table = Team;
 
   // first try to fetch from the database
-  if (table) match = (await db.select().from(table).where(  eq(table.category_slug, id) ))[0];
+  // if (table) match = (await db.select().from(table).where(  eq(table.category_slug, id) ))[0];
   if (match) match = { id, collection, data: match } // format like an astro content entry
    else match = await getEntry(collection, id); // fall back on file system
   return match;

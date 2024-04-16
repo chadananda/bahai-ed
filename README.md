@@ -8,7 +8,7 @@ It's a classroom from which there is no escape. Those who turn away from religio
 
 At the end of the day, everything is purpose and identity. Those who give up on the metaphysical identity which unifies us fall into the tribal identities which divide.
 
-This is a website for me to post my ramblings and get feedback from friends and family. If you find any thing useful, good.
+This is a website for me to post my ramblings and get feedback from friends and family. If you find anything useful, good.
 
 
 ## Coding style guide (for Copilot/Aider)
@@ -29,14 +29,13 @@ This is a website for me to post my ramblings and get feedback from friends and 
 * Shared UI components should be extracted to the `src/components` directory and imported
 * All pages are static except for pages under /auth which are SSR and accessible by login only
 
-
-# Astro Vercel Site with PostgreSQL Authentication System
+# Astro Vercel Site with AstroDB Authentication System
 
 ## Serverless API Endpoints (`/api/`)
 - **`register.js`**:
-  - `handleRegistration()`: Handles user registration, including saving user data in PostgreSQL.
-- **`login.js`**:
-  - `handleLogin()`: Authenticates users and returns a JWT.
+  - `handleRegistration()`: Handles user registration, including saving user data in AstroDB.
+- **`logout.js`**:
+  -  called by any page in client to clear session cookie
 - **`reset-password.js`**:
   - `handlePasswordReset()`: Manages password reset requests and email sending.
 
@@ -50,16 +49,12 @@ This is a website for me to post my ramblings and get feedback from friends and 
 - **`auth/reset-password.astro`** (optional):
   - Page for initiating a password reset.
 
-## Initial Setup Check (`/api/setup.js`)
-- **`checkDatabaseSetup.js`**:
-  - Checks for the necessary tables; creates them if absent.
 
 
-
-# Task: Implement Login System for Astro Vercel Site with PostgreSQL
+# Task: Implement Login System for Astro Vercel Site with AstroDB
 
 ## Objective
-Develop a comprehensive login system for an Astro Vercel site with PostgreSQL, featuring user registration, authentication, password reset functionality, and an initial database setup check.
+Develop a comprehensive login system for an Astro Vercel site with AstroDB, featuring user registration, authentication, password reset functionality, and an initial database setup check.
 
 ## Steps
 
@@ -69,20 +64,10 @@ Develop a comprehensive login system for an Astro Vercel site with PostgreSQL, f
    - `reset-password.js`: Manage password reset functionality.
    - `setup.js`: check for database setup, also for user table
 
-2. **Database Connection and Models (`/src/utils/`):**
-
-3. **JWT Utility (`/src/utils/jwtUtil.js`):**
-   - Implement functions for generating and verifying JWT tokens.
-
 4. **Frontend Authentication Pages (`/src/pages/auth/`):**
    - `login.astro`: Frontend page for user login.
    - `register.astro` (Optional): Frontend page for user registration.
    - `reset-password.astro` (Optional): Frontend page for password reset.
-
-5. **Initial Database Setup Check (`/api/setup.js`):**
-   - Check for the existence of the PostgreSQL database connection
-   - If not present, provide instructions for setting up Vercel PostgreSQL
-   - If database connection but 'users' table is missing, create it and prompt the administrator to set their initial password.
 
 
 
@@ -109,6 +94,10 @@ To develop FAQs and Author Pages, we need to create some content collections:
   * Ocean: Help and Contribution
 
 ### Potential Article Data types
+
+* Type: Article etc. (for path grouping)
+  * By default, articles are at /[slug]
+  * Other types might be placed in other locations like /pilgrim-notes/[slug] or /music/[slug]
 
 * Article (public, description, content)
 * Team (public: description, style, bio, audio)
@@ -285,18 +274,7 @@ Style: Low fidelity watercolor image which looks hand-made on rough-press white 
 
 ## 404 paths to fix:
 
-ocean/
-ocean
-ocean/Ocean_English.exe
-ocean.html
-ocean/OceanCD-Multilingual.zip
-ocean/faq.htm
-ocean/OceanCD-Spanish.zip
-ocean/download.htm
-default.htm
 
-star/
-star-of-the-west
 
 ===
 
@@ -539,3 +517,11 @@ Internationalization considerations:
     * in base article display file we're using slug for path
       * solution: extract slug in loop instead of using
     * we're copying non-image files to public/[slug]/_* for easy access
+
+
+Todo Today:
+
+[] We're getting all kinds of issues with images, so let's migrate all images to S3 and then plug in Imgix to provide optimized images.
+   [] Script to move all article images to S3
+   [] Script to move all category images to S3
+

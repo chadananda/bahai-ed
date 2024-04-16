@@ -18,7 +18,8 @@
     "optimize-images": "node ./OptimizeImages.js public src/content",
     "make_translations": "node ./src/scripts/_create_translations.js",
     "make_audio": "node ./src/scripts/_create_audio.js",
-    "upload_audio": "node ./src/scripts/_upload_audio.js"
+    "upload_audio": "node ./src/scripts/_upload_audio.js",
+    "moveimages": "node ./src/scripts/_moveimages_s3.js"
   },
   "dependencies": {
     "@astrojs/db": "^0.10.1",
