@@ -11,7 +11,7 @@
  export let slug; // Ensure the slug is passed as a prop to this component
  // const editor = view.editor;
 
- console.log('editor', editor);
+ //console.log('editor', editor);
 
  let showModal = false;
  let displayedSrc = ''; // This will hold the processed src

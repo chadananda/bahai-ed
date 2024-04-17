@@ -1,12 +1,13 @@
 ---
  import { getPublishedArticles } from '@utils/utils.js';
 
- const { user } = Astro.props;
- const isAdmin = ['admin', 'superadmin'].includes(user.role);
- const isEditor = ['editor', 'admin', 'superadmin'].includes(user.role);
- const isAuthor = ['author', 'editor', 'admin', 'superadmin'].includes(user.role);
- console.log('user', user);
- console.log(user.name, user.role, isAdmin, isEditor, isAuthor);
+ const user  = Astro.locals?.user
+//  const { user } = Astro.props;
+ const isAdmin = ['admin', 'superadmin'].includes(user?.role);
+ const isEditor = ['editor', 'admin', 'superadmin'].includes(user?.role);
+ const isAuthor = ['author', 'editor', 'admin', 'superadmin'].includes(user?.role);
+ //console.log('user', user);
+ //console.log(user?.name, user?.role, isAdmin, isEditor, isAuthor);
  const articles = await getPublishedArticles("en");
  // sort articles array by data.draft then article.data.datePublished
  articles.sort((a, b) => {

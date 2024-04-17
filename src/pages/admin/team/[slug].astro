@@ -1,17 +1,263 @@
 ---
 export const prerender = false;
 
-import { getTeamMembers } from "@utils/utils";
+import Layout from '@layouts/AdminLayout.astro';
+import site from '@data/site.json';
+import { getTeamMemberBySlug, transformS3Url, updateTeamMember, slugify, deleteTeamMember } from "@utils/utils";
 
-export async function getStaticPaths() {
-  const members = await getTeamMembers();
-  return members.map((user) => {
-    return { params: { slug: user.id }, props: { user } };
-  });
+const user  = Astro.locals?.user
+// this page is only for admins
+if (!['admin','superadmin'].includes(user?.role)) return Astro.redirect('/admin');
+
+
+
+const formFields = [
+  { name: 'name', label: 'Name', placeholder: 'Enter name', type: 'text', optional: true },
+  { name: 'title', label: 'Title', placeholder: 'Enter title', type: 'text', optional: true },
+  { name: 'image_src', label: 'Image URL', placeholder: 'Enter image source URL', type: 'url', optional: true },
+  // { name: 'image_alt', label: 'Image Alt Text', placeholder: 'Enter image alt text', type: 'text', optional: true },
+  { name: 'email', label: 'Contact email', placeholder: 'Email', type: 'email', optional: false },
+
+  { name: 'worksFor_type', label: 'Works For Type', placeholder: 'Enter employer type', type: 'text', optional: true },
+  { name: 'worksFor_name', label: 'Works For Name', placeholder: 'Enter employer name', type: 'text', optional: true },
+
+  { name: 'jobTitle', label: 'Job Title', placeholder: 'Enter job title', type: 'text', optional: true },
+
+  { name: 'isFictitious', label: 'Is Fictitious', placeholder: '', type: 'checkbox', defaultValue: false, optional: true },
+  { name: 'external', label: 'External', placeholder: '', type: 'checkbox', defaultValue: false, optional: true },
+  { name: 'url', label: 'Bio URL', placeholder: 'Enter URL', type: 'textarea', colspan:2, optional: true },
+
+  // { name: 'type', label: 'Type', placeholder: 'Enter type', type: 'text', optional: true, defaultValue: 'Person' },
+  { name: 'sameAs_linkedin', label: 'LinkedIn Profile', placeholder: 'Enter LinkedIn profile URL', type: 'text', optional: true },
+  { name: 'sameAs_twitter', label: 'Twitter Profile', placeholder: 'Enter Twitter profile URL', type: 'text', optional: true },
+  { name: 'sameAs_facebook', label: 'Facebook Profile', placeholder: 'Enter Facebook profile URL', type: 'text', optional: true },
+
+  { name: 'description', label: 'Description', placeholder: 'Enter description, 160 Chars', type: 'textarea', optional: true },
+  { name: 'description_125', label: 'Short Description (125 chars)', placeholder: 'Enter description, 125 chars', type: 'textarea', optional: true, maxLength: 125 },
+  { name: 'description_250', label: 'Short Description (250 chars)', placeholder: 'Enter description, 250 chars', type: 'textarea', optional: true, maxLength: 250 },
+  { name: 'biography', label: 'Biography', placeholder: 'Enter biography', type: 'textarea', optional: true },
+];
+
+
+const memberData = await getTeamMemberBySlug(Astro.params.slug) || {};
+// console.log('memberData', memberData);
+
+let formData = { ...memberData };
+let errorMsg;
+const isNew = Astro.params.slug!='adduser';
+const isSuperAdmin = memberData?.role === 'superadmin';
+
+// post handler
+// if (Astro.request.method === "POST") {
+//   const requestBody = await Astro.request.formData();
+//   const submittedData = Object.fromEntries(requestBody);
+//   formData = { ...formData, ...submittedData }; // Merge submittedData into formData
+
+//   // collect and validate fields
+//   // for (const field of formFields) {
+//   //   let value = field.type === 'checkbox' ? !!formData.get(field.name) : formData.get(field.name);
+//   //   if (!field.optional && !value) {
+//   //     errorMsg = `${field.label} is required.`;
+//   //     break;
+//   //   }
+//   //   if (value) {
+//   //     if (field.type === 'text' && field.maxLength && value.length > field.maxLength) {
+//   //       errorMsg = `${field.label} < ${field.maxLength} chars.`;
+//   //       break;
+//   //     }
+//   //     if (field.type === 'email' && !/^\S+@\S+\.\S+$/.test(value)) {
+//   //       errorMsg = `Invalid email for ${field.label}.`;
+//   //       break;
+//   //     }
+//   //     if (field.type === 'url' && !/^https?:\/\/\S+\.\S+$/.test(value)) {
+//   //       errorMsg = `Invalid URL for ${field.label}.`;
+//   //       break;
+//   //     }
+//   //   } else if (field.defaultValue) {
+//   //     value = field.defaultValue;
+//   //   }
+//   //   member[field.name] = value;
+//   // }
+//   // also add role to member object. It can be of type
+//   member.role = isSuperAdmin ? 'superadmin' : (formData.get('role') || 'author');
+//   if (!isSuperAdmin && !['admin', 'editor', 'author'].includes(member.role)) errorMsg = 'Invalid role.';
+//   // fill in some optional fields
+//   member.description_125 = member.description_125 || member.description?.substring(0, 125) || '';
+//   member.description_250 = member.description_250 || member.description?.substring(0, 250) || '';
+//   member.biography = member.biography || member.description || '';
+
+//   if (!errorMsg) {
+//     member.id = isNew ? slugify(member.name) : Astro.params.slug;
+//     member.url = member.external ? member.url : `${site.url}/author/${member.id}`;
+//     try {
+//       if (await updateTeamMember(member, isNew)) return Astro.redirect('/admin/team');
+//     } catch (error) {
+//       errorMsg = `Error: ${error.message}`;
+//     }
+//   } else {
+//     // save member object to local storage so we can prefill the form
+//     for (const key of Object.keys(memberData)) {
+//       formData[key] = formData.hasOwnProperty(key) ? formData[key] : memberData[key];
+//     }
+//   }
+// }
+
+if (Astro.request.method === "POST") {
+  const requestBody = await Astro.request.formData();
+  // Convert FormData to a plain object and merge with existing formData
+  formData = { ...formData, ...Object.fromEntries(requestBody) };
+
+  // console.log('formData', formData);
+  if (formData.delete) {
+    delete formData.delete;
+    try { if (await deleteTeamMember(Astro.params.slug)) return Astro.redirect('/admin/team'); }
+     catch (error) { errorMsg = `Error: ${error.message}`; }
+  }
+
+  // collect and validate fields
+  for (const field of formFields) {
+    let value = formData[field.name];
+
+    // If it's a checkbox, ensure a boolean value
+    if (field.type === 'checkbox')  value = !!formData[field.name];
+
+    // Check if required fields have values
+    if (!field.optional && !value) { errorMsg = `${field.label} is required.`; break; }
+
+    // Validate based on type
+    if (value) {
+      if (field.type === 'text' && field.maxLength && value.length > field.maxLength) {
+        errorMsg = `${field.label} must be less than ${field.maxLength} characters.`;
+        break;
+      }
+      if (field.type === 'email' && !/^\S+@\S+\.\S+$/.test(value)) {
+        errorMsg = `Invalid email for ${field.label}.`;
+        break;
+      }
+      if (field.type === 'url' && !/^https?:\/\/\S+\.\S+$/.test(value)) {
+        errorMsg = `Invalid URL for ${field.label}.`;
+        break;
+      }
+    } else if (field.defaultValue) {
+      value = field.defaultValue;
+    }
+    formData[field.name] = value; // Update formData with validated or default value
+  }
+
+  // Additional logic...
+  formData.role = isSuperAdmin ? 'superadmin' : (formData.role || 'author');
+  if (!isSuperAdmin && !['admin', 'editor', 'author'].includes(formData.role)) {
+    errorMsg = 'Invalid role.';
+  }
+
+  // Only proceed if there's no error
+  if (!errorMsg) {
+    const memberToSave = {
+      ...formData,
+      id: isNew ? slugify(formData.name) : Astro.params.slug,
+      url: formData.external ? formData.url : `${site.url}/author/${formData.id}`
+    };
+    try {
+      delete formData.delete;
+      if (await updateTeamMember(memberToSave, isNew)) return Astro.redirect('/admin/team');
+    } catch (error) {
+      errorMsg = `Error: ${error.message}`;
+    }
+  }
+  // If there's an error, formData will be used to re-populate the form fields
 }
 
-const { user } = Astro.props;
+
+const displayImage = formData.image_src ? transformS3Url(formData.image_src, 156, 156, 'jpg', 50) : '';
 
 ---
 
-<h1>User Edit Page: {user?.name}</h1>
+<!-- <h1>User Edit Page: {user?.id}</h1> -->
+
+<Layout user={user}>
+  <div class="mx-20 w-full prose">
+
+    <h1> Site Planning: Team: {!isNew ? (  <span> Edit User </span> ) : ( <span> Add New User</span> )} </h1>
+    <p class="ml-2 -mt-8"> <a href="/">home</a> / <a href="/admin">admin</a> / <a href="/admin/team">team</a> / edit </p>
+
+
+    {errorMsg && (
+      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+        <span class="block sm:inline">{errorMsg}</span>
+      </div>
+    )}
+
+    <form action="" method="POST" class="space-y-4 bg-white shadow rounded p-4 mb-20">
+
+
+      <!-- Picture Card  -->
+      <div class="mx-auto border rounded-lg shadow-lg overflow-hidden" style="width: fit-content;">
+
+        <div class="flex justify-center items-center bg-gray-200 p-0">
+          {displayImage ? (
+            <img src={displayImage} alt={formData.name} class="rounded-full m-2 w-32 h-32 border-4 border-white shadow-lg" />
+          ) : (
+            <svg class="rounded-full m-2 w-32 h-32 border-4 border-white shadow-lg text-gray-400" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 12c2.7 0 5.3-2.2 5.3-5.3 0-3-2.6-5.4-5.3-5.4S6.7 3.7 6.7 6.7C6.7 9.8 9.3 12 12 12zm0 2.2c-3 0-9 1.5-9 4.5v2.2h18v-2.2c0-3-6-4.5-9-4.5z"/>
+            </svg>
+          )}
+        </div>
+
+
+        <div class="text-center p-2 bg-gray-200">
+          {formData.role !== 'superadmin' ? (
+            <div class="inline-block">
+              <label for="role" class="block text-sm font-medium text-gray-600"> Role
+                <select id="role" name="role" class="mt-1 rounded-md border-gray-300 shadow-sm p-2 text-sm">
+                  <option value="author" selected={formData.role === 'author'}>Author</option>
+                  <option value="editor" selected={formData.role === 'editor'}>Editor</option>
+                  <option value="admin" selected={formData.role === 'admin'}>Admin</option>
+                </select>
+              </label>
+            </div>
+          ) : (
+            <div class="rounded-2xl border border-gray-300 bg-gray-100 px-2 pt-0 pb-1 inline-block bg-red-00">
+               <span class="font-medium text-sm">superadmin</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+
+      <!-- All the other fields  -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-lg">
+        {formFields.map((field) => (
+          <div key={field.name} class={`col-span-1 ${field.type === 'textarea' ? 'md:col-span-3' : ''}`}>
+            <label for={field.name} class="block text-sm font-medium text-gray-600">
+              {field.label}{!field.optional && '*'}
+            </label>
+            {field.type === 'textarea' ? (
+              <textarea id={field.name} name={field.name} placeholder={field.placeholder} class="mt-1 block w-full rounded-md border-2 border-gray-300 shadow-sm p-2" rows="3">{formData[field.name]}</textarea>
+            ) : field.type === 'checkbox' ? (
+              <input type="checkbox" id={field.name} name={field.name} checked={formData[field.name]} class="ml-2 rounded border-2 border-gray-300" />
+            ) : (
+              <input id={field.name} type={field.type} name={field.name} value={formData[field.name]} placeholder={field.placeholder} class="mt-1 block w-full rounded-md border-2 border-gray-300 shadow-sm p-2" {...field.maxLength ? {maxlength: field.maxLength} : {}} />
+            )}
+          </div>
+        ))}
+      </div>
+
+      <!-- add checkbox with 'delete this user' field. Make the style red and warning  -->
+      <div class="col-span-1 text-2xl text-center font-mono my-4">
+        <label for="delete" class="text-red-600"> Delete this user: </label>
+        <input type="checkbox" id="delete" name="delete" class="ml-2 rounded border-2 text-9xl" />
+      </div>
+
+
+
+      <button type="submit" class="w-full px-4 py-2 mt-4 bg-blue-600 text-white text-lg rounded-md hover:bg-blue-700">Save Changes</button>
+    </form>
+
+
+
+
+  </div>
+</Layout>
+
+
+

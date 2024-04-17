@@ -30,7 +30,7 @@ export default async function() {
 		image_src: site.author_image,
 		image_alt: `Author - ${site.author}`,
 		external: false,
-		contact: import.meta.env.SITE_ADMIN_EMAIL.trim().toLowerCase(),
+		email: import.meta.env.SITE_ADMIN_EMAIL.trim().toLowerCase(),
 		isFictitious: false,
 		jobTitle: 'Staff Writer, Editor', // redundant?
 		type: 'Person',

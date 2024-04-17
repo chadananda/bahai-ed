@@ -47,7 +47,7 @@ export const isValidEmail = (email) => {
 export const loadArticleRaw = async (slug, type='posts') => {
   const entry = await getPostFromSlug(slug);
   const filepath = path.join(process.cwd(), 'src/content', entry.collection, entry.id);
-  console.log('loadArticleRaw filepath:', filepath);
+  // console.log('loadArticleRaw filepath:', filepath);
   const filedata = fs.readFileSync(filepath);
   const { data, content } = matter(filedata);
   return { data, content };
@@ -348,14 +348,26 @@ export const JSONTable = (data, columns = ['Key', 'Value']) => {
 };
 
 
+export const getTeamMemberBySlug = async (slug) => {
+  // drizzle does not merge tables, so we need to do it manually -- we just need the user role
+  const member = (await db.select().from(Team).where(eq(Team.id, slug)).leftJoin(Users, eq(Team.email, Users.email)))
+    .map(m => ({ ...m.Team, role: m.Users?.role || 'author' }))[0];
+  return member;
+}
+export const getTeamMemberByEmail = async (email) => {
+  // drizzle does not merge tables, so we need to do it manually -- we just need the user role
+  const member = (await db.select().from(Team).where(eq(Team.email, email)).leftJoin(Users, eq(Team.email, Users.email)))
+    .map(m => ({ ...m.Team, role: m.Users?.role || 'author' }))[0];
+  return member;
+}
 
 export const getTeamMembers = async () => {
   // drizzle does not merge tables, so we need to do it manually -- we just need the user role
-  const members = (await db.select().from(Team).innerJoin(Users, eq(Team.id, Users.id)))
-    .map(m => ({ ...m.Team, role: m.Users.role }));
-
-  // maybe add in the data collection users?
-
+  const members = (await db.select().from(Team).leftJoin(Users, eq(Team.email, Users.email)))
+    .map(m => ({ ...m.Team, role: m.Users?.role || 'author' }));
+  // const allMembers = await db.select().from(Team);
+  // console.log('getTeamMembers count:', members.length);
+  // maybe add in the data collection users
   return members;
 }
 
@@ -371,6 +383,31 @@ export const filterTopics = async (topics) => {
   return filteredTopics.filter(Boolean);
   // Return the filtered topics or the nonexistent topics based on the 'exists' parameter
   // return exists ? existingTopics : topics.filter(topic => !existingTopics.includes(topic));
+}
+
+export const deleteTeamMember = async (slug) => {
+  return await db.delete(Team).where(eq(Team.id, slug));
+}
+
+export const updateTeamMember = async (member, isNew) => {
+  let success = true
+  if (isNew) {
+    // insert
+    if (await db.select().from(Team).where(eq(Team.email, member.email))) throw new Error('Email already in use');
+    if (await db.select().from(Team).where(eq(Team.id, member.id))) throw new Error('Name already in use');
+
+    const {role, email} = member; delete member.role;
+    await db.insert(Team).values({ ...member });
+    await db.update(Users).set({ role }).where(eq(Users.email, email));
+    // console.log('Inserted new team member', member);
+  } else {
+    // update
+    const {role, email, id} = member; delete member.role;
+    await db.update(Team).set({ ...member }).where(eq(Team.id, id));
+    await db.update(Users).set({ role }).where(eq(Users.email, email));
+    // console.log('Updated team member', member);
+  }
+  return success;
 }
 
 

@@ -66,7 +66,7 @@ function saveArticle() {
     body: JSON.stringify({ slug, content, meta}),
   })
   .then(response => {
-    console.log('Article updated successfully.');
+    //console.log('Article updated successfully.');
     modified = false;
   })
   .catch(error => { console.error('Error updating article:', error) });

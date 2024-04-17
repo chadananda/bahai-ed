@@ -29,9 +29,9 @@ if (Astro.request.method === "POST") {
       // if valid user found, create session and redirect to admin
       if (isValidUser) {
         const session = await lucia.createSession(user.id, {role: 'visitor'});
-        console.log('Session', !!session ? "session created" : "session not created");
+        //console.log('Session', !!session ? "session created" : "session not created");
         const sessionCookie = lucia.createSessionCookie(session.id);
-        console.log('Cookie', sessionCookie ? "cookie created" : "cookie not created");
+        //console.log('Cookie', sessionCookie ? "cookie created" : "cookie not created");
         Astro.cookies.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
         return Astro.redirect('/admin', 303);
       } else errorMsg = 'Invalid email or password.';

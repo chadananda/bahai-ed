@@ -34,7 +34,7 @@ export const Team = defineTable({
     image_src: column.text({ optional: true }),
     image_alt: column.text({ optional: true }),
     external: column.boolean({ optional: true }),
-    contact: column.text({ optional: true }),
+    email: column.text({ optional: false }),
     isFictitious: column.boolean({optional: true}),
     jobTitle: column.text({ optional: true }),
     type: column.text({ optional: true }), // default: Person
@@ -48,7 +48,8 @@ export const Team = defineTable({
     description_125: column.text({ optional: true }),
     description_250: column.text({ optional: true }),
     biography: column.text({ optional: true }),
-  }
+  },
+  indexes: [ { on: ["id", "email"], unique: true } ]
 });
 
 export const Users = defineTable({

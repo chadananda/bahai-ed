@@ -28,37 +28,34 @@ const teamMembers  = await getTeamMembers();
 
     <!-- Loop through teamMembers using a more compact card layout -->
     {teamMembers.map(member => (
-<div class="relative bg-white border not-prose border-gray-100 my-2 p-4 rounded-lg shadow-md hover:shadow-lg flex flex-col md:flex-row items-start md:items-center space-x-0 md:space-x-6">
+      <div class="relative bg-white border not-prose border-gray-100 my-2 p-4 rounded-lg shadow-md hover:shadow-lg flex flex-col md:flex-row items-start md:items-center space-x-0 md:space-x-6">
 
-  <div class="flex-shrink-0 flex flex-col justify-between text-center h-auto md:h-full">
-    <img src={member.image_src} alt={member.image_alt} class="rounded-full h-16 w-16 md:h-20 md:w-20 object-cover mx-auto" />
-    <span class="inline-block bg-gray-100 border text-xs text-gray-500 px-2 py-1 rounded-full mx-auto mt-2 md:mt-auto">{member.role}</span>
-  </div>
+        <div class="flex-shrink-0 flex flex-col justify-between text-center h-auto md:h-full">
+          <img src={member.image_src} alt={member.image_alt} class="rounded-full h-16 w-16 md:h-20 md:w-20 object-cover mx-auto" />
+          <span class="inline-block bg-gray-100 border text-xs text-gray-500 px-2 py-1 rounded-full mx-auto mt-2 md:mt-auto">{member.role}</span>
+        </div>
 
-  <div class="flex-grow"> <!-- Removed padding-top -->
-    <h2 class="text-md font-semibold">{member.name}</h2> <!-- Removed top margin -->
-    <p class="text-xs text-gray-600">{member.title}</p>
-    <p class="text-xs">
-      {member.contact.includes('@') ? (
-        <a href={`mailto:${member.contact}`} target="_blank" class="text-blue-600 hover:text-blue-800">{member.contact}</a>
-      ) : (
-        <a href={member.contact} target="_blank" class="text-blue-600 hover:text-blue-800">{member.contact}</a>
-      )}
-    </p>
-    <p class="text-xs text-gray-600">{member.description}</p>
-  </div>
+        <div class="flex-grow"> <!-- Removed padding-top -->
+          <h2 class="text-md font-semibold">{member.name}</h2> <!-- Removed top margin -->
+          <p class="text-xs text-gray-600">{member.title}</p>
+          <p class="text-xs">
+            <a href={`mailto:${member.email}`} target="_blank" class="text-blue-600 hover:text-blue-800">{member.email}</a>
+          </p>
+          <p class="text-xs text-gray-600">{member.description}</p>
+        </div>
 
-  <a href={`/admin/team_edit/${member.id}`} class="absolute top-2 right-2 no-underline text-gray-400 hover:bg-blue-500 hover:text-white p-2 rounded-full">
-    <span class="sr-only">Edit</span> <!-- Screen-reader-only text -->
-    &#9998; <!-- Unicode pencil icon -->
-  </a>
+        <a href={`/admin/team/${member.id}`} class="absolute top-2 right-2 no-underline text-gray-400 hover:bg-blue-500 hover:text-white p-2 rounded-full">
+          <span class="sr-only">Edit</span> <!-- Screen-reader-only text -->
+          &#9998; <!-- Unicode pencil icon -->
+        </a>
+      </div>
+    ))}
+
+<div class="flex justify-center mt-5">
+  <a href="/admin/team/adduser" class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition ease-in duration-200">+ Add Team Member</a>
 </div>
 
 
-
-
-
-    ))}
 
 
 
