@@ -5,10 +5,11 @@ import Layout from '@layouts/AdminLayout.astro';
 import site from '@data/site.json';
 import { getTeamMemberBySlug, transformS3Url, updateTeamMember, slugify, deleteTeamMember } from "@utils/utils";
 
+const sessionid = Astro.locals.session.id;
+// console.log('sessionid', sessionid, Astro.locals.session);
 const user  = Astro.locals?.user
 // this page is only for admins
 if (!['admin','superadmin'].includes(user?.role)) return Astro.redirect('/admin');
-
 
 
 const formFields = [
@@ -44,63 +45,9 @@ const memberData = await getTeamMemberBySlug(Astro.params.slug) || {};
 
 let formData = { ...memberData };
 let errorMsg;
-const isNew = Astro.params.slug!='adduser';
+const isNew = Astro.params.slug==='adduser';
 const isSuperAdmin = memberData?.role === 'superadmin';
 
-// post handler
-// if (Astro.request.method === "POST") {
-//   const requestBody = await Astro.request.formData();
-//   const submittedData = Object.fromEntries(requestBody);
-//   formData = { ...formData, ...submittedData }; // Merge submittedData into formData
-
-//   // collect and validate fields
-//   // for (const field of formFields) {
-//   //   let value = field.type === 'checkbox' ? !!formData.get(field.name) : formData.get(field.name);
-//   //   if (!field.optional && !value) {
-//   //     errorMsg = `${field.label} is required.`;
-//   //     break;
-//   //   }
-//   //   if (value) {
-//   //     if (field.type === 'text' && field.maxLength && value.length > field.maxLength) {
-//   //       errorMsg = `${field.label} < ${field.maxLength} chars.`;
-//   //       break;
-//   //     }
-//   //     if (field.type === 'email' && !/^\S+@\S+\.\S+$/.test(value)) {
-//   //       errorMsg = `Invalid email for ${field.label}.`;
-//   //       break;
-//   //     }
-//   //     if (field.type === 'url' && !/^https?:\/\/\S+\.\S+$/.test(value)) {
-//   //       errorMsg = `Invalid URL for ${field.label}.`;
-//   //       break;
-//   //     }
-//   //   } else if (field.defaultValue) {
-//   //     value = field.defaultValue;
-//   //   }
-//   //   member[field.name] = value;
-//   // }
-//   // also add role to member object. It can be of type
-//   member.role = isSuperAdmin ? 'superadmin' : (formData.get('role') || 'author');
-//   if (!isSuperAdmin && !['admin', 'editor', 'author'].includes(member.role)) errorMsg = 'Invalid role.';
-//   // fill in some optional fields
-//   member.description_125 = member.description_125 || member.description?.substring(0, 125) || '';
-//   member.description_250 = member.description_250 || member.description?.substring(0, 250) || '';
-//   member.biography = member.biography || member.description || '';
-
-//   if (!errorMsg) {
-//     member.id = isNew ? slugify(member.name) : Astro.params.slug;
-//     member.url = member.external ? member.url : `${site.url}/author/${member.id}`;
-//     try {
-//       if (await updateTeamMember(member, isNew)) return Astro.redirect('/admin/team');
-//     } catch (error) {
-//       errorMsg = `Error: ${error.message}`;
-//     }
-//   } else {
-//     // save member object to local storage so we can prefill the form
-//     for (const key of Object.keys(memberData)) {
-//       formData[key] = formData.hasOwnProperty(key) ? formData[key] : memberData[key];
-//     }
-//   }
-// }
 
 if (Astro.request.method === "POST") {
   const requestBody = await Astro.request.formData();
@@ -171,15 +118,29 @@ if (Astro.request.method === "POST") {
 const displayImage = formData.image_src ? transformS3Url(formData.image_src, 156, 156, 'jpg', 50) : '';
 
 ---
-
-<!-- <h1>User Edit Page: {user?.id}</h1> -->
-
 <Layout user={user}>
+
+  <div id="imageUploadModal" data-slug={memberData.id ? memberData.id : ''} data-sessionid={sessionid}
+   data-imgbase={site.img_base_url}
+   class="fixed inset-0 bg-black bg-opacity-50 hidden flex justify-center items-center z-10">
+    <div class="bg-white p-4 rounded-lg m-4 max-w-md w-full" style="z-index:50;"> <!-- Adjust max-w-md to your preference for width -->
+      <h2 class="text-lg text-center">Upload Image</h2>
+
+      <img id="popupImage" class="w-full h-auto rounded-lg mb-4" style="display: none;">
+
+      <input type="file" id="fileInput" class="block w-full text-sm text-gray-900 border rounded-lg cursor-pointer focus:outline-none">
+      <input type="text" id="directUrlInput" class="block w-full mt-4 p-2 text-sm text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="Or paste an image URL here">
+      <div class="flex justify-center space-x-4 mt-4">
+        <button type="button" id="uploadButton" class="px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-700">Upload</button>
+        <button type="button" id="closeModalButton" class="px-4 py-2 rounded bg-gray-500 text-white hover:bg-gray-700">Close</button>
+      </div>
+    </div>
+  </div>
+
   <div class="mx-20 w-full prose">
 
     <h1> Site Planning: Team: {!isNew ? (  <span> Edit User </span> ) : ( <span> Add New User</span> )} </h1>
     <p class="ml-2 -mt-8"> <a href="/">home</a> / <a href="/admin">admin</a> / <a href="/admin/team">team</a> / edit </p>
-
 
     {errorMsg && (
       <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
@@ -193,16 +154,15 @@ const displayImage = formData.image_src ? transformS3Url(formData.image_src, 156
       <!-- Picture Card  -->
       <div class="mx-auto border rounded-lg shadow-lg overflow-hidden" style="width: fit-content;">
 
-        <div class="flex justify-center items-center bg-gray-200 p-0">
+        <div class="flex justify-center items-center bg-gray-200 p-0" id="imageTrigger" alt="Upload Image" style="cursor:pointer">
           {displayImage ? (
-            <img src={displayImage} alt={formData.name} class="rounded-full m-2 w-32 h-32 border-4 border-white shadow-lg" />
+            <img id="cardimg" src={displayImage} alt={formData.name} class="rounded-full m-2 w-32 h-32 border-4 border-white shadow-lg" />
           ) : (
             <svg class="rounded-full m-2 w-32 h-32 border-4 border-white shadow-lg text-gray-400" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path d="M12 12c2.7 0 5.3-2.2 5.3-5.3 0-3-2.6-5.4-5.3-5.4S6.7 3.7 6.7 6.7C6.7 9.8 9.3 12 12 12zm0 2.2c-3 0-9 1.5-9 4.5v2.2h18v-2.2c0-3-6-4.5-9-4.5z"/>
             </svg>
           )}
         </div>
-
 
         <div class="text-center p-2 bg-gray-200">
           {formData.role !== 'superadmin' ? (
@@ -243,20 +203,169 @@ const displayImage = formData.image_src ? transformS3Url(formData.image_src, 156
       </div>
 
       <!-- add checkbox with 'delete this user' field. Make the style red and warning  -->
-      <div class="col-span-1 text-2xl text-center font-mono my-4">
-        <label for="delete" class="text-red-600"> Delete this user: </label>
-        <input type="checkbox" id="delete" name="delete" class="ml-2 rounded border-2 text-9xl" />
-      </div>
-
-
+      {!isNew && !isSuperAdmin && (
+        <div class="col-span-1 text-2xl text-center font-mono my-4">
+          <label for="delete" class="text-red-600"> Delete this user: </label>
+          <input type="checkbox" id="delete" name="delete" class="ml-2 rounded border-2 text-9xl" />
+        </div>
+      )}
 
       <button type="submit" class="w-full px-4 py-2 mt-4 bg-blue-600 text-white text-lg rounded-md hover:bg-blue-700">Save Changes</button>
     </form>
 
 
 
-
   </div>
+
+
+
+
+  <script>
+    // Element references
+    const modal = document.getElementById('imageUploadModal');
+    const trigger = document.getElementById('imageTrigger');
+    const closeBtn = document.getElementById('closeModalButton');
+    const fileInput = document.getElementById('fileInput');
+    const urlInput = document.getElementById('directUrlInput');
+    const imageUrlField = document.getElementById('imageUrl');
+    const imageSrcField = document.getElementById('image_src');
+    const popupImage = document.getElementById('popupImage');
+    const uploadBtn = document.getElementById('uploadButton');
+    const imgbase = modal.getAttribute('data-imgbase');
+
+    // Functions
+    const openModal = () => {
+      // Reset inputs
+      fileInput.value = '';
+      urlInput.value = '';
+      // Display current image if exists
+      if (imageSrcField && imageSrcField.value) {
+        popupImage.src = imageSrcField.value;
+        popupImage.style.display = 'block';
+      } else {
+        popupImage.style.display = 'none';
+      }
+      // Reset and disable upload button
+      toggleUploadButton();
+      // Open modal
+      modal.classList.remove('hidden');
+    };
+    const closeModal = () => modal.classList.add('hidden');
+    const toggleUploadButton = () => {
+      if (fileInput.files.length > 0 || urlInput.value.trim() !== '') {
+        uploadBtn.disabled = false;
+        uploadBtn.classList.replace('bg-gray-500', 'bg-blue-500');
+        uploadBtn.classList.replace('hover:bg-gray-500', 'hover:bg-blue-700');
+        uploadBtn.classList.replace('cursor-not-allowed', 'cursor-pointer');
+      } else {
+        uploadBtn.disabled = true;
+        uploadBtn.classList.replace('bg-blue-500', 'bg-gray-500');
+        uploadBtn.classList.replace('hover:bg-blue-700', 'hover:bg-gray-500');
+        uploadBtn.classList.replace('cursor-pointer', 'cursor-not-allowed');
+      }
+    };
+
+    function slugify(text) {
+      return text.toLowerCase().trim().replace(/\s+/g, '-').replace(/-+/g, '-');
+    }
+
+    const displayImagePreview = (src) => {
+      popupImage.src = src;
+      popupImage.style.display = 'block';
+    }
+
+    export const transformS3Url = (url, width = null, height = null, format = 'webp', quality = 80) => {
+      if (!url.includes('.s3.')) return url;
+      const imagePath = new URL(url).pathname;
+      let params = [];
+      if (width) params.push(`w=${width}`);
+      if (height) params.push(`h=${height}`);
+      // params.push(`fm=${format}`, `q=${quality}`);
+      params.push(`fm=${format}`, `q=${quality}`, `fit=crop`, `crop=faces`);
+      return `${imgbase}${imagePath}?${params.join('&')}`;
+    };
+
+    const uploadImage = () => {
+      const apiUrl = '/api/upload_s3';
+      const file = fileInput.files[0];
+      const imageUrl = urlInput.value;
+      const userSlug = modal.getAttribute('data-slug') || slugify(document.getElementById('nameField').value);
+      const sessionid = modal.getAttribute('data-sessionid');
+      const cardimg = document.getElementById('cardimg')
+      // console.log('uploadImage', userSlug, sessionid);
+
+      const processFile = (content, filename) => {
+        const s3key = `team/${userSlug || Date.now()}/${filename}`;
+        fetch(apiUrl, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          credentials: 'same-origin',
+          // 'Authorization': `Bearer ${sessionid}`,
+          body: JSON.stringify({ filedata: content.split(',')[1], s3key, sessionid })
+        })
+        .then(res => res.ok ? res.json() : Promise.reject('Failed to upload'))
+        .then(data => {
+          if (data.s3url) {
+            imageSrcField.value = data.s3url;
+            popupImage.src = data.s3url;
+            cardimg.src = transformS3Url(data.s3url, 120, 120, 'jpg', 80);
+            closeModal();
+          } else throw new Error('No URL returned ' + JSON.stringify(data));
+        })
+        .catch(error => {
+          console.error('Upload error:', error);
+          alert('Upload error: ' + error.message);
+        });
+      };
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => processFile(reader.result, file.name);
+        reader.readAsDataURL(file);
+      } else if (imageUrl) {
+        fetch(imageUrl)
+          .then(response => response.blob())
+          .then(blob => {
+            const reader = new FileReader();
+            reader.onload = () => processFile(reader.result, imageUrl.split('/').pop().split('?')[0]);
+            reader.readAsDataURL(blob);
+          })
+          .catch(console.error);
+      }
+    };
+
+
+
+
+
+
+
+    // Event listeners
+    trigger.addEventListener('click', openModal);
+    closeBtn.addEventListener('click', closeModal);
+    window.addEventListener('click', (event) => { if (event.target === modal) closeModal(); });
+    document.getElementById('uploadButton').addEventListener('click', uploadImage); // Ensure you have an element with id='uploadButton'
+    fileInput.addEventListener('change', toggleUploadButton);
+    urlInput.addEventListener('input', toggleUploadButton);
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files.length > 0) {
+        const reader = new FileReader();
+        reader.onload = (e) => displayImagePreview(e.target.result);
+        reader.readAsDataURL(fileInput.files[0]);
+      }
+      toggleUploadButton();
+    });
+    // Event listener for the URL input
+    urlInput.addEventListener('input', () => {
+      if (urlInput.value.trim() !== '') {
+        displayImagePreview(urlInput.value);
+      }
+      toggleUploadButton();
+    });
+
+</script>
+
+
 </Layout>
 
 

@@ -4,8 +4,10 @@ export const prerender = false;
 import { db, eq, Team } from 'astro:db';
 import Layout from '@layouts/AdminLayout.astro';
 
-const user = Astro.locals.user;
+const user = Astro.locals?.user;
+console.log('user', user);
 const member = !!(await db.select().from(Team).where(eq(Team.email, user.email)))[0];
+console.log('member', member);
 
 // user must be a team member in order to use admin area
 if (!member) return Astro.redirect('/login');

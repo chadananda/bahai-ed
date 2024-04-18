@@ -8,6 +8,8 @@ import matter from 'gray-matter';
 import site from '@data/site.json'
 import { getImage } from "astro:assets";
 import { db, Categories, eq, Team, Users } from 'astro:db';
+import AWS from 'aws-sdk';
+import { Buffer } from 'buffer';
 
 export const slugify = (text) => {
   return slugifier(text,  {
@@ -410,5 +412,55 @@ export const updateTeamMember = async (member, isNew) => {
   return success;
 }
 
+export const guessContentType = (filename) => {
+  const ext = path.extname(filename).toLowerCase();
+  switch (ext) {
+    case '.jpg': return 'image/jpeg';
+    case '.jpeg': return 'image/jpeg';
+    case '.png': return 'image/png';
+    case '.gif': return 'image/gif';
+    case '.webp': return 'image/webp';
+    case '.avif': return 'image/avif';
+    case '.svg': return 'image/svg+xml';
+    case '.mp3': return 'audio/mpeg';
+    case '.wav': return 'audio/wav';
+    case '.ogg': return 'audio/ogg';
+    case '.pdf': return 'application/pdf';
+    case '.doc': return 'application/msword';
+    case '.docx': return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+    case '.xls': return 'application/vnd.ms-excel';
+    case '.xlsx': return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    case '.ppt': return 'application/vnd.ms-powerpoint';
+    case '.pptx': return 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+    case '.txt': return 'text/plain';
+    case '.csv': return 'text/csv';
+    default: return 'application/octet-stream';
+  }
+}
+
+export const uploadS3 = async (base64Data, Key, ContentType='', Bucket='') => {
+  // Configuring the AWS region and credentials
+  const region = process.env.AWS_BUCKET_REGION; // 'us-east-1'
+  const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
+  const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+  AWS.config.update({ region, accessKeyId, secretAccessKey });
+  ContentType = ContentType || guessContentType(Key)
+  Bucket = Bucket || process.env.AWS_BUCKET_NAME;
+// console.log('uploadS3', Key, ContentType, Bucket);
+  // Convert base64 string to binary buffer
+  const Body = Buffer.from(base64Data, 'base64');
+  // Create an S3 instance
+  const s3 = new AWS.S3();
+  // Setting up S3 upload parameters
+  const params = {  Bucket, Key, Body, ContentType };
+  try {
+    const data = await s3.upload(params).promise();
+    // console.log(`File uploaded successfully at ${data.Location}`);
+    return data.Location;
+  } catch (err) {
+    console.error('Error uploading file:', err);
+    throw err;
+  }
+};
 
 
