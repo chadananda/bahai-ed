@@ -489,8 +489,8 @@ export const uploadS3 = async (base64Data, Key, ContentType='', Bucket='') => {
 
 export const seedSuperUser = async () => {
   if ((await db.select().from(Users)).length > 0) return;
-
   const email = import.meta.env.SITE_ADMIN_EMAIL.trim().toLowerCase();
+  console.log('Adding super user:', email);
   await db.insert(Users).values([{
 		id: slugify(site.author),
 		name: site.author,
@@ -501,6 +501,7 @@ export const seedSuperUser = async () => {
 
   // and initial team member attributes
   if ((await db.select().from(Team).where(eq(Team.email, email))).length > 0) return;
+  console.log('Adding super user to team:', email);
 	await db.insert(Team).values([{
 		id: slugify(site.author),
 		name: site.author,
