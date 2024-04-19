@@ -23,7 +23,12 @@ if (Astro.request.method === "POST") {
    if (!errorMsg) try {
       // user email and hashed password match
       const user = (await db.select().from(Users).where(eq(Users.email, email)))[0];
-      console.log('Validating user login:', user.hashed_password);
+      if (!user) {
+        console.log('Failed to load user from: ', email);
+        let users = await db.select().from(Users);
+        console.error('all users: ', JSON.stringify(users));
+      }
+      console.log('Validating user login:', user, user?.hashed_password);
       const isValidUser = !!user && (await new Argon2id().verify(user?.hashed_password, password));
       console.log(isValidUser ? "valid user" : "not valid user");
       // console.log(password);
