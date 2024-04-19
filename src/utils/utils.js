@@ -488,19 +488,24 @@ export const uploadS3 = async (base64Data, Key, ContentType='', Bucket='') => {
 };
 
 export const seedSuperUser = async () => {
+  console.log('Seeding super user');
 
-  if ((await db.select().from(Users)).length > 0) return;
+  const userCount = (await db.select().from(Users)).length;
+  if (usercount>0) return console.log('userCount:', userCount);
   const email = import.meta.env.SITE_ADMIN_EMAIL.trim().toLowerCase();
   const name = site.author;
   const id = slugify(name);
   const role = 'superadmin';
   const hashed_password = await argon2.hash(import.meta.env.SITE_ADMIN_PASS.trim());
   const user = { id, name, email, hashed_password, role };
+
   console.log('Adding super user:', user);
   await db.insert(Users).values(user);
 
   // and initial team member attributes
-  if ((await db.select().from(Team).where(eq(Team.email, email))).length > 0) return;
+  const memberCount = (await db.select().from(Team)).length;
+  if (memberCount>0) return console.log('memberCount:', memberCount);
+  // if ((await db.select().from(Team).where(eq(Team.email, email))).length > 0) return;
   const title = 'Author, Editor';
   const image_src = site.author_image;
   const image_alt = `Author - ${site.author}`;
@@ -518,6 +523,7 @@ export const seedSuperUser = async () => {
   const description_250 = site.author_bio.slice(0, 250);
   const biography = site.author_bio;
   const teamMember = { id, name, title, image_src, image_alt, external, email, isFictitious: false, jobTitle, type, url, worksFor_type, worksFor_name, description, sameAs_linkedin, sameAs_twitter, sameAs_facebook, description_125, description_250, biography };
+
   console.log('Adding super user to team:', teamMember);
 	await db.insert(Team).values(teamMember);
 
