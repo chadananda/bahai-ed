@@ -491,7 +491,7 @@ export const seedSuperUser = async () => {
   console.log('Seeding super user');
 
   const userCount = (await db.select().from(Users)).length;
-  if (usercount>0) return console.log('userCount:', userCount);
+  if (userCount>0) return console.log('userCount:', userCount);
   const email = import.meta.env.SITE_ADMIN_EMAIL.trim().toLowerCase();
   const name = site.author;
   const id = slugify(name);
