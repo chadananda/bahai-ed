@@ -8,6 +8,7 @@ import matter from 'gray-matter';
 import site from '@data/site.json'
 import { getImage } from "astro:assets";
 import { db, Categories, eq, Team, Users } from 'astro:db';
+import * as argon2 from 'argon2';
 import AWS from 'aws-sdk';
 import { Buffer } from 'buffer';
 
@@ -485,5 +486,44 @@ export const uploadS3 = async (base64Data, Key, ContentType='', Bucket='') => {
     throw err;
   }
 };
+
+export const seedSuperUser = async () => {
+  if ((await db.select().from(Users)).length > 0) return;
+
+  const email = import.meta.env.SITE_ADMIN_EMAIL.trim().toLowerCase();
+  await db.insert(Users).values([{
+		id: slugify(site.author),
+		name: site.author,
+		email,
+		hashed_password: await argon2.hash(import.meta.env.SITE_ADMIN_PASS.trim()),
+		role: 'superadmin'
+	}]).execute();
+
+  // and initial team member attributes
+  if ((await db.select().from(Team).where(eq(Team.email, email))).length > 0) return;
+	await db.insert(Team).values([{
+		id: slugify(site.author),
+		name: site.author,
+		title: 'Author, Editor', // redundant?
+		image_src: site.author_image,
+		image_alt: `Author - ${site.author}`,
+		external: false,
+		email: import.meta.env.SITE_ADMIN_EMAIL.trim().toLowerCase(),
+		isFictitious: false,
+		jobTitle: 'Staff Writer, Editor', // redundant?
+		type: 'Person',
+		url: `${site.url}/author/${slugify(site.author)}`,
+		worksFor_type: 'Organization',
+		worksFor_name: site.siteName,
+		description: site.author_bio,
+		sameAs_linkedin: site.linkedin.publisher,
+		sameAs_twitter: site.twitter.creator,
+		sameAs_facebook: site.facebook.author,
+		description_125: site.author_bio.slice(0, 125),
+		description_250: site.author_bio.slice(0, 250),
+		biography: site.author_bio
+	}]).execute();
+
+}
 
 
