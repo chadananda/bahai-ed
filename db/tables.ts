@@ -1,18 +1,6 @@
 import { defineTable, column, NOW } from "astro:db";
 
-// export const User = defineTable({
-// 	columns: {
-// 		id: column.number({ primaryKey: true }),
-// 		url: column.text({ optional: true }),
-// 		name: column.text(),
-// 		email: column.text({ unique: true, optional: true }),
-// 		avatar: column.text({ optional: true }),
-// 		githubId: column.number({ unique: true }),
-// 		username: column.text(),
-// 		updatedAt: column.date({ default: NOW, nullable: true }),
-// 		createdAt: column.date({ default: NOW, nullable: true }),
-// 	},
-// });
+
 
 export const Categories = defineTable({
  columns: {

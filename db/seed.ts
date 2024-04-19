@@ -13,6 +13,7 @@ const slugify = (text) => {
 }
 
 export default async function() {
+
 	// Seed initial admin user
 	await db.insert(Users).values([{
 		id: slugify(site.author),
@@ -61,7 +62,7 @@ administrative functioning of the Bahá’í community. The	Bahá’í Faith als
 flexible legislative system that allows for the application of supplemental laws to meet the
 needs of a changing society. Such supplemental laws are flexible and can be modified according
 to changing needs because they are not part of the ‘Divine Explicit Text’.`,
-		}]);
+		}]).execute();
 
 
 }

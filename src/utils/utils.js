@@ -314,15 +314,11 @@ export const getDataCollectionEntry = async (collection, id) => {
 }
 
 export const updateCategory = async (category, isNew) => {
-
-
-
   let success = true
   if (isNew) {
     console.log('Inserting category', category);
     // insert if category not already found
     const alreadyExists = (await db.select().from(Categories).where(eq(Categories.id, category.id))).length;
-
     if (alreadyExists) {
       console.log('Category name is already in use', await db.select().from(Categories).where(eq(Categories.id, category.id)));
       throw new Error('Category name is already in use');

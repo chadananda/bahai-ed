@@ -63,7 +63,9 @@ class="z-40 bg-white border border-gray-300 rounded-full shadow-lg p-2 absolute 
   <li><h3><a href="/admin/edit/">Edit content</a></h3>
     <ul>
       {Array.isArray(articles) && articles.map((ar) => (
-        <li class={`${ar.data.draft?'draft':'published'}`}><a href={`/admin/edit/${ar.slug}`}>{ar.data.title}</a></li>
+        <li class={`${ar.data.draft?'draft':'published'}`}>
+          <span href={`/admin/edit/${ar.slug}`}>{ar.data.title}</span>
+        </li>
       ))}
     </ul>
   </li> )}
