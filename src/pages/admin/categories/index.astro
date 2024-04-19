@@ -1,0 +1,39 @@
+---
+export const prerender = false;
+
+import Layout from '@layouts/AdminLayout.astro';
+import site from '@data/site.json';
+import { getDataCollection } from '@utils/utils.js';
+import CategoryCard from "@components/article/categoryCard.astro";
+
+
+// this page is only for admins
+const user  = Astro.locals?.user;
+if (!['admin','superadmin'].includes(user?.role)) return Astro.redirect('/admin');
+
+
+
+const categories = await getDataCollection("categories")
+---
+<Layout user={user} >
+  <div class="mx-20 w-full ">
+    <div class="prose pb-20">
+      <h1> Site Planning: Categories </h1>
+      <p class="ml-2 -mt-8"> <a href="/">home</a> / <a href="/admin">admin</a> / categories </p>
+      <p> Article content is broken into topical catetories for general organization.  </p>
+      <p class=""> Your website categories: </p>
+      <div class="flex float-right -mt-10">
+        <a href="/admin/categories/add" class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition ease-in duration-200">+ Add Category</a>
+      </div>
+    </div>
+
+    <main class="flex flex-wrap justify-center gap-20 mt-5">
+      {Array.isArray(categories) && categories.map((cat) => (
+         <div class="flex-none"> <CategoryCard slug={cat.id} size="md" editmode="true" /> </div>
+      ))}
+    </main>
+
+ </div>
+</Layout>
+
+

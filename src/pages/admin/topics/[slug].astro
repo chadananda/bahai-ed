@@ -4,6 +4,7 @@ export const prerender = false;
 import Layout from '@layouts/AdminLayout.astro';
 import site from '@data/site.json';
 import { getTeamMemberBySlug, transformS3Url, updateTeamMember, slugify, deleteTeamMember } from "@utils/utils";
+import { faLinesLeaning } from '@fortawesome/free-solid-svg-icons';
 
 const sessionid = Astro.locals.session.id;
 // console.log('sessionid', sessionid, Astro.locals.session);
@@ -13,30 +14,30 @@ if (!['admin','superadmin'].includes(user?.role)) return Astro.redirect('/admin'
 
 
 const formFields = [
-  { name: 'name', label: 'Name', placeholder: 'Enter name', type: 'text', pattern:"", title:"", optional: false },
-  { name: 'title', label: 'Title', placeholder: 'Enter title', type: 'text', pattern:"", title:"", optional: true },
-  { name: 'image_src', label: 'Image URL', placeholder: 'Enter image source URL', type: 'url', pattern:"", title:"", optional: false },
-  // { name: 'image_alt', label: 'Image Alt Text', placeholder: 'Enter image alt text', type: 'text', pattern:"", title:"", optional: true },
-  { name: 'email', label: 'Contact email', placeholder: 'Email', type: 'email', pattern:"", title:"", optional: false },
+  { name: 'name', label: 'Name', placeholder: 'Enter name', type: 'text', pattern="", title:"", optional: false },
+  { name: 'title', label: 'Title', placeholder: 'Enter title', type: 'text', pattern="", title:"", optional: true },
+  { name: 'image_src', label: 'Image URL', placeholder: 'Enter image source URL', type: 'url', pattern="", title:"", optional: false },
+  // { name: 'image_alt', label: 'Image Alt Text', placeholder: 'Enter image alt text', type: 'text', pattern="", title:"", optional: true },
+  { name: 'email', label: 'Contact email', placeholder: 'Email', type: 'email', pattern="", title:"", optional: false },
 
-  { name: 'worksFor_type', label: 'Works For Type', placeholder: 'Enter employer type', type: 'text', pattern:"", title:"", optional: false },
-  { name: 'worksFor_name', label: 'Works For Name', placeholder: 'Enter employer name', type: 'text', pattern:"", title:"", optional: false },
+  { name: 'worksFor_type', label: 'Works For Type', placeholder: 'Enter employer type', type: 'text', pattern="", title:"", optional: false },
+  { name: 'worksFor_name', label: 'Works For Name', placeholder: 'Enter employer name', type: 'text', pattern="", title:"", optional: false },
 
-  { name: 'jobTitle', label: 'Job Title', placeholder: 'Enter job title', type: 'text', pattern:"", title:"", optional: false },
+  { name: 'jobTitle', label: 'Job Title', placeholder: 'Enter job title', type: 'text', pattern="", title:"", optional: false },
 
-  { name: 'isFictitious', label: 'Is Fictitious', placeholder: '', type: 'checkbox', defaultValue: false, pattern:"", title:"", optional: true },
-  { name: 'external', label: 'External', placeholder: '', type: 'checkbox', defaultValue: false, pattern:"", title:"", optional: true },
-  { name: 'url', label: 'Bio URL', placeholder: 'Enter URL', type: 'textarea', colspan:2, pattern:"", title:"", optional: true },
+  { name: 'isFictitious', label: 'Is Fictitious', placeholder: '', type: 'checkbox', defaultValue: false, pattern="", title:"", optional: true },
+  { name: 'external', label: 'External', placeholder: '', type: 'checkbox', defaultValue: false, pattern="", title:"", optional: true },
+  { name: 'url', label: 'Bio URL', placeholder: 'Enter URL', type: 'textarea', colspan:2, pattern="", title:"", optional: true },
 
-  // { name: 'type', label: 'Type', placeholder: 'Enter type', type: 'text', pattern:"", title:"", optional: true, defaultValue: 'Person' },
-  { name: 'sameAs_linkedin', label: 'LinkedIn Profile', placeholder: 'Enter LinkedIn profile URL', type: 'text', pattern:"", title:"", optional: true },
-  { name: 'sameAs_twitter', label: 'Twitter Profile', placeholder: 'Enter Twitter profile URL', type: 'text', pattern:"", title:"", optional: true },
-  { name: 'sameAs_facebook', label: 'Facebook Profile', placeholder: 'Enter Facebook profile URL', type: 'text', pattern:"", title:"", optional: true },
+  // { name: 'type', label: 'Type', placeholder: 'Enter type', type: 'text', pattern="", title:"", optional: true, defaultValue: 'Person' },
+  { name: 'sameAs_linkedin', label: 'LinkedIn Profile', placeholder: 'Enter LinkedIn profile URL', type: 'text', pattern="", title:"", optional: true },
+  { name: 'sameAs_twitter', label: 'Twitter Profile', placeholder: 'Enter Twitter profile URL', type: 'text', pattern="", title:"", optional: true },
+  { name: 'sameAs_facebook', label: 'Facebook Profile', placeholder: 'Enter Facebook profile URL', type: 'text', pattern="", title:"", optional: true },
 
-  { name: 'description', label: 'Description', placeholder: 'Enter description, 160 Chars', type: 'textarea', pattern:"", title:"", optional: true },
-  { name: 'description_125', label: 'Short Description (125 chars)', placeholder: 'Enter description, 125 chars', type: 'textarea', pattern:"", title:"", optional: true, maxLength: 125 },
-  { name: 'description_250', label: 'Short Description (250 chars)', placeholder: 'Enter description, 250 chars', type: 'textarea', pattern:"", title:"", optional: true, maxLength: 250 },
-  { name: 'biography', label: 'Biography', placeholder: 'Enter biography', type: 'textarea', pattern:"", title:"", optional: true },
+  { name: 'description', label: 'Description', placeholder: 'Enter description, 160 Chars', type: 'textarea', pattern="", title:"", optional: true },
+  { name: 'description_125', label: 'Short Description (125 chars)', placeholder: 'Enter description, 125 chars', type: 'textarea', pattern="", title:"", optional: true, maxLength: 125 },
+  { name: 'description_250', label: 'Short Description (250 chars)', placeholder: 'Enter description, 250 chars', type: 'textarea', pattern="", title:"", optional: true, maxLength: 250 },
+  { name: 'biography', label: 'Biography', placeholder: 'Enter biography', type: 'textarea', pattern="", title:"", optional: true },
 ];
 
 
@@ -151,9 +152,9 @@ const displayImage = formData.image_src ? transformS3Url(formData.image_src, 156
     <form action="" method="POST" class="space-y-4 bg-white shadow rounded p-4 mb-20">
 
 
+      <!-- Picture Card  -->
       <div class="mx-auto border rounded-lg shadow-lg overflow-hidden" style="width: fit-content;">
 
-      <!-- Team member Image with click to upload
         <div class="flex justify-center items-center bg-gray-200 p-0" id="imageTrigger" alt="Upload Image" style="cursor:pointer">
           {displayImage ? (
             <img id="cardimg" src={displayImage} alt={formData.name} class="rounded-full m-2 w-32 h-32 border-4 border-white shadow-lg" />
@@ -162,20 +163,7 @@ const displayImage = formData.image_src ? transformS3Url(formData.image_src, 156
               <path d="M12 12c2.7 0 5.3-2.2 5.3-5.3 0-3-2.6-5.4-5.3-5.4S6.7 3.7 6.7 6.7C6.7 9.8 9.3 12 12 12zm0 2.2c-3 0-9 1.5-9 4.5v2.2h18v-2.2c0-3-6-4.5-9-4.5z"/>
             </svg>
           )}
-        </div> -->
-
-        <!-- Team member Image with click to upload -->
-        <div class="mx-auto border rounded-lg shadow-lg overflow-hidden" style="width: fit-content;">
-          <div class="flex justify-center items-center bg-gray-200 p-0" id="imageTrigger" alt="Upload Image" style="cursor:pointer">
-            <img id="cardimg" src={displayImage} alt={formData.name}
-                class={`rounded-full m-2 w-32 h-32 border-4 border-white shadow-lg ${displayImage ? '' : 'hidden'}`} />
-            <svg class={`rounded-full m-2 w-32 h-32 border-4 border-white shadow-lg text-gray-400 ${displayImage ? 'hidden' : ''}`}
-                fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 12c2.7 0 5.3-2.2 5.3-5.3 0-3-2.6-5.4-5.3-5.4S6.7 3.7 6.7 6.7C6.7 9.8 9.3 12 12 12zm0 2.2c-3 0-9 1.5-9 4.5v2.2h18v-2.2c0-3-6-4.5-9-4.5z"/>
-            </svg>
-          </div>
         </div>
-
 
         <div class="text-center p-2 bg-gray-200">
           {formData.role !== 'superadmin' ? (
@@ -248,8 +236,6 @@ const displayImage = formData.image_src ? transformS3Url(formData.image_src, 156
 
     // Functions
     const openModal = () => {
-      // we need a team member name before we can save an image
-      if (!slugify(document.getElementById('name').value)) { alert('Please enter a team member name first'); return; }
       // Reset inputs
       fileInput.value = '';
       urlInput.value = '';
@@ -304,10 +290,9 @@ const displayImage = formData.image_src ? transformS3Url(formData.image_src, 156
       const apiUrl = '/api/upload_s3';
       const file = fileInput.files[0];
       const imageUrl = urlInput.value;
-      const userSlug = slugify(document.getElementById('name').value);
+      const userSlug = modal.getAttribute('data-slug') || slugify(document.getElementById('nameField').value);
       const sessionid = modal.getAttribute('data-sessionid');
       const cardimg = document.getElementById('cardimg')
-        const placeholder = document.getElementById('placeholder')
       // console.log('uploadImage', userSlug, sessionid);
 
       const processFile = (content, filename) => {
@@ -323,10 +308,8 @@ const displayImage = formData.image_src ? transformS3Url(formData.image_src, 156
         .then(data => {
           if (data.s3url) {
             imageSrcField.value = data.s3url;
-            // popupImage.src = data.s3url;
+            popupImage.src = data.s3url;
             cardimg.src = transformS3Url(data.s3url, 120, 120, 'jpg', 80);
-            cardimg.classList.remove('hidden');
-            placeholder.classList.add('hidden');
             closeModal();
           } else throw new Error('No URL returned ' + JSON.stringify(data));
         })

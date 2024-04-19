@@ -313,6 +313,33 @@ export const getDataCollectionEntry = async (collection, id) => {
   return match;
 }
 
+export const updateCategory = async (category, isNew) => {
+
+
+
+  let success = true
+  if (isNew) {
+    console.log('Inserting category', category);
+    // insert if category not already found
+    const alreadyExists = (await db.select().from(Categories).where(eq(Categories.id, category.id))).length;
+
+    if (alreadyExists) {
+      console.log('Category name is already in use', await db.select().from(Categories).where(eq(Categories.id, category.id)));
+      throw new Error('Category name is already in use');
+    }
+    await db.insert(Categories).values({ ...category });
+  } else {
+    console.log('Updating category', category);
+    // update category
+    await db.update(Categories).set({ ...category }).where(eq(Categories.id, category.id));
+  }
+  return success;
+}
+export const deleteCategory = async (id) => {
+  return await db.delete(Categories).where(eq(Categories.id, id));
+}
+
+
 /**
  * Exportable component to render a JSON object as an HTML table with Tailwind CSS for compactness.
  * @param data - The JSON object to be rendered as a table.

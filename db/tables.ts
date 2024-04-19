@@ -16,8 +16,8 @@ import { defineTable, column, NOW } from "astro:db";
 
 export const Categories = defineTable({
  columns: {
+   id: column.text({ primaryKey: true }), // category name slug
    category: column.text(),
-   category_slug: column.text({ primaryKey: true }),
    image: column.text({ optional: true }),
    description: column.text(),
  }

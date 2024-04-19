@@ -48,8 +48,8 @@ export default async function() {
 
 	// seed a category to test that the db and data collections can work together
 	await db.insert(Categories).values([{
+			id: 'bahai-literature',
 			category: 'Bahá’í Literature',
-			category_slug: 'bahai-literature',
 			image: 'https://blogw-assets.s3.us-west-1.amazonaws.com/categories/content/bahai-education.png',
 			description: `Doctrinal Bahá’í Literature includes scripture and authoritative interpretation.
 This includes teachings, laws, and principles in hundreds of books and letters revealed by the
