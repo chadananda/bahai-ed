@@ -500,7 +500,8 @@ export const seedSuperUser = async () => {
   const user = { id, name, email, hashed_password, role };
 
   console.log('Adding super user:', user);
-  await db.insert(Users).values(user);
+  try { await db.insert(Users).values(user);
+  } catch (e) { console.error('seedSuperUser user', e); }
 
   // and initial team member attributes
   const memberCount = (await db.select().from(Team)).length;
@@ -525,7 +526,8 @@ export const seedSuperUser = async () => {
   const teamMember = { id, name, title, image_src, image_alt, external, email, isFictitious: false, jobTitle, type, url, worksFor_type, worksFor_name, description, sameAs_linkedin, sameAs_twitter, sameAs_facebook, description_125, description_250, biography };
 
   console.log('Adding super user to team:', teamMember);
-	await db.insert(Team).values(teamMember);
+  try { await db.insert(Team).values(teamMember); }
+  catch (e) { console.error('seedSuperUser team', e); }
 
 }
 
