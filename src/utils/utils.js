@@ -488,8 +488,6 @@ export const uploadS3 = async (base64Data, Key, ContentType='', Bucket='') => {
 };
 
 export const seedSuperUser = async () => {
-  console.log('Seeding super user');
-
   const email = import.meta.env.SITE_ADMIN_EMAIL.trim().toLowerCase();
   const userFound = (await db.select().from(Users).where(eq(Users.email, email))).length;
   const name = site.author;
@@ -527,10 +525,6 @@ export const seedSuperUser = async () => {
       await db.insert(Team).values(teamMember); }
     catch (e) { console.error('seedSuperUser team:', e); }
   }
-
-
-
-
 }
 
 
