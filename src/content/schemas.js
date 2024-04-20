@@ -31,7 +31,7 @@ export const post_schema = ({ image }) =>
 
     author: reference("team").nullable().optional(),
     editor: reference("team").nullable().optional(),
-    category: reference("categories"),
+    category: z.string().nullable().default(""),
     topics: z.array(z.string()).default([]),
     tags: z.array(z.string()).default([]),
     keywords: z.array(z.string()).default([]), // will be an array of references soon!

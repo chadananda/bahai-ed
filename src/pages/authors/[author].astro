@@ -5,17 +5,20 @@ import Layout from "@layouts/Layout.astro";
 import Container from "@components/container.astro";
 import PostThumb from "@components/article/postThumb.astro";
 import AuthorCard from "@components/article/authorCard.astro";
-import { getPublishedArticles, getDataCollection } from "@utils/utils.js";
+import { getPublishedArticles, getTeam } from "@utils/utils.js";
 
 // export paths for all the authors
 export async function getStaticPaths() {
-  const authors = await getDataCollection("team", ({data}) => !data.draft);
-  return authors.map(({ data }) => ({ params: { author: data.name_slug } }));
+  const authors = await getTeam();
+  console.log(authors);
+  return authors.map((author) => ({ params: { author: author.id } }));
 };
+
+console.log('author page', await getTeam());
 
 // this author param
 const slug = Astro.params.author;
-const authorMatches = (post) => post.data.author?.id===slug;
+const authorMatches = (post) => post.data.author===slug;
 const posts = (await getPublishedArticles()).filter(authorMatches);
 ---
 

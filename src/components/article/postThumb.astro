@@ -1,11 +1,11 @@
 ---
 import { Picture } from 'astro:assets';
-import { getArticleURL, getDataCollectionEntry } from '@utils/utils.js';
+import { getArticleURL, getTeamMember, getCategory } from '@utils/utils.js';
 
 const { post, small, class: customClasses } = Astro.props
 const articleLink = `/${post.data?.url}`;
-const author = post.data.author ? await getDataCollectionEntry('team', post.data.author?.id) : false;
-const category = await getDataCollectionEntry('categories', post.data.category.id);
+const author = post.data.author ? await getTeamMember(post.data.author?.id) : false;
+const category = await getCategory(post.data.category);
 
 const image = post.data.image;
 const pageURL = getArticleURL(Astro);
@@ -35,7 +35,7 @@ const isPublished = pubdate <= new Date() && !post.data.draft;
     <div class="mt-4">
       {!small && (
         <span class={`text-blue-400 uppercase tracking-wider ${small ? 'text-xxs' : 'text-xs'} font-medium`}>
-          <a href={`/categories/${category.id}`} aria-label={category.data.category}>{category.data.category}</a>
+          <a href={`/categories/${category?.id}`} aria-label={category?.data?.category}>{category?.data?.category}</a>
         </span>
       )}
 

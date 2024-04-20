@@ -2,7 +2,7 @@ export const prerender = true;
 
 import site from '@data/site.json';
 import rss from '@astrojs/rss';
-import { getArticleAudioSize, getArticleAudioPath, getAllLanguages, getPublishedArticles, getDataCollectionEntry } from '@utils/utils.js';
+import { getArticleAudioSize, getArticleAudioPath, getAllLanguages, getPublishedArticles, getTeamMember } from '@utils/utils.js';
 import { getImage } from "astro:assets";
 
 const mainLanguages = {
@@ -74,7 +74,7 @@ export const processItems = async (articles, site, baseUrl) => {
 
     let author = false
     if (!!post.data.author) {
-      author = await getDataCollectionEntry(post.data.author?.collection, post.data.author?.id);
+      author = await getTeamMember(post.data.author?.collection, post.data.author?.id);
     }
 
     const itunes_duration = ISO8601ToiTunes(post.data.audio_duration);

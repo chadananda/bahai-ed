@@ -10,11 +10,13 @@ import TLDR from "@components/article/TLDR.astro";
 import PodcastPlayer from "@components/article/PodcastPlayer.astro";
 import PostComments from "@components/article/PostComments.astro";
 import AuthorBio from "@components/article/authorCard.astro";
-import { getPublishedArticles, getDataCollectionEntry, filterTopics } from "@utils/utils.js";
+import { getPublishedArticles, getCategory, getTeamMember, filterTopics } from "@utils/utils.js";
 
 
 export async function getStaticPaths() {
-  const articles = await getPublishedArticles();
+  var articles = await getPublishedArticles();
+  articles = articles.filter((entry) => entry.data?.url);
+  // console.log(`${articles.length} published articles:`, articles.map(ar=>ar.id).join(", "));
   return articles.map((entry) => {
     return { params: { slug: entry.data?.url }, props: { entry } };
   });
@@ -22,16 +24,18 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props; // Get the entry directly from the prop on render
 const { Content, headings } = await entry.render();
-const author = !!entry.data.author ?  await getDataCollectionEntry('team', entry.data.author?.id): false;
-const category = await getDataCollectionEntry('categories', entry.data.category.id);
+const author = !!entry.data.author ?  await getTeamMember(entry.data.author?.id): false;
+const category = await getCategory(entry.data.category);
 const topics = await filterTopics(entry.data.topics); // because not all topics are created yet
 ---
 
 <Layout meta={Astro.props} headings={headings}>
+
   <Container class="max-w-screen">
+
     <div class="mx-auto max-w-3xl text-center mt-3">
       <span class="text-blue-500 uppercase tracking-wider text-sm font-medium">
-        <a href={`/categories/${category.id}`} aria-label={category.data.category}>{category.data.category}</a>
+        <a href={`/categories/${category?.id}`} aria-label={category?.data?.category}>{category?.data?.category}</a>
       </span>
       <h1 class="text-3xl lg:text-4xl font-bold lg:tracking-tight mt-1 lg:leading-tight"> {entry.data.title} </h1>
       <div class="flex gap-2 mt-3 items-center justify-center text-sm flex-wrap">
@@ -46,7 +50,6 @@ const topics = await filterTopics(entry.data.topics); // because not all topics 
             {entry.data.datePublished?.toDateString()}
           </time>
         </div>
-
         <div class="w-full md:w-auto flex flex-wrap justify-center gap-1 p-0 m-0 !line-clamp-2">
           {topics && topics.map((topic) => (
             <span class="text-sm text-slate-500">
@@ -54,11 +57,10 @@ const topics = await filterTopics(entry.data.topics); // because not all topics 
             </span>
           ))}
         </div>
-
       </div>
     </div>
 
-     <div class="mx-auto max-w-10xl">
+    <div class="mx-auto max-w-10xl">
       <div class="relative pt-[40%] rounded-xl mt-6 overflow-hidden shadow-xl border border-gray-200">
         {!!entry.data.image && (
         <Picture class="cover-image absolute top-0 left-0 w-full h-full object-cover"
@@ -77,7 +79,7 @@ const topics = await filterTopics(entry.data.topics); // because not all topics 
      </div>
 
      <div class="max-w-3xl mx-auto">
-       {!!entry.data.audio && <PodcastPlayer meta={entry.data} slug={entry.data?.url} />  }
+       {!!entry.data?.audio && <PodcastPlayer meta={entry.data} slug={entry.data?.url} />  }
      </div>
 
      <div class="prose mx-auto mt-6 max-w-3xl prose-headings:mb-2 prose-headings:mt-8"
@@ -89,7 +91,6 @@ const topics = await filterTopics(entry.data.topics); // because not all topics 
       </div>
      }
 
-     <!-- postComments is causing layout breakage on mobile. So I hid it in mobile until we can figure out why -->
      <div class="hidden md:block max-w-3xl mx-auto relative">
        <PostComments slug={entry.data?.url} />
      </div>

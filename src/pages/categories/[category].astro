@@ -6,30 +6,30 @@ import Container from "@components/container.astro";
 import Sectionhead from "@components/sectionhead.astro";
 import TopicFAQ from '@components/article/topicFAQ.astro';
 import CategoryCard from '@components/article/categoryCard.astro';
-import { getDataCollection, getDataCollectionEntry, getPublishedArticles } from '@utils/utils.js';
+import { getCategories, getCategory, getPublishedArticles } from '@utils/utils.js';
 
 
 export async function getStaticPaths() {
-  const categories = await getDataCollection("categories");
+  const categories = await getCategories();
   return categories.map(({id}) => ({ params: { category: id } }));
 }
 
 // this category slug
 const { category: category_slug } = Astro.params;
 // this category object
-const category = await getDataCollectionEntry("categories", category_slug);
+const category = await getCategory(category_slug);
 const allPosts = await getPublishedArticles();
-const matchingPosts = allPosts.filter((ar) => ar.data.category.id===category_slug);
+const matchingPosts = allPosts.filter((ar) => ar.data.category===category_slug);
 // faq matching this category, if it exsits (do we really need this?)
 const faqs = false;
 ---
 
-<Layout title={category_slug} description={category.data.description}>
+<Layout title={category_slug} description={category?.data?.description}>
    { !!faqs && (<TopicFAQ faqs={faqs} />)}
    { !faqs && (
      <Sectionhead>
        <Fragment slot="title"> Article Topics </Fragment>
-       <Fragment slot="desc"> About  “{category.data.category}” </Fragment>
+       <Fragment slot="desc"> About  “{category?.data?.category}” </Fragment>
      </Sectionhead>
    )}
   <Container class="w-full mx-5 sm:mx-15 pt-5">

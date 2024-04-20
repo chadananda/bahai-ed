@@ -5,10 +5,10 @@ import Layout from  "@layouts/Layout.astro";
 import Container from "@components/container.astro";
 import Sectionhead from "@components/sectionhead.astro";
 import AuthorCard from "@components/article/authorCard.astro";
-import { getDataCollection } from "@utils/utils.js";
+import { getTeam } from "@utils/utils.js";
 
-const authors = await getDataCollection("team", ({data}) => !data.draft);
-const author_slugs = authors.map((author) => author.data.name_slug);
+const authors = await getTeam(({data}) => !data.draft);
+const author_slugs = authors.map((author) => author.id);
 ---
 
 <Layout pageTitle="All Authors">

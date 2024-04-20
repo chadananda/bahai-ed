@@ -1,21 +1,19 @@
 ---
 // Import Simple Icons
 import { Twitter, Facebook, Linkedin } from 'simple-icons-astro';
-import { Image } from 'astro:assets';
-import { getArticleAudioPath, getArticleSlugFromURL, getArticleURL, getDataCollectionEntry } from '@utils/utils.js';
+// import { Image } from 'astro:assets';
+import { getArticleAudioPath, getArticleSlugFromURL, getArticleURL, getTeamMember, displayImageObj } from '@utils/utils.js';
 import site from '@data/site.json';
 
 const meta = Astro.props.meta;
 const {datePublished, audio, title, description, audio_duration: duration, title: seriesName } = meta;
-// const slug = Astro.url.href.split('/').pop();
+
+// let data = JSON.stringify({datePublished, audio, title, description, audio_duration: duration, seriesName });
 const slug = await getArticleSlugFromURL(Astro.url.href);
 const episodeNumber = meta.episode_number || 1;
-// fall back on the article image if no audio image is provided
 
-const image = meta.image.src;
-// console.log('PodcastPlayer.astro image', image);
-
-let authorName = !!meta.author ? (await getDataCollectionEntry('team', meta.author?.id)).data.name : site.site;
+let author = await getTeamMember(meta.author);
+let authorName = !!author ? author?.data?.name : site.site;
 
 const pageURL = getArticleURL(Astro);
 const baseUrl = new URL(pageURL).origin.replace(/\/$/, '');
@@ -27,8 +25,14 @@ if (!audioURL.startsWith('http')) {  // convert file path to URL
   audioURL = baseUrl + audioPath;
 }
 
-// this is broken. audio_image might be a url
-const imageURL = baseUrl+image.src; // build script copies to this path?
+// console.log('PodcastPlayer.astro meta.image.src', meta.image.src);
+// TODO: fix this later to give different sizes for podcast and display!!
+var img_url = typeof meta.image === 'string' ? meta.image : `${meta.image.src.src}`; //
+if (!img_url.startsWith('http')) img_url = baseUrl + img_url;
+var img = { src: img_url, width: meta.image?.src?.width || 1200, height: meta.image?.src?.height || 628, alt: authorName }
+// later when we move this to s3, make it a cdn link
+if (img.src.includes('.s3.')) img = await displayImageObj(img.src, img.alt, img.width, img.height, 'jpg', 80);
+// console.log('PodcastPlayer.astro image', img);
 
 // this player will be used more than once per page, so we need to generate unique IDs for each instance
 const playerID = 'id-' + Math.random().toString(36).substr(2, 9);
@@ -50,7 +54,7 @@ const schema = {
   '@id': `${pageURL}#${playerID}`,
   name: title,
   description: description,
-  image: imageURL,
+  image: img?.src,
   episodeNumber: episodeNumber,
   partOfSeries: {
     '@type': "PodcastSeries",
@@ -88,8 +92,8 @@ border-4 border-gray-300 p-1 noprint
   <!-- Image and play button, the left column  -->
   <div class="image-container sm:w-44 sm:max-h-44 sm:h-44 mb-2 sm:mb-0 min-w-[20%] cursor-pointer - group relative">
 
-    {!!image && (
-      <Image src={image} alt={authorName} format="jpg" quality="low"
+    {!!img && (
+      <img src={img?.src} alt={img?.alt} format="jpg" quality="low"
         class="rounded-md object-cover w-full sm:w-44 h-44 sm:h-44 m-0 p-0 min-w-[30%] border-2 border-gray-400 opacity-70"
         widths={[120, 188, 300, 372, 788, 1000, 1280]}
       />

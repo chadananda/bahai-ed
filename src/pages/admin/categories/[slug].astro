@@ -3,7 +3,7 @@ export const prerender = false;
 
 import Layout from '@layouts/AdminLayout.astro';
 import site from '@data/site.json';
-import { getDataCollectionEntry, updateCategory, deleteCategory, slugify, transformS3Url } from "@utils/utils";
+import { getCategory, updateCategory, deleteCategory, slugify, transformS3Url } from "@utils/utils";
 
 const sessionid = Astro.locals.session.id;
 const user = Astro.locals?.user;
@@ -18,7 +18,7 @@ const formFields = [
   { name: 'description', label: 'Description', placeholder: 'Enter description', type: 'textarea', optional: false, pattern:'^.{200,600}$', title:"200-600 characters describing this category"},
 ];
 
-const cat = await getDataCollectionEntry('categories', Astro.params.slug) || {};
+const cat = await getCategory(Astro.params.slug) || {};
 const categoryData = {...cat.data, id: cat.id};
 
 let formData = { ...categoryData };
@@ -28,7 +28,6 @@ const isNew = Astro.params.slug === 'add';
 if (Astro.request.method === "POST") {
   const requestBody = await Astro.request.formData();
   formData = { ...formData, ...Object.fromEntries(requestBody) };
-
 
   if (formData.delete && !isNew) {
     delete formData.delete;

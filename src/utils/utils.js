@@ -124,8 +124,15 @@ export const transformS3Url = (url, width = null, height = null, format = 'webp'
   params.push(`fm=${format}`, `q=${quality}`, `fit=crop`, `crop=faces`);
   return `${site.img_base_url}${imagePath}?${params.join('&')}`;
 }
+export const displayImageObj = (url, alt, width, height, format, quality=80) => {
+  return {
+    src: transformS3Url(url, width, height, format, quality),
+    width, height, alt, isExternal: true
+  }
+}
 
 export const getDataCollectionImage = async (collection, filename, imageType={format: 'jpg', width: 1000, height: 700}) => {
+  if (!filename) return null;
   const {width, height, format} = imageType;
   if (filename.startsWith('http')) {
     //  https://bahai-education.org/_astro/bahai-literature.BmmHKzrh_2072vy.webp
@@ -284,20 +291,55 @@ export const getSitemapArticles = async () => {
 // in order to migrate data collections to the DB, we need to write a
 // wrapper function which fetches both the data collection and the data entry
 export const getDataCollection = async (collection, filter = () => true) => {
-  const local = await getCollection(collection, filter);
-  let table = null;
-  let dbMatches = [];
-  if (collection === 'categories') table = Categories;
+  return await getCollection(collection, filter);
+  // let table = null;
+  // let dbMatches = [];
+  // if (collection === 'categories') table = Categories;
   //  else if (collection === 'faqs') table = Faqs;
   //  else if (collection === 'keywords') table = Keywords;
   //  else if (collection === 'team') table = Team;
 
-  // if (table) dbMatches = (await db.select().from(table)).map(row=>({id: row.category_slug, collection, data: row})).filter(filter);
+  // if (table) dbMatches = (await db.select().from(table))
+  //   .map(row=>({id: row.id, type: "db", collection, data: row})).filter(filter);
   // Create a map to override local items with dbMatches based on id
-  const merged = new Map(dbMatches.map(item => [item.id, item]));
-  local.forEach(item => merged.set(item.id, item)); // Local items are added, but don't override existing dbMatches
-  return Array.from(merged.values());
+  // const merged = new Map(dbMatches.map(item => [item.id, item]));
+  // local.forEach(item => merged.set(item.id, item)); // Local items are added, but don't override existing dbMatches
+  // return Array.from(merged.values());
+
+  // console.log('getDataCollection', collection, dbMatches);
+
+  // return dbMatches;
+
 }
+
+
+export const getCategories = async (filter = () => true) => {
+   let categories = (await db.select().from(Categories))
+     .map(row=>({id: row.id, type: "db", collection: 'categories', data: row})).filter(filter);
+  //  console.log('getCategories', categories);
+   return categories;
+}
+export const getCategory = async (slug) => {
+  if (!slug) return null;
+  let match = (await db.select().from(Categories).where(eq(Categories.id, slug)))[0];
+  if (match) return { id: match.id, type: "db", collection: 'categories', data: match };
+}
+
+export const getTeam = async (filter = () => true) => {
+  let team = (await db.select().from(Team))
+    .map(row=>({id: row.id, type: "db", collection: 'team', data: row})).filter(filter);
+  // console.log('getTeam', team);
+  return team;
+}
+export const getTeamMember = async (slug) => {
+ slug = slug?.id || `${slug}`; // handle either reference or string
+//  console.log('getTeamMember', slug);
+ if (!slug) return null;
+ let match = (await db.select().from(Team).where(eq(Team.id, slug)))[0];
+ if (match) return { id: match?.id, type: "db", collection: 'team', data: match };
+}
+
+
 
 export const getDataCollectionEntry = async (collection, id) => {
   let match = null
@@ -314,23 +356,22 @@ export const getDataCollectionEntry = async (collection, id) => {
   return match;
 }
 
-export const updateCategory = async (category, isNew) => {
-  let success = true
-  if (isNew) {
-    console.log('Inserting category', category);
-    // insert if category not already found
-    const alreadyExists = (await db.select().from(Categories).where(eq(Categories.id, category.id))).length;
-    if (alreadyExists) {
-      console.log('Category name is already in use', await db.select().from(Categories).where(eq(Categories.id, category.id)));
-      throw new Error('Category name is already in use');
-    }
-    await db.insert(Categories).values({ ...category });
-  } else {
-    console.log('Updating category', category);
-    // update category
-    await db.update(Categories).set({ ...category }).where(eq(Categories.id, category.id));
-  }
-  return success;
+export const categoryExists = async (id) => {
+  return (await db.select().from(Categories).where(eq(Categories.id, id))).length > 0
+}
+export const updateCategory = async (values) => {
+  let {id, category, description, image} = values;
+  if (!id || !category || !description || !image) return false;
+  try {
+    if (await categoryExists(id)) {
+      //  console.log(`Matching category for "${id}" found, updating...`);
+       await db.update(Categories).set({id, category, description, image}).where(eq(Categories.id, id));
+    } else {
+      // console.log(`No category for "${id}" found, inserting...`);
+       await db.insert(Categories).values({id, category, description, image})
+     }
+    return true;
+  } catch (e) { console.error('updateCategory', e); return false; }
 }
 export const deleteCategory = async (id) => {
   return await db.delete(Categories).where(eq(Categories.id, id));

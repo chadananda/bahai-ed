@@ -1,11 +1,11 @@
 ---
 import { Picture } from 'astro:assets';
-import { getDataCollectionImage, getDataCollectionEntry } from '@utils/utils';
+import { getDataCollectionImage, getCategory } from '@utils/utils';
 
 const { slug, size='sm', editmode=false } = Astro.props;
 const categoryURL = editmode ? `/admin/categories/${slug}` : `/categories/${slug}`;
 // abstracted to allow merging of data from db
-const category = await getDataCollectionEntry('categories', slug);
+const category = await getCategory(slug);
 
 let imageSize
 if (size === "sm") imageSize = {width: 400, height: 400, format: 'webp'}

@@ -1,24 +1,25 @@
 ---
 import { Picture, getImage } from 'astro:assets';
-import { getArticleURL, getDataCollectionEntry, getDataCollectionImage } from '@utils/utils.js';
+import { getArticleURL, getTeamMember, displayImageObj } from '@utils/utils.js';
 
 
 if (!Astro.props.slug) console.error("Warning: no author slug provided!");
 
-const author = await getDataCollectionEntry('team', Astro.props.slug)
-var { image, name, type, worksFor, description, sameAs, name_slug } = author.data;
+const author = await getTeamMember(Astro.props.slug)
+var { image_src, image_alt, name, type, worksFor_type, worksFor_name, description, sameAs, name_slug } = author.data;
 
 const pageURL = getArticleURL(Astro);
 const siteURL = new URL(pageURL).origin.replace(/\/$/, '');
 const authorURL = author.data.url || `${siteURL}/authors/${name_slug}`;
 const size = Astro.props.size || 'sm';
 
-const bioImage = await getDataCollectionImage('team', image.src, {width: 1200, height: 600, format: 'webp'});
-const imgSm = await getDataCollectionImage('team', image.src, {width: 180, height: 180, format: 'webp'});
-const imgMd = await getDataCollectionImage('team', image.src, {width: 120, height: 120, format: 'webp'});
-const imgLg = await getDataCollectionImage('team', image.src, {width: 300, height: 300, format: 'webp'});
-const imgBio = await getDataCollectionImage('team', image.src, {width: 188, height: 188, format: 'webp'});
-const imgFull = await getDataCollectionImage('team', image.src, {width: 800, height: 800, format: 'webp'});
+
+const bioImage = await displayImageObj(image_src, image_alt, 1200, 600, 'jpg', 80);
+const imgSm = await displayImageObj(image_src, image_alt, 180, 180, 'webp', 90);
+const imgMd = await displayImageObj(image_src, image_alt, 120, 120, 'webp', 90);
+const imgLg = await displayImageObj(image_src, image_alt, 300, 300, 'webp', 90);
+const imgBio = await displayImageObj(image_src, image_alt, 188, 188, 'webp', 90);
+const imgFull = await displayImageObj(image_src, image_alt, 800, 800, 'webp', 90);
 
 // const imageURL = '';
 const uniqueID = 'id-' + Math.random().toString(36).slice(2, 11);
@@ -30,7 +31,7 @@ var schema = {
   '@id': authorURL,
   name: name,
   url: authorURL,
-  image: bioImage.src,
+  image: bioImage?.src,
   description,
   sameAs, // an array of social media urls
   mainEntityOfPage: {
@@ -40,7 +41,7 @@ var schema = {
 };
 if (type === 'Person') {
   schema.jobTitle = "Writer";
-  schema.worksFor = { "@type": worksFor['@type'], name: worksFor.name, }
+  schema.worksFor = { "@type": worksFor_type, name: worksFor_name, }
   schema.isPartOf = { "@type": "WebPage", "@id": pageURL}
 }
 
@@ -52,14 +53,9 @@ const dir = "ltr";
 <div id={uniqueID} class="author w-48 h-48 shadow-lg rounded-lg overflow-hidden mx-auto border-2 border-gray-200 p-1" lang={language} dir={dir}>
 
     <div class="relative h-full">
-     <a href={authorURL} aria-label={image.alt} >
-        {imgSm.isExternal ? (
-          <img src={imgSm.src} class="w-full h-full object-cover rounded-md" alt={image.alt}
-              width={imgSm.width} height={imgSm.height} />
-        ) : (
-          <Picture src={imgSm} class="w-full h-full object-cover rounded-md" alt={image.alt}
-                  widths={[120, 188, 300, 372, 788, 1000, 1280]}  />
-        )}
+     <a href={authorURL} aria-label={image_alt} >
+      <img src={imgSm?.src} class="w-full h-full object-cover rounded-md" alt={image_alt}
+          width={imgSm?.width} height={imgSm?.height} />
      </a>
       <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-35 rounded-b-lg">
         <div class="text-white px-1 py-1">
@@ -76,15 +72,15 @@ const dir = "ltr";
 { size==='md' && (
   <div id={uniqueID} class="author max-w-64 max-h-96 shadow-lg rounded-lg overflow-hidden mx-auto border-2 border-gray-200 p-2 text-center" lang={language} dir={dir}>
 
-    <a href={authorURL} aria-label={image.alt}>
+    <a href={authorURL} aria-label={image_alt}>
     <div class="relative pb-32 overflow-hidden">
       <div class="absolute inset-0">
       <div class="w-32 h-32 overflow-hidden rounded-full border-4 border-gray-400 mx-auto">
-        {imgMd.isExternal ? (
-          <img src={imgMd.src} class="w-full h-full object-cover" alt={image.alt}
-               width={imgMd.width} height={imgMd.height} />
+        {imgMd?.isExternal ? (
+          <img src={imgMd?.src} class="w-full h-full object-cover" alt={image_alt}
+               width={imgMd?.width} height={imgMd?.height} />
         ) : (
-          <Picture src={imgMd} class="w-full h-full object-cover" alt={image.alt}
+          <Picture src={imgMd} class="w-full h-full object-cover" alt={image_alt}
                    widths={[120, 188, 300, 372, 788, 1000, 1280]}  />
         )}
       </div>
@@ -104,15 +100,15 @@ const dir = "ltr";
 { size==='lg' && (
   <div id={uniqueID} class="author max-w-64 max-h-96 shadow-lg rounded-lg overflow-hidden mx-auto border-2 border-gray-200 p-2 text-center" lang={language} dir={dir}>
 
-    <a href={authorURL} aria-label={image.alt}>
+    <a href={authorURL} aria-label={image_alt}>
       <div class="relative pb-32 overflow-hidden">
         <div class="absolute inset-0">
         <div class="w-32 h-32 overflow-hidden rounded-full border-4 border-gray-400 mx-auto">
           {imgLg.isExternal ? (
-            <img src={imgLg.src} class="w-full h-full object-cover" alt={image.alt}
+            <img src={imgLg.src} class="w-full h-full object-cover" alt={image_alt}
                 width={imgLg.width} height={imgLg.height} />
           ) : (
-            <Picture src={imgLg} class="w-full h-full object-cover" alt={image.alt}
+            <Picture src={imgLg} class="w-full h-full object-cover" alt={image_alt}
                     widths={[120, 188, 300, 372, 788, 1000, 1280]}  />
           )}
         </div>
@@ -141,12 +137,12 @@ const dir = "ltr";
       </div>
       <div class="w-full sm:w-auto sm:flex-shrink-0 order-1 sm:order-2 flex justify-center items-center">
         <div class="w-48 h-48 overflow-hidden rounded-full relative opacity-75 shadow-md border border-gray-400 border-2">
-          <a href={authorURL} aria-label={image.alt}>
-            {imgBio.isExternal ? (
-            <img src={imgBio.src} class="w-full h-full object-cover" alt={image.alt}
-                  width={imgBio.width} height={imgBio.height} />
+          <a href={authorURL} aria-label={image_alt}>
+            {imgBio?.isExternal ? (
+            <img src={imgBio?.src} class="w-full h-full object-cover" alt={image_alt}
+                  width={imgBio?.width} height={imgBio?.height} />
             ) : (
-              <Picture src={imgBio} class="w-full h-full object-cover" alt={image.alt}
+              <Picture src={imgBio} class="w-full h-full object-cover" alt={image_alt}
                       widths={[120, 188, 300, 372, 788, 1000, 1280]}  />
             )}
             </a>
@@ -159,15 +155,15 @@ const dir = "ltr";
 
 { size==='full' && (
   <div id={uniqueID} class="author max-w-64 max-h-96 shadow-lg rounded-lg overflow-hidden mx-auto border-2 border-gray-200 p-2 text-center" lang={language} dir={dir}>
-    <a href={authorURL} aria-label={image.alt}>
+    <a href={authorURL} aria-label={image_alt}>
     <div class="relative pb-32 overflow-hidden">
       <div class="absolute inset-0">
       <div class="w-32 h-32 overflow-hidden rounded-full border-4 border-gray-400 mx-auto">
-          {imgFull.isExternal ? (
-            <img src={imgMd.src} class="w-full h-full object-cover" alt={image.alt}
-                width={imgMd.width} height={imgMd.height} />
+          {imgFull?.isExternal ? (
+            <img src={imgFull?.src} class="w-full h-full object-cover" alt={image_alt}
+                width={imgFull?.width} height={imgFull?.height} />
           ) : (
-            <Picture src={imgMd} class="w-full h-full object-cover" alt={image.alt}
+            <Picture src={imgFull} class="w-full h-full object-cover" alt={image_alt}
                     widths={[120, 188, 300, 372, 788, 1000, 1280]}  />
           )}
       </div>

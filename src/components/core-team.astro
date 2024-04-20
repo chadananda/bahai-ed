@@ -1,9 +1,9 @@
 ---
 import { Picture } from "astro:assets";
 import brand from "@data/site.json"
-import { getDataCollection } from '@utils/utils.js';
+import { getTeam } from '@utils/utils.js';
 
-const publishedTeamMembers = getDataCollection("team", ({ data }) => !data.draft);
+const publishedTeamMembers = getTeam(({ data }) => !data.draft);
 ---
 
 

@@ -26,7 +26,7 @@ if (!entry) {
 
 const article = await entry.render(); // needed?
 const author = await getDataCollectionEntry('team', entry.data.author?.id);
-const category = await getDataCollectionEntry('categories', entry.data.category.id);
+const category = await getDataCollectionEntry('categories', entry.data.category);
 
 // we'll need to fix this to get the topics
 // maybe use getfilteredTopics?

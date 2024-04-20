@@ -4,7 +4,7 @@ export const prerender = false;
 
 // import { getPendingComments, deletePendingComments, getPendingArticlePosts, deletePendingPosts } from 'work/db';
 import { moderateComments } from '@utils/openai_request';
-import { getPostFromSlug, getDataCollectionEntry } from '@utils/utils';
+import { getPostFromSlug } from '@utils/utils';
 import brand from '@data/site.json';
 
 import yaml from 'js-yaml';
@@ -109,7 +109,7 @@ async function getArticleDescription(slug) {
 }
 
 // async function getArticleCommentsLastPostDate(slug) {
-//   let commentsEntry = await getDataCollectionEntry('comments', slug);
+//   let commentsEntry = awai('comments', slug);
 //   return commentsEntry?.data?.lastPostDate;
 // }
 

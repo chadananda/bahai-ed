@@ -12,7 +12,7 @@ export const onRequest = async (context, next) => {
   const sessionId = context.cookies.get(lucia.sessionCookieName)?.value ?? null;
   // Redirect to login page if no session ID is present
   if (!sessionId) {
-      console.log('No sessionId, redirecting to login');
+      // console.log('No sessionId, redirecting to login');
       return new Response(null, { status: 302, headers: { Location: '/login' } });
   }
   try {
@@ -27,7 +27,7 @@ export const onRequest = async (context, next) => {
     // }
     // Validate session and user, then proceed
     const { session, user } = await lucia.validateSession(sessionId);
-    console.log('Session and user validated:', session, user);
+    // console.log('Session and user validated:', session, user);
     if (!['superadmin', 'admin','editor','writer'].includes(user.role)) {
       console.log('User role not allowed');
       return new Response(null, { status: 302, headers: { Location: '/login' } });
@@ -36,7 +36,7 @@ export const onRequest = async (context, next) => {
     context.locals.user = user;
     return next();
   } catch (error) {
-    console.error('Session validation error:', error);
+    // console.error('Session validation error:', error);
     // Clear session cookie on validation error and redirect to login
     const sessionCookie = lucia.createBlankSessionCookie();
     context.cookies.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);

@@ -3,7 +3,7 @@ export const prerender = false;
 
 import Layout from '@layouts/AdminLayout.astro';
 import site from '@data/site.json';
-import { getDataCollection } from '@utils/utils.js';
+import { getCategories } from '@utils/utils.js';
 import CategoryCard from "@components/article/categoryCard.astro";
 
 
@@ -13,7 +13,7 @@ if (!['admin','superadmin'].includes(user?.role)) return Astro.redirect('/admin'
 
 
 
-const categories = await getDataCollection("categories")
+const categories = await getCategories()
 ---
 <Layout user={user} >
   <div class="mx-20 w-full ">

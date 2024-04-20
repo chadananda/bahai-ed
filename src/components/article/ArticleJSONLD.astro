@@ -4,14 +4,14 @@
 import brand from '@data/site.json';
 import { SEO, TwitterCardType } from "astro-seo";
 import { getImage } from "astro:assets";
-import { getArticleAudioPath, getArticleTranslations, getArticleURL, getDataCollectionEntry, filterTopics } from '@utils/utils.js';
+import { getArticleAudioPath, getArticleTranslations, getArticleURL, getCategory, getTeamMember, filterTopics } from '@utils/utils.js';
 
 // type Props = CollectionEntry<'article'>['data'];
 
 const { title, description, desc_125, keywords, language, video_main, post_type, audio, audio_duration, url:slug, image } = Astro.props;
 
-const category = await getDataCollectionEntry('categories', Astro.props.category.id);
-const author = !!Astro.props.author ? await getDataCollectionEntry('team', Astro.props.author.id) : false;
+const category = await getCategory(Astro.props.category);
+const author = !!Astro.props.author ? await getTeamMember(Astro.props.author.id) : false;
 // const topics = await getEntries(Astro.props.topics);
 const topics = await filterTopics(Astro.props.topics); // because topics are no longer references
 // console.log('topicsList', topics);
