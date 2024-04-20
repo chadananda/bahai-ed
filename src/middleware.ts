@@ -17,14 +17,14 @@ export const onRequest = async (context, next) => {
   }
   try {
     // Perform origin verification for additional security
-    const originHeader = context.request.headers.get("Origin");
+    const originHeader = context.request.headers.get("Origin"); // comes out null
     const hostHeader = context.request.headers.get("Host");
     const isDev = import.meta.env.APP_ENV === 'dev';
     // In development, we might skip the origin check for ease of testing
-    if (!isDev && (!originHeader || !hostHeader || !verifyOrig(originHeader, [hostHeader]))) {
-      console.log('Origin verification failed:', originHeader, hostHeader );
-      return new Response("Forbidden", { status: 403 });
-    }
+    // if (!isDev && (!originHeader || !hostHeader || !verifyOrig(originHeader, [hostHeader]))) {
+    //   console.log('Origin verification failed:', originHeader, hostHeader );
+    //   return new Response("Forbidden", { status: 403 });
+    // }
     // Validate session and user, then proceed
     const { session, user } = await lucia.validateSession(sessionId);
     console.log('Session and user validated:', session, user);
