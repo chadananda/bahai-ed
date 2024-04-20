@@ -22,7 +22,7 @@ export const onRequest = async (context, next) => {
     const isDev = import.meta.env.APP_ENV === 'dev';
     // In development, we might skip the origin check for ease of testing
     if (!isDev && (!originHeader || !hostHeader || !verifyOrig(originHeader, [hostHeader]))) {
-      console.log('Origin verification failed');
+      console.log('Origin verification failed:', originHeader, hostHeader );
       return new Response("Forbidden", { status: 403 });
     }
     // Validate session and user, then proceed
