@@ -3,7 +3,7 @@ import { lucia } from "./lib/auth";
 import { verifyRequestOrigin as verifyOrig } from "lucia";
 // import { defineMiddleware } from "astro:middleware";
 
-export const onRequest = (context, next) {
+export const onRequest (context, next) {
   const path = new URL(context.request.url).pathname;
   // Skip middleware for non-admin paths
   if (!path.startsWith('/admin')) return next();
