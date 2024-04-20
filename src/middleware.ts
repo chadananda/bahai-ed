@@ -1,9 +1,9 @@
 // src/middleware.ts
 import { lucia } from "./lib/auth";
 import { verifyRequestOrigin as verifyOrig } from "lucia";
-import { defineMiddleware } from "astro:middleware";
+// import { defineMiddleware } from "astro:middleware";
 
-export const onRequest = defineMiddleware(async (context, next) => {
+export const onRequest = (context, next) {
   const path = new URL(context.request.url).pathname;
   // Skip middleware for non-admin paths
   if (!path.startsWith('/admin')) return next();
@@ -41,7 +41,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
     context.cookies.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
     return new Response(null, { status: 302, headers: { Location: '/login' } });
   }
-});
+};
 
 export const config = {
     matcher: '/admin/*' // Apply this middleware only to paths under '/admin'
