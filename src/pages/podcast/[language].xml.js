@@ -28,18 +28,24 @@ const mainLanguages = {
   tr: { flag: "🇹🇷", name: "Türkçe", dir: "ltr", en_name: "Turkish" }
  };
 
-const hasAudio = ({data}) => !!data.audio;
 
-export const getPodcastArticles = async (lang) => {
-  return await getPublishedArticles(lang, hasAudio);
-}
+
+// export const getPodcastArticles = async (lang) => {
+//   const hasAudio = ({data}) => !!data.audio;
+//   return await getPublishedArticles(lang, hasAudio);
+// }
 
 export async function getStaticPaths() {
+  const hasAudio = ({data}) => !!data.audio;
   const languages = await getAllLanguages();
+  const allArticles = (await getPublishedArticles()).filter(hasAudio);
    // Convert Set to Array and generate paths
   const paths = Array.from(languages).map((language) => {
-    // console.log( { params: { language: `${language}` } } )
-    return { params: { language: `${language}` } };
+    const podcastArticles = (lang) => allArticles.filter(({data}) => data.language === lang);
+    return {
+      params: { language: `${language}` },
+      props: { articles: podcastArticles(language) }
+    };
   });
   return paths;
 }
@@ -72,10 +78,7 @@ export const processItems = async (articles, site, baseUrl) => {
     const imagePath = !!post.data.audio_image ? (await getImage({src: post.data.audio_image, format: 'jpg'})).src : ''
     const imageURL = baseUrl + imagePath
 
-    let author = false
-    if (!!post.data.author) {
-      author = await getTeamMember(post.data.author?.collection, post.data.author?.id);
-    }
+    let author = await getTeamMember(post.data.author);
 
     const itunes_duration = ISO8601ToiTunes(post.data.audio_duration);
     return {
@@ -149,7 +152,7 @@ export async function GET({ params, request }) {
   const baseUrl = new URL(request?.url).origin;
   const language = params.language;
   // all articles matching language, filtered by having audio
-  const articles = await getPodcastArticles(language)
+  const articles = Astro.props.articles; // || await getPodcastArticles(language)
 //  console.log(`${articles.length} articles found with podcast audio in "${language}"`);
   const feed = await generateRSSFeedObj(articles, language, site, baseUrl);
   // console.log('rss feed', feed);

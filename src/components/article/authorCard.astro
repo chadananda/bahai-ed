@@ -1,18 +1,16 @@
 ---
-import { Picture, getImage } from 'astro:assets';
+// import { Picture } from 'astro:assets';
 import { getArticleURL, getTeamMember, displayImageObj } from '@utils/utils.js';
-
 
 if (!Astro.props.slug) console.error("Warning: no author slug provided!");
 
-const author = await getTeamMember(Astro.props.slug)
+const author = Astro.props.author || (await getTeamMember(Astro.props.slug))
 var { image_src, image_alt, name, type, worksFor_type, worksFor_name, description, sameAs, name_slug } = author.data;
 
 const pageURL = getArticleURL(Astro);
 const siteURL = new URL(pageURL).origin.replace(/\/$/, '');
 const authorURL = author.data.url || `${siteURL}/authors/${name_slug}`;
 const size = Astro.props.size || 'sm';
-
 
 const bioImage = await displayImageObj(image_src, image_alt, 1200, 600, 'jpg', 80);
 const imgSm = await displayImageObj(image_src, image_alt, 180, 180, 'webp', 90);
@@ -76,18 +74,12 @@ const dir = "ltr";
     <div class="relative pb-32 overflow-hidden">
       <div class="absolute inset-0">
       <div class="w-32 h-32 overflow-hidden rounded-full border-4 border-gray-400 mx-auto">
-        {imgMd?.isExternal ? (
           <img src={imgMd?.src} class="w-full h-full object-cover" alt={image_alt}
                width={imgMd?.width} height={imgMd?.height} />
-        ) : (
-          <Picture src={imgMd} class="w-full h-full object-cover" alt={image_alt}
-                   widths={[120, 188, 300, 372, 788, 1000, 1280]}  />
-        )}
       </div>
       </div>
     </div>
     </a>
-
     <div class="px-0 py-2">
       <h3 class="text-lg font-semibold text-gray-800">{name}</h3>
       <p class="text-gray-600 text-sm">{author.data.description_125}</p>
@@ -99,23 +91,16 @@ const dir = "ltr";
 
 { size==='lg' && (
   <div id={uniqueID} class="author max-w-64 max-h-96 shadow-lg rounded-lg overflow-hidden mx-auto border-2 border-gray-200 p-2 text-center" lang={language} dir={dir}>
-
     <a href={authorURL} aria-label={image_alt}>
       <div class="relative pb-32 overflow-hidden">
         <div class="absolute inset-0">
         <div class="w-32 h-32 overflow-hidden rounded-full border-4 border-gray-400 mx-auto">
-          {imgLg.isExternal ? (
             <img src={imgLg.src} class="w-full h-full object-cover" alt={image_alt}
                 width={imgLg.width} height={imgLg.height} />
-          ) : (
-            <Picture src={imgLg} class="w-full h-full object-cover" alt={image_alt}
-                    widths={[120, 188, 300, 372, 788, 1000, 1280]}  />
-          )}
         </div>
         </div>
       </div>
     </a>
-
     <div class="px-0 py-2">
       <h3 class="text-lg font-semibold text-gray-800">{name}</h3>
       <p class="text-gray-600 text-sm">{author.data.description_125}</p>
@@ -138,13 +123,8 @@ const dir = "ltr";
       <div class="w-full sm:w-auto sm:flex-shrink-0 order-1 sm:order-2 flex justify-center items-center">
         <div class="w-48 h-48 overflow-hidden rounded-full relative opacity-75 shadow-md border border-gray-400 border-2">
           <a href={authorURL} aria-label={image_alt}>
-            {imgBio?.isExternal ? (
             <img src={imgBio?.src} class="w-full h-full object-cover" alt={image_alt}
                   width={imgBio?.width} height={imgBio?.height} />
-            ) : (
-              <Picture src={imgBio} class="w-full h-full object-cover" alt={image_alt}
-                      widths={[120, 188, 300, 372, 788, 1000, 1280]}  />
-            )}
             </a>
         </div>
       </div>
@@ -159,13 +139,8 @@ const dir = "ltr";
     <div class="relative pb-32 overflow-hidden">
       <div class="absolute inset-0">
       <div class="w-32 h-32 overflow-hidden rounded-full border-4 border-gray-400 mx-auto">
-          {imgFull?.isExternal ? (
             <img src={imgFull?.src} class="w-full h-full object-cover" alt={image_alt}
                 width={imgFull?.width} height={imgFull?.height} />
-          ) : (
-            <Picture src={imgFull} class="w-full h-full object-cover" alt={image_alt}
-                    widths={[120, 188, 300, 372, 788, 1000, 1280]}  />
-          )}
       </div>
       </div>
     </div>

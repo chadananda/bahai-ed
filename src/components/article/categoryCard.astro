@@ -1,11 +1,10 @@
 ---
-import { Picture } from 'astro:assets';
 import { getDataCollectionImage, getCategory } from '@utils/utils';
 
 const { slug, size='sm', editmode=false } = Astro.props;
 const categoryURL = editmode ? `/admin/categories/${slug}` : `/categories/${slug}`;
 // abstracted to allow merging of data from db
-const category = await getCategory(slug);
+const category = Astro.props.category || (await getCategory(slug));
 
 let imageSize
 if (size === "sm") imageSize = {width: 400, height: 400, format: 'webp'}
@@ -13,10 +12,7 @@ if (size === "sm") imageSize = {width: 400, height: 400, format: 'webp'}
  else imageSize = {width: 788, height: 288, format: 'webp'}
 let image = await getDataCollectionImage(category, category.data.image, imageSize);
 
-// console.log('category image', image)
-
 const categoryName = category.data.category;
-
 const uniqueID = 'id-' + Math.random().toString(36).slice(2, 11);
 ---
 
@@ -24,14 +20,9 @@ const uniqueID = 'id-' + Math.random().toString(36).slice(2, 11);
  <div id={uniqueID} class="categoryCard w-48 h-48 shadow-lg rounded-lg overflow-hidden mx-auto border-2 border-gray-200 p-1">
   <a href={categoryURL} aria-label={categoryName}>
     <div class="relative h-full">
-      {image.isExternal ? (
-        <img src={image.src} class="w-full h-full object-cover rounded-md" alt={categoryName}
+
+      <img src={image.src} class="w-full h-full object-cover rounded-md" alt={categoryName}
         width={image.width} height={image.height} />
-      ) : (
-        <Picture src={!!image.isExternal ? image.src : image}
-        class="w-full h-full object-cover rounded-md" alt={categoryName}
-        width={image.width} height={image.height} />
-      )}
 
       <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-35 rounded-b-lg">
         <div class="text-white px-1 py-1">
@@ -48,10 +39,10 @@ const uniqueID = 'id-' + Math.random().toString(36).slice(2, 11);
  <div id={uniqueID} class="categoryCard w-96 h-48 shadow-lg rounded-lg overflow-hidden mx-auto border-2 border-gray-200 p-1">
   <a href={categoryURL} aria-label={categoryName}>
     <div class="relative h-full">
-      <Picture src={!!image.isExternal ? image.src : image}
-        class="w-full h-full object-cover rounded-md" alt={categoryName}
-        width={image.width} height={image.height}
-      />
+
+      <img src={image.src} class="w-full h-full object-cover rounded-md" alt={categoryName}
+        width={image.width} height={image.height} />
+
       <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-35 rounded-b-lg">
         <div class="text-white px-1 py-1">
           <h3 class="text-sm font-semibold">{categoryName}</h3>
@@ -67,11 +58,10 @@ const uniqueID = 'id-' + Math.random().toString(36).slice(2, 11);
  <div id={uniqueID} class="categoryCard w-[800px] h-[300px] shadow-lg rounded-lg overflow-hidden mx-auto border-2 border-gray-200 p-1">
   <a href={categoryURL} aria-label={categoryName}>
     <div class="relative h-full">
-      <Picture src={!!image.isExternal ? image.src : image}
-      class="w-full h-full object-cover rounded-md" alt={categoryName}
-      widths={[120, 188, 300, 372, 788, 1000, 1280]}
-      width={image.width} height={image.height}
-      />
+
+      <img src={image.src} class="w-full h-full object-cover rounded-md" alt={categoryName}
+        width={image.width} height={image.height} />
+
       <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-35 rounded-b-lg">
         <div class="text-white px-1 py-1">
           <h3 class="text-sm font-semibold">{categoryName}</h3>

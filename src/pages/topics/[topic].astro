@@ -6,7 +6,7 @@ import PostThumb from "@components/article/postThumb.astro";
 import Container from "@components/container.astro";
 import Sectionhead from "@components/sectionhead.astro";
 import TopicFAQ from '@components/article/topicFAQ.astro';
-import { getDataCollection, getDataCollectionEntry, getPublishedArticles } from "@utils/utils.js";
+import { getDataCollection, getPublishedArticles } from "@utils/utils.js";
 
 export async function getStaticPaths() {
   const allTopics = await getDataCollection("topics");
@@ -18,7 +18,7 @@ export async function getStaticPaths() {
       params: {topic: topic.id},
       props: {
         topic,
-        faqs: allFAQs.filter(faq => faq.id === topic.id)[0],
+        faqs: allFAQs.find(faq => faq.id === topic.id),
         posts: allArticles.filter(articleTopicsHasMatch)
       }
     }
@@ -53,6 +53,7 @@ const { topic, faqs, posts } = Astro.props;
 </Layout>
 
 <script type="text/javascript">
+  // hide articles that do not match the currently selected language
   document.addEventListener('DOMContentLoaded', function() {
     const selectedLanguage = localStorage.getItem('selectedLanguage') || 'en';
     const articles = document.querySelectorAll('.articlePost');

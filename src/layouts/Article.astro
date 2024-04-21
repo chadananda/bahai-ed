@@ -18,10 +18,10 @@ import  SpeedInsights  from "@vercel/speed-insights/astro"
 import { getArticleURL, mainLanguages as langs } from '@utils/utils.js';
 
 // frontmatter metadata for this article, grab the fields we'll need
-const props = Astro.props.meta.entry.data;
-const {image, description, title} = props;
+const meta = Astro.props.meta.entry.data;
+const {image, description, title} = meta;
 const {footerMargin = true } = Astro.props;
-const language = props.language || "en";
+const language = meta.language || "en";
 const dir = langs[language].dir;
 
 const pageURL = getArticleURL(Astro);
@@ -39,7 +39,7 @@ import RelatedArticles from "@components/article/relatedArticles.astro";
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <ArticleJSONLD {...props} />
+    <ArticleJSONLD {...meta} />
     <!-- <ViewTransitions /> -->
   </head>
 

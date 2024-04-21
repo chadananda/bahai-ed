@@ -26,20 +26,16 @@ export async function getStaticPaths() {
 // this category slug
 const slug = Astro.params.category;
 const { category, posts } =  Astro.props;
-const faqs = false;
 ---
 
 <Layout title={slug} description={category?.data?.description}>
-   { !!faqs && (<TopicFAQ faqs={faqs} />)}
-   { !faqs && (
      <Sectionhead>
        <Fragment slot="title"> Article Topics </Fragment>
        <Fragment slot="desc"> About  “{category?.data?.category}” </Fragment>
      </Sectionhead>
-   )}
   <Container class="w-full mx-5 sm:mx-15 pt-5">
 
-    <CategoryCard slug={slug} size="lg" />
+    <CategoryCard slug={slug} size="lg" category={category} />
 
     <main class="flex flex-wrap justify-center gap-20 mt-10">
       {Array.isArray(posts) && posts.map((post) => (
@@ -47,7 +43,7 @@ const faqs = false;
           data-title={post.data.title}
           data-tags={post.data.tags.join(',')}
           data-language={post.data.language}>
-          <PostThumb post={post} />
+          <PostThumb post={post} category={category} />
         </div>
       ))}
     </main>

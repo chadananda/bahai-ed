@@ -10,23 +10,30 @@ import TLDR from "@components/article/TLDR.astro";
 import PodcastPlayer from "@components/article/PodcastPlayer.astro";
 import PostComments from "@components/article/PostComments.astro";
 import AuthorBio from "@components/article/authorCard.astro";
-import { getPublishedArticles, getCategory, getTeamMember, filterTopics } from "@utils/utils.js";
-
+import { getPublishedArticles, getDataCollection, getCategories, getTeam, getTeam } from "@utils/utils.js";
 
 export async function getStaticPaths() {
-  var articles = await getPublishedArticles();
-  articles = articles.filter((entry) => entry.data?.url);
+  const articles = (await getPublishedArticles()).filter((entry) => entry.data?.url);
+  const allAuthors = await getTeam();
+  const allTopics = await getDataCollection("topics");
+  const allCategories = await getCategories();
+
   // console.log(`${articles.length} published articles:`, articles.map(ar=>ar.id).join(", "));
-  return articles.map((entry) => {
-    return { params: { slug: entry.data?.url }, props: { entry } };
+  return articles.map((post) => {
+    return {
+      params: { slug: post.data?.url },
+      props: {
+        entry,
+        author: allAuthors.find((author) => author.id === post.data.author),
+        category: allCategories.find((cat) => cat.id === post.data.category),
+        topics: allTopics.filter((topic) => post.data.topics.includes(topic.id)),
+       } };
   });
 }
 
 const { entry } = Astro.props; // Get the entry directly from the prop on render
 const { Content, headings } = await entry.render();
-const author = !!entry.data.author ?  await getTeamMember(entry.data.author?.id): false;
-const category = await getCategory(entry.data.category);
-const topics = await filterTopics(entry.data.topics); // because not all topics are created yet
+const { author, category, topics } = Astro.props;
 ---
 
 <Layout meta={Astro.props} headings={headings}>
@@ -79,7 +86,8 @@ const topics = await filterTopics(entry.data.topics); // because not all topics 
      </div>
 
      <div class="max-w-3xl mx-auto">
-       {!!entry.data?.audio && <PodcastPlayer meta={entry.data} slug={entry.data?.url} />  }
+       {!!entry.data?.audio &&
+         <PodcastPlayer meta={entry.data} slug={entry.data?.url} author={author} />  }
      </div>
 
      <div class="prose mx-auto mt-6 max-w-3xl prose-headings:mb-2 prose-headings:mt-8"
@@ -87,7 +95,7 @@ const topics = await filterTopics(entry.data.topics); // because not all topics 
 
      {!!author &&
       <div class="max-w-3xl mx-auto">
-        <AuthorBio slug={entry.data.author?.id} size="bio" />
+        <AuthorBio slug={entry.data.author} size="bio" author={author} />
       </div>
      }
 

@@ -8,6 +8,7 @@ export async function GET() {
 User-agent: *
 Disallow: /admin/
 Disallow: /login
+Disallow: /logout
 Disallow: /contact
 
 Sitemap: ${siteUrl}/sitemap-index.xml

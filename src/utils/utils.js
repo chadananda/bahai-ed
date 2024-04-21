@@ -11,6 +11,7 @@ import { db, Categories, eq, Team, Users } from 'astro:db';
 import * as argon2 from 'argon2';
 import AWS from 'aws-sdk';
 import { Buffer } from 'buffer';
+import dotenv from 'dotenv';  dotenv.config();
 
 export const slugify = (text) => {
   return slugifier(text,  {
@@ -383,7 +384,7 @@ export const deleteCategory = async (id) => {
  */
 export const JSONTable = (data, columns = ['Key', 'Value']) => {
 
-  console.log('JSONTable', data);
+  // console.log('JSONTable', data);
   if (!data) {
     console.error('JSONTable: no data provided');
     return '';
@@ -507,8 +508,12 @@ export const uploadS3 = async (base64Data, Key, ContentType='', Bucket='') => {
   const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
   AWS.config.update({ region, accessKeyId, secretAccessKey });
   ContentType = ContentType || guessContentType(Key)
-  Bucket = Bucket || process.env.AWS_BUCKET_NAME;
-// console.log('uploadS3', Key, ContentType, Bucket);
+  Bucket = process.env.AWS_BUCKET_NAME;
+
+// console.log('uploadS3 process.env.AWS_BUCKET_REGION', process.env.AWS_BUCKET_REGION);
+// console.log('uploadS3 process.env.AWS_ACCESS_KEY_ID', process.env.AWS_ACCESS_KEY_ID);
+// console.log('uploadS3 process.env.AWS_BUCKET_NAME', process.env.AWS_BUCKET_NAME);
+
   // Convert base64 string to binary buffer
   const Body = Buffer.from(base64Data, 'base64');
   // Create an S3 instance
@@ -517,7 +522,7 @@ export const uploadS3 = async (base64Data, Key, ContentType='', Bucket='') => {
   const params = {  Bucket, Key, Body, ContentType };
   try {
     const data = await s3.upload(params).promise();
-    // console.log(`File uploaded successfully at ${data.Location}`);
+    console.log(`File uploaded successfully at ${data.Location}`);
     return data.Location;
   } catch (err) {
     console.error('Error uploading file:', err);
@@ -547,7 +552,7 @@ export const seedSuperUser = async () => {
     const external = false;
     const jobTitle = 'Staff Writer, Editor';
     const type = 'Person';
-    const url = `${site.url}/author/${id}`;
+    const url = `${site.url}/authors/${id}`;
     const worksFor_type = 'Organization';
     const worksFor_name = site.siteName;
     const description = site.author_bio;

@@ -1,18 +1,18 @@
 ---
 // Import Simple Icons
 import { Twitter, Facebook, Linkedin } from 'simple-icons-astro';
-// import { Image } from 'astro:assets';
-import { getArticleAudioPath, getArticleSlugFromURL, getArticleURL, getTeamMember, displayImageObj } from '@utils/utils.js';
+import { getArticleAudioPath, getArticleURL, getTeamMember, displayImageObj } from '@utils/utils.js';
 import site from '@data/site.json';
 
 const meta = Astro.props.meta;
 const {datePublished, audio, title, description, audio_duration: duration, title: seriesName } = meta;
 
-// let data = JSON.stringify({datePublished, audio, title, description, audio_duration: duration, seriesName });
-const slug = await getArticleSlugFromURL(Astro.url.href);
+const slug = meta.url;
 const episodeNumber = meta.episode_number || 1;
 
-let author = await getTeamMember(meta.author);
+// console.log('article slug', slug);
+
+let author = Astro.props.author || (await getTeamMember(meta.author));
 let authorName = !!author ? author?.data?.name : site.site;
 
 const pageURL = getArticleURL(Astro);
@@ -20,7 +20,6 @@ const baseUrl = new URL(pageURL).origin.replace(/\/$/, '');
 
 let audioURL = `${audio}`;
 if (!audioURL.startsWith('http')) {  // convert file path to URL
-  // console.log('PodcastPlayer.astro Slug', slug);
   const audioPath = await getArticleAudioPath(slug, audio);
   audioURL = baseUrl + audioPath;
 }

@@ -1,5 +1,4 @@
 // post /api/upload_s3
-// takes two parameters: filedata, s3key
 export const prerender = false;
 
 import { uploadS3, getTeamMemberBySlug } from '@utils/utils.js';

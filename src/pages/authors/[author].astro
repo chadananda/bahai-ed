@@ -15,20 +15,23 @@ export async function getStaticPaths() {
     const matchingAuthor = (post) => post.data.author===author.id;
     return {
       params: { author: author.id},
-      props: { posts: allArticles.filter(matchingAuthor)  }
+      props: {
+        posts: allArticles.filter(matchingAuthor),
+        author: allAuthors.find((a) => a.id === author.id),
+      }
     };
   });
 };
 
 // this author param
 const author_slug = Astro.params.author;
-const { posts } = Astro.props;
+const { posts, author } = Astro.props;
 ---
 
 <Layout pageTitle={author_slug}>
   <Container>
 
-     <AuthorCard slug={author_slug} size="md" />
+     <AuthorCard slug={author_slug} size="md" author={author} />
 
       <main class="mt-16">
         <div class="flex flex-wrap justify-center gap-20">

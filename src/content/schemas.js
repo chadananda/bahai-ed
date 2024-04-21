@@ -29,9 +29,9 @@ export const post_schema = ({ image }) =>
     narrator: z.string().nullable().default("auto"), // auto generated or name of narrator
     draft: z.boolean().default(true),
 
-    author: reference("team").nullable().optional(),
-    editor: reference("team").nullable().optional(),
-    category: z.string().nullable().default(""),
+    author: z.string().nullable().optional(), //reference("team").nullable().optional(),
+    editor: z.string().nullable().optional(), //reference("team").nullable().optional(),
+    category: z.string().nullable().optional(),
     topics: z.array(z.string()).default([]),
     tags: z.array(z.string()).default([]),
     keywords: z.array(z.string()).default([]), // will be an array of references soon!

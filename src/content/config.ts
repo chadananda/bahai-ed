@@ -1,6 +1,6 @@
 // 1. Import utilities from `astro:content`
 // import { string } from 'astro/zod';
-import { z, defineCollection, reference } from 'astro:content';
+import { z, defineCollection } from 'astro:content';
 import { ORG_TYPE, post_schema } from './schemas.js'
 
 
@@ -11,46 +11,46 @@ const posts = defineCollection({
 });
 
 
-const team = defineCollection({
-  type: 'data',
-  schema: ({ image }) => z.object({
-    name: z.string(), // full name
-    name_slug: z.string().default(''), // slugified version
-    title: z.string(),
-    image: z.object({
-      src: z.string().nullable().default(''),
-      alt: z.string().nullable().default(''),
-    }),
-    external: z.boolean().nullable().default(false), // internal or external writer
-    contact: z.string().nullable().default(''), // email or url if available
-    isFictitious: z.boolean().nullable().default(false), // pen name or real person?
-    draft: z.boolean().nullable().default(false),
-    jobTitle: z.string().nullable().default(''),
-    type: z.string().nullable().default('Person'),
-    url: z.string().nullable().default(''),
-    worksFor: z.object({
-      '@type': z.enum(ORG_TYPE).default('Organization'),
-      name: z.string().default(''),
-    }).default({}),
-    description: z.string().nullable().default(''),
-    sameAs: z.array(z.string()).nullable().default([]),
-    description_125: z.string().nullable().default(''),
-    description_250: z.string().nullable().default(''),
-    biography: z.string().nullable().default(''),
-  }),
-});
+// const team = defineCollection({
+//   type: 'data',
+//   schema: ({ image }) => z.object({
+//     name: z.string(), // full name
+//     name_slug: z.string().default(''), // slugified version
+//     title: z.string(),
+//     image: z.object({
+//       src: z.string().nullable().default(''),
+//       alt: z.string().nullable().default(''),
+//     }),
+//     external: z.boolean().nullable().default(false), // internal or external writer
+//     contact: z.string().nullable().default(''), // email or url if available
+//     isFictitious: z.boolean().nullable().default(false), // pen name or real person?
+//     draft: z.boolean().nullable().default(false),
+//     jobTitle: z.string().nullable().default(''),
+//     type: z.string().nullable().default('Person'),
+//     url: z.string().nullable().default(''),
+//     worksFor: z.object({
+//       '@type': z.enum(ORG_TYPE).default('Organization'),
+//       name: z.string().default(''),
+//     }).default({}),
+//     description: z.string().nullable().default(''),
+//     sameAs: z.array(z.string()).nullable().default([]),
+//     description_125: z.string().nullable().default(''),
+//     description_250: z.string().nullable().default(''),
+//     biography: z.string().nullable().default(''),
+//   }),
+// });
 
 
 // collection: category:
-const categories = defineCollection({
-  type: 'data',
-  schema: ({ image }) => z.object({
-    category: z.string(),
-    category_slug: z.string().default(''),
-    image: z.string().default(''),
-    description: z.string(),
-  }),
-});
+// const categories = defineCollection({
+//   type: 'data',
+//   schema: ({ image }) => z.object({
+//     category: z.string(),
+//     category_slug: z.string().default(''),
+//     image: z.string().default(''),
+//     description: z.string(),
+//   }),
+// });
 
 
 // collection: topics:
@@ -73,20 +73,20 @@ const topics = defineCollection({
 
 
 // define collection for subtopics:
-const subtopics = defineCollection({
-  type: 'data',
-  schema: z.object({
-    topic: z.string(),
-    topic_slug: z.string(),
-    category: reference('categories'),
-    subtopics: z.array(z.object({
-      subtopic: z.string(),
-      subtopic_slug: z.string(),
-      keywords: z.array(z.string()),
-      questions: z.array(z.string()),
-   }))
-  }),
-});
+// const subtopics = defineCollection({
+//   type: 'data',
+//   schema: z.object({
+//     topic: z.string(),
+//     topic_slug: z.string(),
+//     category: reference('categories'),
+//     subtopics: z.array(z.object({
+//       subtopic: z.string(),
+//       subtopic_slug: z.string(),
+//       keywords: z.array(z.string()),
+//       questions: z.array(z.string()),
+//    }))
+//   }),
+// });
 
 
 // define collection for faqs:
@@ -101,7 +101,7 @@ const faqs = defineCollection({
     faqs: z.array(z.object({
       question: z.string(),
       answer: z.string(),
-      resources: z.array(reference('articles')).optional(),
+      // resources: z.array(reference('articles')).optional(),
     })),
   }),
 });
@@ -140,6 +140,6 @@ const comments = defineCollection({
 
 
 //    This key should match your collection directory name in "src/content"
-export const collections = { comments, posts, team, categories, topics, faqs };
+export const collections = { comments, posts, topics, faqs };
 
 

@@ -4,8 +4,8 @@ import { getArticleURL, getTeamMember, getCategory } from '@utils/utils.js';
 
 const { post, small, class: customClasses } = Astro.props
 const articleLink = `/${post.data?.url}`;
-const author = post.data.author ? await getTeamMember(post.data.author?.id) : false;
-const category = await getCategory(post.data.category);
+const author = Astro.props.author || await getTeamMember(post.data.author);
+const category = Astro.props.category || (await getCategory(post.data.category));
 
 const image = post.data.image;
 const pageURL = getArticleURL(Astro);
