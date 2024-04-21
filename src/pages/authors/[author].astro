@@ -9,13 +9,20 @@ import { getPublishedArticles, getTeam } from "@utils/utils.js";
 
 // export paths for all the authors
 export async function getStaticPaths() {
-  return (await getTeam()).map((author) => ({ params: { author: author.id } }));
+  const allAuthors = await getTeam();
+  const allArticles = await getPublishedArticles()
+  return allAuthors.map((author) => {
+    const matchingAuthor = (post) => post.data.author===author.id;
+    return {
+      params: { author: author.id},
+      props: { posts: allArticles.filter(matchingAuthor)  }
+    };
+  });
 };
 
 // this author param
 const author_slug = Astro.params.author;
-const matchingAuthor = (post) => post.data.author===author_slug;
-const posts = (await getPublishedArticles()).filter(matchingAuthor);
+const { posts } = Astro.props;
 ---
 
 <Layout pageTitle={author_slug}>
