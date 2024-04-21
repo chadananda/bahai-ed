@@ -10,19 +10,27 @@ import { getDataCollection, getDataCollectionEntry, getPublishedArticles } from 
 
 export async function getStaticPaths() {
   const allTopics = await getDataCollection("topics");
-  return allTopics.map((topic) => ({params: { topic: topic.id } }));
+  const allFAQs = await getDataCollection("faqs");
+  const allArticles = await getPublishedArticles();
+  return allTopics.map((topic) => {
+    const articleTopicsHasMatch = (ar) => ar.data?.topics?.includes(topic.id);
+    return {
+      params: {topic: topic.id},
+      props: {
+        topic,
+        faqs: allFAQs.filter(faq => faq.id === topic.id)[0],
+        posts: allArticles.filter(articleTopicsHasMatch)
+      }
+    }
+  });
 }
 
-const slug = Astro.params.topic;
-const topic = await getDataCollectionEntry('topics', slug);
 
-const topicsMatch = ({data}) => data.topics.map((topic) => topic).includes(slug);
-const posts = (await getPublishedArticles()).filter(topicsMatch);
-// load faq data by collection type and slug?
-const faqs = await getDataCollectionEntry('faqs', slug);
+const slug = Astro.params.topic;
+const { topic, faqs, posts } = Astro.props;
 ---
 
-<Layout title={slug} description={topic?.data.description}>
+<Layout title={slug} description={topic?.data?.description}>
    { !!faqs && (<TopicFAQ faqs={faqs} max=8 />)}
    { !faqs && (
      <Sectionhead>

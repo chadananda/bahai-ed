@@ -291,7 +291,7 @@ export const getSitemapArticles = async () => {
 // in order to migrate data collections to the DB, we need to write a
 // wrapper function which fetches both the data collection and the data entry
 export const getDataCollection = async (collection, filter = () => true) => {
-  return await getCollection(collection, filter);
+  let  collectionItems = await getCollection(collection, filter);
   // let table = null;
   // let dbMatches = [];
   // if (collection === 'categories') table = Categories;
@@ -308,10 +308,24 @@ export const getDataCollection = async (collection, filter = () => true) => {
 
   // console.log('getDataCollection', collection, dbMatches);
 
-  // return dbMatches;
-
+  return collectionItems;
 }
+export const getDataCollectionEntry = async (collection, id) => {
+  return await getEntry(collection, id)
 
+
+  // let match = null, table = null;
+  // if (collection === 'categories') table = Categories;
+  // //  else if (collection === 'faqs') table = Faqs;
+  // //  else if (collection === 'keywords') table = Keywords;
+  // //  else if (collection === 'team') table = Team;
+
+  // // first try to fetch from the database
+  // if (table) match = (await db.select().from(table).where(  eq(table.category_slug, id) ))[0];
+  // if (match) match = { id, collection, data: match } // format like an astro content entry
+  //  else match = await getEntry(collection, id); // fall back on file system
+  // return match;
+}
 
 export const getCategories = async (filter = () => true) => {
    let categories = (await db.select().from(Categories))
@@ -324,7 +338,6 @@ export const getCategory = async (slug) => {
   let match = (await db.select().from(Categories).where(eq(Categories.id, slug)))[0];
   if (match) return { id: match.id, type: "db", collection: 'categories', data: match };
 }
-
 export const getTeam = async (filter = () => true) => {
   let team = (await db.select().from(Team))
     .map(row=>({id: row.id, type: "db", collection: 'team', data: row})).filter(filter);
@@ -339,22 +352,6 @@ export const getTeamMember = async (slug) => {
  if (match) return { id: match?.id, type: "db", collection: 'team', data: match };
 }
 
-
-
-export const getDataCollectionEntry = async (collection, id) => {
-  let match = null
-  let table = null;
-  if (collection === 'categories') table = Categories;
-  //  else if (collection === 'faqs') table = Faqs;
-  //  else if (collection === 'keywords') table = Keywords;
-  //  else if (collection === 'team') table = Team;
-
-  // first try to fetch from the database
-  // if (table) match = (await db.select().from(table).where(  eq(table.category_slug, id) ))[0];
-  if (match) match = { id, collection, data: match } // format like an astro content entry
-   else match = await getEntry(collection, id); // fall back on file system
-  return match;
-}
 
 export const categoryExists = async (id) => {
   return (await db.select().from(Categories).where(eq(Categories.id, id))).length > 0
@@ -460,8 +457,8 @@ export const updateTeamMember = async (member, isNew) => {
   let success = true
   if (isNew) {
     // insert
-    if (await db.select().from(Team).where(eq(Team.email, member.email))) throw new Error('Email already in use');
-    if (await db.select().from(Team).where(eq(Team.id, member.id))) throw new Error('Name already in use');
+    if ((await db.select().from(Team).where(eq(Team.email, member.email))).length>0) throw new Error(`Email "${member.email}" already in use`);
+    if ((await db.select().from(Team).where(eq(Team.id, member.id))).length>0) throw new Error(`ID "${member.id}" already in use`);
 
     const {role, email} = member; delete member.role;
     await db.insert(Team).values({ ...member });
