@@ -1,65 +1,62 @@
 ---
 export const prerender = true;
+
 import Layout from "@layouts/Layout.astro";
 import PostThumb from "@components/article/postThumb.astro";
 import Container from "@components/container.astro";
 import Sectionhead from "@components/sectionhead.astro";
-import TopicFAQ from '@components/article/topicFAQ.astro';
 import CategoryCard from '@components/article/categoryCard.astro';
-import { getCategories, getPublishedArticles } from '@utils/utils.js';
+// import { ViewTransitions } from "astro:transitions";
+import { getCategories, getPublishedArticles, getTeam } from '@utils/utils.js';
 
 
 export async function getStaticPaths() {
   const categories = await getCategories();
   const allPosts = await getPublishedArticles();
+  const authors = await getTeam();
   return categories.map((cat) => {
     return {
       params: { category: cat.id },
       props: {
         category: cat,
-        posts: allPosts.filter((ar) => ar.data.category===cat.id)
+        posts: allPosts.filter((ar) => ar.data.category===cat.id),
+        authors
       }
     }
   });
 }
 
-// this category slug
 const slug = Astro.params.category;
-const { category, posts } =  Astro.props;
+const { category, posts, authors } =  Astro.props;
 ---
 
 <Layout title={slug} description={category?.data?.description}>
-     <Sectionhead>
-       <Fragment slot="title"> Article Topics </Fragment>
-       <Fragment slot="desc"> About  “{category?.data?.category}” </Fragment>
-     </Sectionhead>
+  <Sectionhead>
+    <Fragment slot="title"> Article Topics </Fragment>
+    <Fragment slot="desc"> About  “{category?.data?.category}” </Fragment>
+  </Sectionhead>
   <Container class="w-full mx-5 sm:mx-15 pt-5">
 
     <CategoryCard slug={slug} size="lg" category={category} />
 
     <main class="flex flex-wrap justify-center gap-20 mt-10">
-      {Array.isArray(posts) && posts.map((post) => (
-        <div class="flex-none articlePost hidden"
-          data-title={post.data.title}
-          data-tags={post.data.tags.join(',')}
-          data-language={post.data.language}>
-          <PostThumb post={post} category={category} />
-        </div>
-      ))}
+      {Array.isArray(posts) && posts.map((post) => {
+        const author = authors.find((a) => a.data.id === post.data.author);
+        const notEnglish = post.data.language && post.data.language !== 'en';
+        return (
+          <div className={`flex-none articlePost ${notEnglish ? 'hidden' : ''}`}
+            data-title={post.data.title}
+            data-tags={post.data.tags.join(',')}
+            data-language={post.data.language}>
+            <PostThumb post={post} category={category} author={author} />
+          </div>
+        );
+      })}
     </main>
 
   </Container>
 </Layout>
 
 
-<script type="text/javascript">
-  document.addEventListener('DOMContentLoaded', function() {
-    const selectedLanguage = localStorage.getItem('selectedLanguage') || 'en';
-    const articles = document.querySelectorAll('.articlePost');
-    articles.forEach(article => {
-      const language = article.dataset.language.toLowerCase();
-      if (language === selectedLanguage) article.classList.remove('hidden');
-        else article.classList.add('hidden');
-    });
-  });
-</script>
+<script type="module" src="/js/hidePosts.js" client:idle></script>
+

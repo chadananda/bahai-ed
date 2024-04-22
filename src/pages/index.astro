@@ -4,12 +4,15 @@ export const prerender = true;
 import Layout from "@layouts/Layout.astro";
 import Container from "@components/container.astro";
 import PostThumb from "@components/article/postThumb.astro";
-import { Image } from "astro:assets";
-import chad from "@assets/chad-jones.jpg";
+import site from "@data/site.json";
 import ArticleSelector from '@components/article/articleSelector.astro';
-import { getPublishedArticles } from '@utils/utils.js';
+import { getPublishedArticles, displayImageObj, getTeam, getCategories } from '@utils/utils.js';
 
+const img = displayImageObj(site.author_image, 75,75, 'webp', 50);
+// we pre-gather this information to avoid extra database queries within the template loop
 const articles = await getPublishedArticles();
+const authors = await getTeam();
+const categories = await getCategories();
 ---
 
 <Layout title="Article">
@@ -17,21 +20,10 @@ const articles = await getPublishedArticles();
 
 <div class="text-center p-5 max-w-7xl mx-auto border rounded-lg shadow-md bg-slate-50">
   <h2 class="text-lg italic md:text-3xl font-bold text-gray-600"
-    style="font-family: Merriweather" >
-
-    <Image src={chad} alt="Chad Jones" style={{
-      float: 'left', // Float the image to the left
-      borderRadius: '50%', // Crop the image to a circle
-      border: '1px solid silver', // Add a 1px silver outline
-      paddingRight: '10px', // Add some spacing to the right of the image
-      opacity: '0.75', // Reduce the opacity of the image
-      objectFit: 'cover', // Ensure the image covers the crop area without stretching
-      width: '75px', // Set the desired width of the image
-      height: '75px', // Set the desired height of the image (same as width for a circle)
-      marginTop: '-.25em'
-    }} loading="lazy" />
-
-    Welcome to my Bahá’í education blog
+      style="font-family: Merriweather">
+    <img src={img.src} width={img.width} height={img.height} alt={site.author}
+         class="rounded-full border-2 border-gray-200 float-left mr-5 opacity-85" />
+    Welcome to my little Bahá’í education blog
   </h2>
   <p class="text-sm md:text-sm text-gray-700 dark:text-gray-400 mt-2">
     A personal collection of thoughts, resources, and articles about
@@ -44,15 +36,21 @@ const articles = await getPublishedArticles();
   </div>
     <main class="mt-5 sm:mt-14">
       <div class="flex flex-wrap justify-center gap-5  sm:gap-10">
-        {Array.isArray(articles) && articles.map((post, index) =>(
-          <div style={{ width: '300px' }}
-            class={`articlePost flex-none ${post.data.language !== 'en' || index >= 20 ? 'hidden' : ''}`}
-            data-title={post.data.title}
-            data-tags={post.data.tags.join(',')}
-            data-language={post.data.language}>
-            <PostThumb post={post} />
-          </div>
-        ))}
+        {Array.isArray(articles) && articles.map((post, index) => {
+          // we pre-gather this information to avoid extra database queries
+          let author = authors.find(author => author.data.name === post.data.author);
+          let category = categories.find(category => category.data.name === post.data.category);
+          const notEnglish = post.data.language && post.data.language !== 'en';
+          return (
+            <div className={`flex-none articlePost ${notEnglish ? 'hidden' : ''}`}
+              style={{ width: '300px' }}
+              data-title={post.data.title}
+              data-tags={post.data.tags.join(',')}
+              data-language={post.data.language}>
+              <PostThumb post={post} author={author} category={category} />
+            </div>
+          );
+        })}
       </div>
     </main>
   </Container>

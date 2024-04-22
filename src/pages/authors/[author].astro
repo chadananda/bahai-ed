@@ -5,19 +5,21 @@ import Layout from "@layouts/Layout.astro";
 import Container from "@components/container.astro";
 import PostThumb from "@components/article/postThumb.astro";
 import AuthorCard from "@components/article/authorCard.astro";
-import { getPublishedArticles, getTeam } from "@utils/utils.js";
+import { getCategories, getPublishedArticles, getTeam } from "@utils/utils.js";
 
 // export paths for all the authors
 export async function getStaticPaths() {
   const allAuthors = await getTeam();
-  const allArticles = await getPublishedArticles()
+  const allArticles = await getPublishedArticles();
+  const allCategories = await getCategories();
   return allAuthors.map((author) => {
-    const matchingAuthor = (post) => post.data.author===author.id;
+    const match = ({data}) => data.author===author.id;
     return {
       params: { author: author.id},
       props: {
-        posts: allArticles.filter(matchingAuthor),
-        author: allAuthors.find((a) => a.id === author.id),
+        posts: allArticles.filter(match),
+        author,
+        categories: allCategories
       }
     };
   });
@@ -25,7 +27,9 @@ export async function getStaticPaths() {
 
 // this author param
 const author_slug = Astro.params.author;
-const { posts, author } = Astro.props;
+const { posts, author, categories } = Astro.props;
+
+// console.log('[author].astro, posts/author:', posts.length, author_slug);
 ---
 
 <Layout pageTitle={author_slug}>
@@ -35,17 +39,23 @@ const { posts, author } = Astro.props;
 
       <main class="mt-16">
         <div class="flex flex-wrap justify-center gap-20">
-          {Array.isArray(posts) && posts.map((post) => (
-            <div class="flex-none articlePost hidden"
+          {Array.isArray(posts) && posts.map((post) => {
+            const category = categories.find(c => c.id === post.data.category);
+            const notEnglish = post.data.language && post.data.language !== 'en';
+            return (
+              <div className={`flex-none articlePost ${notEnglish ? 'hidden' : ''}`}
                 style={{ width: '300px' }}
                 data-title={post.data.title}
                 data-tags={post.data.tags.join(',')}
                 data-language={post.data.language}>
-              <PostThumb post={post} />
-            </div>
-          ))}
+                <PostThumb post={post} author={author} category={category} />
+              </div>
+            );
+          })}
         </div>
       </main>
+
+
 
       <button class="mt-16 text-center block mx-auto bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded">
         <a href="/authors" aria-label="All Authors">Back to Authors</a>
@@ -56,17 +66,6 @@ const { posts, author } = Astro.props;
 
 
 
-<script type="text/javascript">
-  // script to hide articles based on language
-  document.addEventListener('DOMContentLoaded', function() {
-    const selectedLanguage = localStorage.getItem('selectedLanguage') || 'en';
-    const articles = document.querySelectorAll('.articlePost');
-    articles.forEach(article => {
-      const language = article.dataset.language.toLowerCase();
-      if (language === selectedLanguage)  article.classList.remove('hidden');
-        else article.classList.add('hidden');
-    });
-  });
-</script>
+<script type="module" src="/js/hidePosts.js" client:idle></script>
 
 

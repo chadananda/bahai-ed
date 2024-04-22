@@ -334,10 +334,17 @@ export const getCategories = async (filter = () => true) => {
   //  console.log('getCategories', categories);
    return categories;
 }
-export const getCategory = async (slug) => {
-  if (!slug) return null;
-  let match = (await db.select().from(Categories).where(eq(Categories.id, slug)))[0];
-  if (match) return { id: match.id, type: "db", collection: 'categories', data: match };
+export const getCategory = async (id) => {
+  if (!id) return null;
+  // let start = new Date().getTime();
+  let match = (await db.select().from(Categories).where(eq(Categories.id, id)).limit(1));
+  // let end = new Date().getTime();
+  // console.log('getCategory', id, 'time:', end-start);
+  if (!match || match.length<1) return null;
+  else {
+    match = match[0];
+    return { id: match.id, type: "db", collection: 'categories', data: match };
+  }
 }
 export const getTeam = async (filter = () => true) => {
   let team = (await db.select().from(Team))
@@ -436,19 +443,19 @@ export const getTeamMembers = async () => {
   return members;
 }
 
-export const filterTopics = async (topics) => {
-  // Filter the topics array based on whether each topic exists in the 'topics' collection
-  const filteredTopics = await Promise.all(
-    topics.map(async (topic) => {
-      try {
-        return await getDataCollectionEntry('topics', topic);
-      } catch (error) { return false; }
-    })
-  );
-  return filteredTopics.filter(Boolean);
-  // Return the filtered topics or the nonexistent topics based on the 'exists' parameter
-  // return exists ? existingTopics : topics.filter(topic => !existingTopics.includes(topic));
-}
+// export const filterTopics = async (topics) => {
+//   // Filter the topics array based on whether each topic exists in the 'topics' collection
+//   const filteredTopics = await Promise.all(
+//     topics.map(async (topic) => {
+//       try {
+//         return await getDataCollectionEntry('topics', topic);
+//       } catch (error) { return false; }
+//     })
+//   );
+//   return filteredTopics.filter(Boolean);
+//   // Return the filtered topics or the nonexistent topics based on the 'exists' parameter
+//   // return exists ? existingTopics : topics.filter(topic => !existingTopics.includes(topic));
+// }
 
 export const deleteTeamMember = async (slug) => {
   return await db.delete(Team).where(eq(Team.id, slug));

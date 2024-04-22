@@ -1,6 +1,7 @@
 ---
 export const prerender = true;
 
+import { ViewTransitions } from "astro:transitions";
 import Layout from "@layouts/Layout.astro";
 import Container from "@components/container.astro";
 import Sectionhead from "@components/sectionhead.astro";
@@ -17,10 +18,11 @@ const categories = await getCategories()
       <Fragment slot="desc"> {categories.length} Categories  </Fragment>
     </Sectionhead>
 
-      <main class="flex flex-wrap justify-center gap-20 mt-5">
+      <main class="flex flex-wrap justify-center gap-20 mt-5 pb-40">
         {Array.isArray(categories) && categories.map((cat) => (
-           <div class="flex-none"> <CategoryCard slug={cat.id} size="md" /> </div>
+           <div class="flex-none"> <CategoryCard slug={cat.id} size="md" category={cat} /> </div>
         ))}
+        <ViewTransitions/>
       </main>
 
   </Container>

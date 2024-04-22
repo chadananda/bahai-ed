@@ -30,7 +30,7 @@ var img_url = typeof meta.image === 'string' ? meta.image : `${meta.image.src.sr
 if (!img_url.startsWith('http')) img_url = baseUrl + img_url;
 var img = { src: img_url, width: meta.image?.src?.width || 1200, height: meta.image?.src?.height || 628, alt: authorName }
 // later when we move this to s3, make it a cdn link
-if (img.src.includes('.s3.')) img = await displayImageObj(img.src, img.alt, img.width, img.height, 'jpg', 80);
+if (img.src.includes('.s3.')) img = displayImageObj(img.src, img.alt, img.width, img.height, 'jpg', 80);
 // console.log('PodcastPlayer.astro image', img);
 
 // this player will be used more than once per page, so we need to generate unique IDs for each instance

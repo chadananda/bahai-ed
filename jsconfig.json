@@ -15,5 +15,5 @@
      "@lib/*": ["./src/lib/*"],
    }
  },
- "include": ["src/**/*.astro", "src/**/*.js", "src/**/*.ts", "src/**/*.d.ts", "public/article_assets/initializePlyr.js"]
+ "include": ["src/**/*.astro", "src/**/*.js", "src/**/*.ts", "src/**/*.d.ts", "public/article_assets/initializePlyr.js", "public/js/updatePostVisibility.js.js"]
 }

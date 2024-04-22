@@ -8,7 +8,7 @@ import AuthorCard from "@components/article/authorCard.astro";
 import { getTeam } from "@utils/utils.js";
 
 const authors = await getTeam(({data}) => !data.draft);
-const author_slugs = authors.map((author) => author.id);
+// const author_slugs = authors.map((author) => author.id);
 ---
 
 <Layout pageTitle="All Authors">
@@ -19,8 +19,8 @@ const author_slugs = authors.map((author) => author.id);
     </Sectionhead>
 
     <main class="flex flex-wrap justify-center gap-5 mt-5">
-      {Array.isArray(author_slugs) && author_slugs.map((slug) => (
-        <div class="flex-none"> <AuthorCard slug={slug} size="sm" /> </div>
+      {Array.isArray(authors) && authors.map(author => (
+        <div class="flex-none"> <AuthorCard size="sm" author={author}/> </div>
       ))}
     </main>
 

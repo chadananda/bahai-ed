@@ -1,23 +1,22 @@
 ---
 // import { Picture } from 'astro:assets';
-import { getArticleURL, getTeamMember, displayImageObj } from '@utils/utils.js';
-
-if (!Astro.props.slug) console.error("Warning: no author slug provided!");
-
-const author = Astro.props.author || (await getTeamMember(Astro.props.slug))
-var { image_src, image_alt, name, type, worksFor_type, worksFor_name, description, sameAs, name_slug } = author.data;
+import { getArticleURL, displayImageObj } from '@utils/utils.js';
+// console.log('authorCard author:', Astro.props.author);
+const author = Astro.props.author
+const name_slug = author.id
+var { image_src, image_alt, name, type, worksFor_type, worksFor_name, description, sameAs } = author.data;
 
 const pageURL = getArticleURL(Astro);
 const siteURL = new URL(pageURL).origin.replace(/\/$/, '');
 const authorURL = author.data.url || `${siteURL}/authors/${name_slug}`;
 const size = Astro.props.size || 'sm';
 
-const bioImage = await displayImageObj(image_src, image_alt, 1200, 600, 'jpg', 80);
-const imgSm = await displayImageObj(image_src, image_alt, 180, 180, 'webp', 90);
-const imgMd = await displayImageObj(image_src, image_alt, 120, 120, 'webp', 90);
-const imgLg = await displayImageObj(image_src, image_alt, 300, 300, 'webp', 90);
-const imgBio = await displayImageObj(image_src, image_alt, 188, 188, 'webp', 90);
-const imgFull = await displayImageObj(image_src, image_alt, 800, 800, 'webp', 90);
+const bioImage = displayImageObj(image_src, image_alt, 1200, 600, 'jpg', 80);
+const imgSm = displayImageObj(image_src, image_alt, 180, 180, 'webp', 90);
+const imgMd = displayImageObj(image_src, image_alt, 120, 120, 'webp', 90);
+const imgLg = displayImageObj(image_src, image_alt, 300, 300, 'webp', 90);
+const imgBio = displayImageObj(image_src, image_alt, 188, 188, 'webp', 90);
+const imgFull = displayImageObj(image_src, image_alt, 800, 800, 'webp', 90);
 
 // const imageURL = '';
 const uniqueID = 'id-' + Math.random().toString(36).slice(2, 11);

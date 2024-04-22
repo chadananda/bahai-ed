@@ -12,7 +12,7 @@ import ArticleEditor from '@components/admin/TipTap/Editor.svelte';
 import ArticleExtras from '@components/admin/ArticleExtras.astro';
 import ArticleOutput from '@components/admin/ArticleOutput.astro';
 
-import { loadArticleRaw, filterTopics } from '@utils/utils.js';
+import { loadArticleRaw } from '@utils/utils.js';
 
 // Get the entry directly from the prop on render
 const slug = Astro.params.slug;
@@ -31,7 +31,7 @@ const category = await getDataCollectionEntry('categories', entry.data.category)
 // we'll need to fix this to get the topics
 // maybe use getfilteredTopics?
 // const topics = await getEntries(entry.data.topics);
-const topics = await filterTopics(entry.data.topics);
+const topics = entry.data.topics; //await filterTopics(entry.data.topics);
 
 const {content, meta} = await loadArticleRaw(slug);
 ---

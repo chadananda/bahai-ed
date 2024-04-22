@@ -502,6 +502,14 @@ x Fix sitemap
 [] How are we going to do keyword and SPR analysis?
 
 
+Today:
+[] migrate topics & faqs over from content collections to DB
+   [] create db schema (possibly combine the two)
+   [] create unified loader with display field for non-db which we can show in the editor
+   [] create editor page
+   []
+
+
 Todo:
   * Remove block for April
   * Contact Carol Spell for information about Brighton Creek

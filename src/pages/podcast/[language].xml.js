@@ -29,22 +29,12 @@ const mainLanguages = {
  };
 
 
-
-// export const getPodcastArticles = async (lang) => {
-//   const hasAudio = ({data}) => !!data.audio;
-//   return await getPublishedArticles(lang, hasAudio);
-// }
-
 export async function getStaticPaths() {
   const hasAudio = ({data}) => !!data.audio;
   const languages = await getAllLanguages();
-  const allArticles = (await getPublishedArticles()).filter(hasAudio);
-   // Convert Set to Array and generate paths
   const paths = Array.from(languages).map((language) => {
-    const podcastArticles = (lang) => allArticles.filter(({data}) => data.language === lang);
     return {
       params: { language: `${language}` },
-      props: { articles: podcastArticles(language) }
     };
   });
   return paths;
@@ -65,8 +55,6 @@ const ISO8601ToiTunes = (isoDuration) => {
   }
   return null;
 };
-
-
 
 export const processItems = async (articles, site, baseUrl) => {
   const items = await Promise.all(articles.map(async post => {
@@ -146,14 +134,16 @@ export const generateRSSFeedObj = async (articles, language, site, baseUrl) => {
   return feed;
 };
 
-
-
+// change of plans: now we need to generate the feed on the fly
 export async function GET({ params, request }) {
   const baseUrl = new URL(request?.url).origin;
+  const hasAudio = ({data}) => !!data.audio;
   const language = params.language;
+  const allArticles = (await getPublishedArticles()).filter(hasAudio);
+  const articles = allArticles.filter(({data}) => data.language === language);
   // all articles matching language, filtered by having audio
-  const articles = Astro.props.articles; // || await getPodcastArticles(language)
-//  console.log(`${articles.length} articles found with podcast audio in "${language}"`);
+  // const articles = Astro.props.articles; // || await getPodcastArticles(language)
+  // console.log(`${articles.length} articles found with podcast audio in "${language}"`);
   const feed = await generateRSSFeedObj(articles, language, site, baseUrl);
   // console.log('rss feed', feed);
   return rss(feed);

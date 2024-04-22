@@ -1,19 +1,17 @@
 ---
-// ArticleJSONLD.astro - a component to generate structured data for an article
-
+// JSONLD.astro - a component to generate structured data for an article
 import brand from '@data/site.json';
 import { SEO, TwitterCardType } from "astro-seo";
 import { getImage } from "astro:assets";
-import { getArticleAudioPath, getArticleTranslations, getArticleURL, getCategory, getTeamMember, filterTopics } from '@utils/utils.js';
+import { getArticleAudioPath, getArticleTranslations, getArticleURL, getCategory, getTeamMember } from '@utils/utils.js';
 
 // type Props = CollectionEntry<'article'>['data'];
-
 const { title, description, desc_125, keywords, language, video_main, post_type, audio, audio_duration, url:slug, image } = Astro.props;
 
-const category = await getCategory(Astro.props.category);
+const category = Astro.props.category || await getCategory(Astro.props.category);
 const author = Astro.props.author || await getTeamMember(Astro.props.authorid);
 // const topics = await getEntries(Astro.props.topics);
-const topics = await filterTopics(Astro.props.topics); // because topics are no longer references
+const topics = Astro.props.topics; // || await filterTopics(Astro.props.topics); // because topics are no longer references
 // console.log('topicsList', topics);
 // const image = Astro.props.image; // image path of processed image
 
@@ -123,6 +121,7 @@ const schema = {
 
 // A list of all the translations of this page
 const translations = await getArticleTranslations(slug, true);
+
 let altLinks = translations.map((tr) => {
   return { rel: "alternate", hreflang: tr.data.language || 'en', href: `/${tr.data?.url}`};
 });

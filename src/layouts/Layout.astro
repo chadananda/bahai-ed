@@ -8,7 +8,7 @@ import  SpeedInsights  from "@vercel/speed-insights/astro"
 // Expected props:
 //   title: string (optional)
 //   footerMargin: boolean (optional, default true)
-// import { ViewTransitions } from "astro:transitions";
+import { ViewTransitions } from "astro:transitions";
 import { SEO } from "astro-seo";
 import Footer from "@components/footer.astro";
 import Navbar from "@components/navbar/navbar.astro";
@@ -106,6 +106,8 @@ const { title, footerMargin = true } = Astro.props;
     <slot />
     <Footer margin={footerMargin} />
     <SpeedInsights />
+
+    <ViewTransitions />
   </body>
 </html>
 

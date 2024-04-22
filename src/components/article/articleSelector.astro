@@ -18,41 +18,51 @@ const langs = Array.from(await getAllLanguages());
 
 
 
-<script type="text/javascript">
-  document.addEventListener('DOMContentLoaded', function() {
+<script type="module" src="/js/hidePosts.js" client:idle></script>
+<script type="text/javascript" client:idle>
+
+  function initializeLanguageAndFilter() {
     // Check if there's a selected language saved and set it
     const savedLanguage = localStorage.getItem('selectedLanguage') || 'en';
-    if (savedLanguage) {
-      document.getElementById('langsel').value = savedLanguage;
-    }
+    const langSelectElement = document.getElementById('langsel');
+    const articleFilterElement = document.getElementById('arfilter');
 
-    // Now trigger the filtering based on saved preferences
-    document.getElementById('arfilter').dispatchEvent(new Event('input'));
-  });
+    if (langSelectElement && articleFilterElement) {
+      if (savedLanguage) langSelectElement.value = savedLanguage;
+      // Now trigger the filtering based on saved preferences
+      articleFilterElement.dispatchEvent(new Event('input'));
+    } else {
+      console.warn('Element(s) not found.');
+    }
+  }
+
+  initializeLanguageAndFilter();
+  // Then call it again after 250ms and 1s to ensure transitions are accounted for
+  setTimeout(initializeLanguageAndFilter, 250);
+  setTimeout(initializeLanguageAndFilter, 1000);
+
 
   document.getElementById('arfilter').addEventListener('input', function() {
     const searchQuery = this.value.toLowerCase();
     const selectedLanguage = document.getElementById('langsel').value;
     const articles = document.querySelectorAll('.articlePost');
-
     articles.forEach(article => {
       const title = article.dataset.title.toLowerCase();
       const tags = article.dataset.tags.toLowerCase();
       const language = article.dataset.language.toLowerCase();
       if (language === selectedLanguage && (title.includes(searchQuery) || tags.includes(searchQuery))) {
         article.classList.remove('hidden');
-      } else {
-        article.classList.add('hidden');
-      }
+      } else article.classList.add('hidden');
     });
   });
 
-  // Trigger on language change
+  // Change language
   document.getElementById('langsel').addEventListener('change', function() {
     const selectedLanguage = this.value;
     // Save the selected language to localStorage
     localStorage.setItem('selectedLanguage', selectedLanguage);
     // Trigger the input event handler to re-filter articles based on the new language selection
     document.getElementById('arfilter').dispatchEvent(new Event('input'));
+    // updateArticleVisibility();
   });
 </script>

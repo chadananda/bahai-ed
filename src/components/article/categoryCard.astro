@@ -3,7 +3,7 @@ import { getDataCollectionImage, getCategory } from '@utils/utils';
 
 const { slug, size='sm', editmode=false } = Astro.props;
 const categoryURL = editmode ? `/admin/categories/${slug}` : `/categories/${slug}`;
-// abstracted to allow merging of data from db
+
 const category = Astro.props.category || (await getCategory(slug));
 
 let imageSize
@@ -17,7 +17,9 @@ const uniqueID = 'id-' + Math.random().toString(36).slice(2, 11);
 ---
 
 {(size==="sm" && image) && (
- <div id={uniqueID} class="categoryCard w-48 h-48 shadow-lg rounded-lg overflow-hidden mx-auto border-2 border-gray-200 p-1">
+ <div id={uniqueID}
+   class="categoryCard w-48 h-48 shadow-lg rounded-lg overflow-hidden mx-auto border-2 border-gray-200 p-1"
+   transition:name={categoryName} >
   <a href={categoryURL} aria-label={categoryName}>
     <div class="relative h-full">
 
@@ -36,7 +38,9 @@ const uniqueID = 'id-' + Math.random().toString(36).slice(2, 11);
 )}
 
 {(size==="md" && image) && (
- <div id={uniqueID} class="categoryCard w-96 h-48 shadow-lg rounded-lg overflow-hidden mx-auto border-2 border-gray-200 p-1">
+ <div id={uniqueID}
+   transition:name={categoryName}
+   class="categoryCard w-96 h-48 shadow-lg rounded-lg overflow-hidden mx-auto border-2 border-gray-200 p-1">
   <a href={categoryURL} aria-label={categoryName}>
     <div class="relative h-full">
 
@@ -55,7 +59,9 @@ const uniqueID = 'id-' + Math.random().toString(36).slice(2, 11);
 )}
 
 {(size==="lg" && image) && (
- <div id={uniqueID} class="categoryCard w-[800px] h-[300px] shadow-lg rounded-lg overflow-hidden mx-auto border-2 border-gray-200 p-1">
+ <div id={uniqueID}
+      class="categoryCard w-[800px] h-[300px] shadow-lg rounded-lg overflow-hidden mx-auto border-2 border-gray-200 p-1"
+     transition:name={categoryName} >
   <a href={categoryURL} aria-label={categoryName}>
     <div class="relative h-full">
 

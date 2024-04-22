@@ -6,12 +6,14 @@ import PostThumb from "@components/article/postThumb.astro";
 import Container from "@components/container.astro";
 import Sectionhead from "@components/sectionhead.astro";
 import TopicFAQ from '@components/article/topicFAQ.astro';
-import { getDataCollection, getPublishedArticles } from "@utils/utils.js";
+import { getCategories, getDataCollection, getPublishedArticles, getTeam } from "@utils/utils.js";
 
 export async function getStaticPaths() {
   const allTopics = await getDataCollection("topics");
   const allFAQs = await getDataCollection("faqs");
   const allArticles = await getPublishedArticles();
+  const authors = await getTeam()
+  const categories = await getCategories();
   return allTopics.map((topic) => {
     const articleTopicsHasMatch = (ar) => ar.data?.topics?.includes(topic.id);
     return {
@@ -19,7 +21,8 @@ export async function getStaticPaths() {
       props: {
         topic,
         faqs: allFAQs.find(faq => faq.id === topic.id),
-        posts: allArticles.filter(articleTopicsHasMatch)
+        posts: allArticles.filter(articleTopicsHasMatch),
+        authors, categories
       }
     }
   });
@@ -27,7 +30,7 @@ export async function getStaticPaths() {
 
 
 const slug = Astro.params.topic;
-const { topic, faqs, posts } = Astro.props;
+const { topic, faqs, posts, authors, categories } = Astro.props;
 ---
 
 <Layout title={slug} description={topic?.data?.description}>
@@ -40,27 +43,23 @@ const { topic, faqs, posts } = Astro.props;
    )}
   <Container class="w-full mx-5 sm:mx-15">
     <main class="flex flex-wrap justify-center gap-20 mt-5">
-      {Array.isArray(posts) && posts.map((post) => (
-        <div class="flex-none articlePost hidden"
-            data-title={post.data.title}
-            data-tags={post.data.tags.join(',')}
-            data-language={post.data.language}>
-          <PostThumb post={post} />
-        </div>
-      ))}
+      {Array.isArray(posts) && posts.map((post) => {
+        // console.log('postThumb: ', post.id);
+        const author = authors.find(author => author.id === post.data.author);
+        const category = categories.find(category => category.id === post.data.category);
+        const notEnglish = post.data.language && post.data.language !== 'en';
+        return (
+          <div className={`flex-none articlePost ${notEnglish ? 'hidden' : ''}`}
+              data-title={post.data.title}
+              data-tags={post.data.tags.join(',')}
+              data-language={post.data.language}>
+            <PostThumb post={post} author={author} category={category} />
+          </div>
+        );
+      })}
     </main>
   </Container>
 </Layout>
 
-<script type="text/javascript">
-  // hide articles that do not match the currently selected language
-  document.addEventListener('DOMContentLoaded', function() {
-    const selectedLanguage = localStorage.getItem('selectedLanguage') || 'en';
-    const articles = document.querySelectorAll('.articlePost');
-    articles.forEach(article => {
-      const language = article.dataset.language.toLowerCase();
-      if (language === selectedLanguage)  article.classList.remove('hidden');
-        else article.classList.add('hidden');
-    });
-  });
-</script>
+
+<script type="module" src="/js/hidePosts.js" client:idle></script>
