@@ -3,7 +3,6 @@ export const prerender = true;
 import site from '@data/site.json';
 import rss from '@astrojs/rss';
 import { getArticleAudioSize, getArticleAudioPath, getAllLanguages, getPublishedArticles, getTeamMember, generateArticleImage } from '@utils/utils.js';
-import { getImage } from "astro:assets";
 
 const mainLanguages = {
   es: { flag: "🇪🇸", name: "Español", dir: "ltr", en_name: "Spanish" },
@@ -63,10 +62,6 @@ export const processItems = async (articles, site, baseUrl) => {
     const audioURL = localAudio ? baseUrl + (await getArticleAudioPath(post.data.url, post.data.audio)) : post.data.audio;
     const audioSize = localAudio ? await getArticleAudioSize(post.data?.url, post.data.audio) :
        post.data.audio_length || iso8601DurToBytes(post.data.audio_duration);
-
-
-    // const imagePath = !!post.data.audio_image ? (await getImage({src: post.data.audio_image, format: 'jpg'})).src : ''
-    // const imageURL = baseUrl + imagePath
 
     const imgfile = post.data?.audio_image || post.data?.image?.src;
     const alt = post.data?.image?.alt || post.data?.title;
