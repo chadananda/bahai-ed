@@ -1,23 +1,12 @@
 ---
-import { Image } from "astro:assets";
-import { getArticleImageURL, getArticleSlugFromURL } from '@utils/utils.js';
-var { src, alt } = Astro.props;
+import { baseURL, getArticleSlugFromURL, generateArticleImage, getPostFromSlug } from '@utils/utils.js';
 
-// convert local image in article to resolved URL
-const isLocalImage = (typeof src === 'string') && (!src.startsWith('http') && !src.startsWith('/'));
-if (isLocalImage) {
-  const slug = await getArticleSlugFromURL(Astro.url.href)
-  const imageURL = await getArticleImageURL(slug, src)
-  // console.log('processing local image', src, '->', slug, imageURL)
-  if (imageURL) src = imageURL;
-}
+const { src, alt } = Astro.props;
+const slug = await getArticleSlugFromURL(Astro.url.href)
+const post = Astro.props.post || await getPostFromSlug(slug);
+const base_url = baseURL(Astro);
 
+// imgfile, post, baseUrl="", width, height=100, format='webp', quality=80, alt=""
+const img = await generateArticleImage(src, post, base_url, 750, 200, 'webp', 90, alt);
 ---
-
-
-{typeof src === 'string' ?  <img src={src} alt={alt} width="600" /> :
-
-  <Image src={src} alt={alt}
-    widths={[160, 240, 600, src.width]}
-    sizes={`(max-width: 200px) 160px, (max-width: 360px) 240px, (max-width: 720px) 600px, ${src.width}px`} />
-}
+<img {...img} loading="lazy" />

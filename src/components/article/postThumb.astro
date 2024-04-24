@@ -1,6 +1,6 @@
 ---
-import { Picture } from 'astro:assets';
-import { getArticleURL } from '@utils/utils.js';
+// import { Picture } from 'astro:assets';
+import { generateArticleImage, baseURL } from '@utils/utils.js';
 
 const { post, small, class: customClasses } = Astro.props
 const articleLink = `/${post.data?.url}`;
@@ -8,32 +8,35 @@ const articleLink = `/${post.data?.url}`;
 const authorid = post.data.author || '';
 const author_name = authorid.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 const category = Astro.props.category || '';
+const siteURL = baseURL(Astro) ;//new URL(pageURL).origin.replace(/\/$/, '');
 
-const image = post.data.image;
-const pageURL = getArticleURL(Astro);
-const siteURL = new URL(pageURL).origin.replace(/\/$/, '');
+// console.log('siteURL:', siteURL);
+
+const image = small ? await generateArticleImage(post.data.image?.src, post, siteURL, 198,131,'webp',90) :
+  await generateArticleImage(post.data.image?.src, post, siteURL, 298,198,'webp',90);
+
+// console.log('postThumb', {src: post.data.image?.src, post: post.id, siteURL, image: image.src});
+
+// const image = await generateArticleImage(post.data.image?.src, post, siteURL, 198,131,'webp',90);
+
 const uniqueID = 'id-' + Math.random().toString(36).slice(2, 11);
 const authorURL = authorid ? `${siteURL}/authors/${authorid}` : '';
 const pubdate = new Date(post.data.datePublished);
 const datePublished = pubdate.toLocaleDateString('en-US', {year:'numeric', month:'short', day:'numeric'});
 const isPublished = pubdate <= new Date() && !post.data.draft;
----
 
+// console.log('postThumb', {image});
+---
 <div id={uniqueID}
      transition:name={`post-img-${post.data.url}`}
      class={`${customClasses} overflow-hidden ${small ? 'w-[200px]' : 'w-[302px]'} ` } >
   <a href={articleLink} aria-label={post.data.title} >
-    <Picture
-      src={image?.src || ''}
-      alt={image?.alt || ''}
-      formats={["avif", "webp", "jpg"]}
-      sizes={small ? "(max-width: 200px) 100vw, 200px" : "(max-width: 300px) 100vw, 300px"}
-      class={`object-cover rounded-lg shadow-lg border border-gray-200 ${small ? 'w-[200px] h-[133px] opacity-75' : 'w-[300px] h-[200px]'}`+
-       ` ${isPublished ? '' : 'border-dashed border-4 border-green-300 opacity-50'} `
-      }
-      quality="low"
-      width={small ? "200" : "300"} height={small ? "133" : "200"}
-    />
+
+
+    <img {...image} class={`object-cover rounded-lg shadow-lg border border-gray-200
+      ${small ? 'w-[200px] h-[133px] opacity-75' : 'w-[300px] h-[200px]'}
+      ${isPublished ? '' : 'border-dashed border-4 border-green-300 opacity-50'}`} />
+
     <div class="mt-4">
       {!small && !!category?.data && (
         <span class={`text-blue-400 uppercase tracking-wider ${small ? 'text-xxs' : 'text-xs'} font-medium`}>
@@ -45,7 +48,9 @@ const isPublished = pubdate <= new Date() && !post.data.draft;
           <span><a href={authorURL} aria-label={author_name} class="text-xs font-extralight text-gray-600 ml-2">{author_name}</span>
         </h2>
       ) : (
-        <h2 class="text-xl font-semibold leading-snug tracking-tight mt-1" transition:persist> {post.data.title} </h2>
+        <h2 class="text-xl font-semibold leading-snug tracking-tight mt-1" transition:persist> {post.data.title}
+        </h2>
+
       )}
       {!small && (
         <div class="text-sm mt-3 flex gap-2">

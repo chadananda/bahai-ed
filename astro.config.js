@@ -11,7 +11,7 @@ import svelte from '@astrojs/svelte';
 import markdoc from "@astrojs/markdoc";
 import site from './src/data/site.json'; // for branding
 // import icon from "astro-icon";
-import minify from 'astro-min';
+// import minify from 'astro-min';
 // import compress from "astro-compress";
 // import partytown from '@astrojs/partytown';
 import react from "@astrojs/react";
@@ -70,7 +70,7 @@ export default defineConfig({
   }),
   //  icon(),
   //  compress(),
-  minify(minifyConfig),
+  // minify(minifyConfig),
   // partytown()
   react(), db()],
   experimental: {

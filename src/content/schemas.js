@@ -23,9 +23,9 @@ export const post_schema = ({ image }) =>
     abstract: z.string().default(""), // longer, like 500 chars min
 
     language: z.enum(LANG_CODES).default("en"),
-    audio: z.string().nullable().default(""), // url to audio file
+    audio: z.string().optional().nullable(),// url to audio file
     audio_duration: z.string().nullable().default(""), // duration of audio in ISO 8601 format
-    audio_image: image().nullable().optional(), // image for audio
+    audio_image: z.string().optional().nullable(),// image for audio
     narrator: z.string().nullable().default("auto"), // auto generated or name of narrator
     draft: z.boolean().default(true),
 
@@ -47,9 +47,8 @@ export const post_schema = ({ image }) =>
 
     // image: z.string().nullable().default("")
     image: z.object({
-      src: image().refine((img) => img.width >= 300, {
-        message: "Main image must be at least 300 pixels wide!",
-      }).optional(),
-      alt: z.string().default(''),
+      src: z.string().optional().nullable(), // Validate as URL or any string
+      alt: z.string().default('')
     }).optional(),
+
   });

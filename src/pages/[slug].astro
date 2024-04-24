@@ -3,13 +3,12 @@ export const prerender = true;
 
 import Layout from "@layouts/ArticleLayout.astro";
 import Container from "@components/container.astro";
-import { Picture } from 'astro:assets';
 import TLDR from "@components/article/TLDR.astro";
 import PodcastPlayer from "@components/article/PodcastPlayer.astro";
 import PostComments from "@components/article/PostComments.astro";
 import RelatedArticles from "@components/article/relatedArticles.astro";
 import AuthorBio from "@components/article/authorCard.astro";
-import { getPublishedArticles, getDataCollection, getCategories, getTeam, mainLanguages } from "@utils/utils.js";
+import { getPublishedArticles, getDataCollection, getCategories, getTeam, mainLanguages, generateArticleImage, baseURL  } from "@utils/utils.js";
 import TOC from "@components/article/TOC.astro";
 
 export async function getStaticPaths() {
@@ -21,7 +20,6 @@ export async function getStaticPaths() {
     let langmatch = (post.data.language) === (ar.data.language);
     return langmatch && ar.id!=post.id && ar.data.topics && ar.data.topics.some((topic) => post.data?.topics?.includes(topic))
   });
-
   const translations = (post) => articles.filter((ar) => ar.id.split('/')[0] === post.id.split('/')[0]);
   return articles.map((post) => {
     return {
@@ -43,6 +41,10 @@ const { author, category, topics, related, translations } = Astro.props;
 
 const language = post.data.language || "en";
 const dir = mainLanguages[language].dir;
+const base_url = baseURL(Astro);
+
+const cover_image = await generateArticleImage(post.data.image?.src, post, base_url, 957,384,'webp',90);
+
 ---
 <Layout post={post} author={author} category={category} language={language}>
 
@@ -84,7 +86,10 @@ const dir = mainLanguages[language].dir;
     <div class="mx-auto max-w-10xl">
       <div class="relative pt-[40%] rounded-xl mt-6 overflow-hidden shadow-xl border border-gray-200"
           transition:name={`post-img-${post.data.url}`} >
-        {!!post.data?.image && (
+
+        <img {...cover_image} class="cover-image absolute top-0 left-0 w-full h-full object-cover" />
+
+        <!-- {!!post.data?.image && (
         <Picture class="cover-image absolute top-0 left-0 w-full h-full object-cover"
           formats={["webp", "jpg"]}
           src={post.data?.image?.src}
@@ -92,7 +97,7 @@ const dir = mainLanguages[language].dir;
           width="760" quality="low"
           // transition:name={`post-img-${post.slug}`}
           widths={[120, 188, 300, 372, 788, 1000, 1280]}
-         /> )}
+         /> )} -->
       </div>
      </div>
 

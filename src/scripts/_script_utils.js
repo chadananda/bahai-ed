@@ -303,3 +303,29 @@ export const slugify = (text) => {
 }
 
 export const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+export const guessContentType = (filename) => {
+  const ext = path.extname(filename).toLowerCase();
+  switch (ext) {
+    case '.jpg': return 'image/jpeg';
+    case '.jpeg': return 'image/jpeg';
+    case '.png': return 'image/png';
+    case '.gif': return 'image/gif';
+    case '.webp': return 'image/webp';
+    case '.avif': return 'image/avif';
+    case '.svg': return 'image/svg+xml';
+    case '.mp3': return 'audio/mpeg';
+    case '.wav': return 'audio/wav';
+    case '.ogg': return 'audio/ogg';
+    case '.pdf': return 'application/pdf';
+    case '.doc': return 'application/msword';
+    case '.docx': return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+    case '.xls': return 'application/vnd.ms-excel';
+    case '.xlsx': return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    case '.ppt': return 'application/vnd.ms-powerpoint';
+    case '.pptx': return 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+    case '.txt': return 'text/plain';
+    case '.csv': return 'text/csv';
+    default: return 'application/octet-stream';
+  }
+}

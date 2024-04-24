@@ -3,17 +3,15 @@
 import brand from '@data/site.json';
 import { SEO, TwitterCardType } from "astro-seo";
 import { getImage } from "astro:assets";
-import { getArticleAudioPath, getArticleTranslations, getArticleURL, getCategory, getTeamMember } from '@utils/utils.js';
+import { getArticleAudioPath, getArticleTranslations, getArticleURL, generateArticleImage } from '@utils/utils.js';
 
 // type Props = CollectionEntry<'article'>['data'];
-const { title, description, desc_125, keywords, language, video_main, post_type, audio, audio_duration, url:slug, image } = Astro.props;
+const { post, title, description, desc_125, keywords, language, video_main, post_type, audio, audio_duration, url:slug, image } = Astro.props;
 
-const category = Astro.props.category || await getCategory(Astro.props.category);
-const author = Astro.props.author || await getTeamMember(Astro.props.authorid);
+const category = Astro.props.category;
+const author = Astro.props.author;
 // const topics = await getEntries(Astro.props.topics);
 const topics = Astro.props.topics; // || await filterTopics(Astro.props.topics); // because topics are no longer references
-// console.log('topicsList', topics);
-// const image = Astro.props.image; // image path of processed image
 
 // for some reason dateModified is not always rendering correctly in Astro
 let datePublished = Astro.props.datePublished;
@@ -36,34 +34,23 @@ const pageURL = getArticleURL(Astro);
 const siteURL = new URL(pageURL).origin.replace(/\/$/, '');
 
 const authorSlug = author?.data?.name ? author.id : brand.siteName;
-const authorURL = `${siteURL}/author/${authorSlug}`;
+const authorURL = `${siteURL}/authors/${authorSlug}`;
 
-// format image for large twitter card
-let twitLarge, twitLargeImage;
-// console.log('image', image);
-if (image) twitLarge = await getImage({ src:image.src, format:"webp", width:600, height:314 });
-// console.log('twitLarge', twitLarge);
-
-twitLargeImage = twitLarge ? { url:  `${siteURL}${twitLarge.src}`,
-  width: twitLarge.attributes.width,
-  height: twitLarge.attributes.height,
-} : false;
 
 var video = video_main ? {
   url: video_main.videoURL, title: video_main.title, description: video_main.description,
   duration: video_main.duration, image: video_main.image, transcript: video_main.transcript,
 } : null;
 
-let largeImage, coverImage: {url: '', width: 0, height:0, alt:''};
-if (image) {
-  largeImage = await getImage({ src: image.src, format: "jpeg", width: 1200, height: 600, });
-  coverImage = {
-    url: `${siteURL}${largeImage.src}`, alt: desc_125,
-    width: largeImage.attributes.width, height: largeImage.attributes.height
-  };
-} else console.error('Null image in', slug, image);
 
-// console.log('coverImage', coverImage);
+// format image for large twitter card
+// console.log('image', image.src);
+
+const twitLargeImage = await generateArticleImage(image.src, post, siteURL, 600,314,'webp',80);
+const largeImage = await generateArticleImage(image.src, post, siteURL, 1200,600,'jpeg',80);
+const coverImage = await generateArticleImage(image.src, post, siteURL, 1200,600,'jpeg',80); // 1200x600 is the recommended size for OpenGraph images
+
+// console.log('coverImage',coverImage);
 
 let podcast = null;
 if (audio) {
@@ -76,7 +63,7 @@ if (audio) {
     duration: audio_duration,
     episodeNumber: 1,
     seriesName: brand.siteName,
-    imageURL: coverImage?.url
+    imageURL: coverImage?.src
   }
 };
 
@@ -145,7 +132,7 @@ const twitterHeaders = twitLargeImage ? {
   card: "summary_large_image" as TwitterCardType,
   title: title, // max 55 characters
   description: desc_125, // max 125 characters
-  image: twitLargeImage?.url, // 2:1 aspect ratio, min 300x157, max 4096x4096 JPG, PNG, WEBP, and GIF
+  image: twitLargeImage?.src, // 2:1 aspect ratio, min 300x157, max 4096x4096 JPG, PNG, WEBP, and GIF
   imageAlt: coverImage?.alt, // Alt text for the Twitter card image
   imageWidth: twitLargeImage?.width,
   imageHeight: twitLargeImage?.height,
@@ -160,7 +147,7 @@ var openGraphHeaders = {
     type: post_type.toLowerCase(),
     title: title,
     description: description, // max 155 characters
-    image: coverImage?.url, // 1.91:1 aspect ratio, min 300x157, max 4096x4096 JPG, PNG, WEBP, and GIF
+    image: coverImage?.src, // 1.91:1 aspect ratio, min 300x157, max 4096x4096 JPG, PNG, WEBP, and GIF
     imageAlt: coverImage?.alt,
     imageWidth: coverImage?.width,
     imageHeight: coverImage?.height,

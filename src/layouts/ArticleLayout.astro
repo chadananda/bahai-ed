@@ -3,7 +3,7 @@ export const prerender = true;
 // all the article-specific styling should go here or in article.css;
 import "@styles/article.css";
 import "@styles/global.css";
-import { ViewTransitions } from "astro:transitions";
+// import { ViewTransitions } from "astro:transitions";
 import  SpeedInsights  from "@vercel/speed-insights/astro"
 import Footer from "@components/footer.astro";
 import Navbar from "@components/navbar/navbar.astro";
@@ -18,14 +18,14 @@ const meta = post.data;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <JSONLD {...meta} author={author} category={category} />
+    <JSONLD {...meta} author={author} category={category} post={post} />
   </head>
   <body>
     <Navbar />
       <slot />
     <Footer margin={footerMargin} />
     <SpeedInsights />
-    <ViewTransitions />
+    <!-- <ViewTransitions /> -->
     <script type="module" src="/js/hidePosts.js"     client:idle></script>
     <script type="module" src="/js/appendLink.js"    client:idle></script>
     <script type="module" src="/js/externalLinks.js" client:idle></script>

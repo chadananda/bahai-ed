@@ -132,6 +132,38 @@ export const displayImageObj = (url, alt, width, height, format, quality=80) => 
   }
 }
 
+export const baseURL = (Astro) => {
+  let url = typeof Astro === 'string' ? Astro : Astro?.url?.href;
+  if (!url) url = site.url;
+  return url?.split('/').slice(0,3)?.join('/');
+}
+
+export const generateArticleImage = async (imgfile, post, baseUrl="", width, height=100, format='webp', quality=80, alt="") => {
+  // console.log('generateArticleImage', { imgfile, post: post.id, baseUrl, width, height, format, quality, alt});
+  if (!imgfile) return null;
+  alt = alt || post.data.title;
+  if (imgfile.startsWith('http')) return displayImageObj(imgfile, alt, width, height, format, quality);
+  // local image
+  try {
+    // console.log('base url', baseUrl);
+    baseUrl = baseURL(baseUrl);
+    // console.log('baseUrl', baseUrl);
+    const asset = imgfile.replace('./', ''),
+          imageKey = `/src/content/posts/${post.id.split('/')[0]}/${asset}`,
+          images = await import.meta.glob('/src/content/posts/**/*.{jpeg,jpg,png,gif,webp,avif,svg}');
+    const imageModule = images[imageKey];
+    // failed to locate
+    if (!imageModule) { console.error(`Image not found: ${imageKey}`); return null; }
+    // turn file into url
+    const imageResult = await getImage({ src: imageModule(), width, height, format, quality });
+    // console.log('generateArticleImage', { imageResult });
+    const fullUrl = baseUrl + imageResult.src;
+    // console.log('generateArticleImage', { fullUrl, width, height, format, quality, alt});
+    return { src: fullUrl, width, height, alt };
+  } catch (e) { console.error('Error processing local image:', e); return null; }
+};
+
+
 export const getDataCollectionImage = async (collection, filename, imageType={format: 'jpg', width: 1000, height: 700}) => {
   if (!filename) return null;
   const {width, height, format} = imageType;
@@ -160,10 +192,10 @@ export const getDataCollectionImage = async (collection, filename, imageType={fo
   } catch (e) { console.error('getDataCollectionImage', e); return null; }
 }
 
-export const getArticleImage = async (slug, filename) => {
+export const getArticleImage = async (slug, filename, post=null) => {
   // return null;
 //  console.log('getArticleImage', slug, filename);
-  const entry = await getPostFromSlug(slug);
+  const entry = post || await getPostFromSlug(slug);
   const assetFolder = entry.id?.split('/')[0]
   const asset = filename.replace('./', '');
   const imagekey = `/src/content/posts/${assetFolder}/${asset}`;

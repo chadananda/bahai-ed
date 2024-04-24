@@ -1,7 +1,7 @@
 ---
 // Import Simple Icons
 import { Twitter, Facebook, Linkedin } from 'simple-icons-astro';
-import { getArticleAudioPath, getArticleURL, getTeamMember, displayImageObj } from '@utils/utils.js';
+import { getArticleAudioPath, getArticleURL, getTeamMember, getPostFromSlug, baseURL, generateArticleImage } from '@utils/utils.js';
 import site from '@data/site.json';
 
 const meta = Astro.props.meta;
@@ -9,12 +9,9 @@ const {datePublished, audio, title, description, audio_duration: duration, title
 
 const slug = meta.url;
 const episodeNumber = meta.episode_number || 1;
-
-// console.log('article slug', slug);
-
+const post = Astro.props.post || await getPostFromSlug(slug);
 let author = Astro.props.author || (await getTeamMember(meta.author));
 let authorName = !!author ? author?.data?.name : site.site;
-
 const pageURL = getArticleURL(Astro);
 const baseUrl = new URL(pageURL).origin.replace(/\/$/, '');
 
@@ -24,36 +21,31 @@ if (!audioURL.startsWith('http')) {  // convert file path to URL
   audioURL = baseUrl + audioPath;
 }
 
-// console.log('PodcastPlayer.astro meta.image.src', meta.image.src);
-// TODO: fix this later to give different sizes for podcast and display!!
-var img_url = typeof meta.image === 'string' ? meta.image : `${meta.image.src.src}`; //
-if (!img_url.startsWith('http')) img_url = baseUrl + img_url;
-var img = { src: img_url, width: meta.image?.src?.width || 1200, height: meta.image?.src?.height || 628, alt: authorName }
-// later when we move this to s3, make it a cdn link
-if (img.src.includes('.s3.')) img = displayImageObj(img.src, img.alt, img.width, img.height, 'jpg', 80);
-// console.log('PodcastPlayer.astro image', img);
+const src = post?.data?.audio_image || post?.data?.image;
+const img_display = await generateArticleImage(src, post, baseURL(Astro), 172, 172, 'webp', 90, post.data.image.alt);
+const img_podcast = await generateArticleImage(src, post, baseURL(Astro), 1200, 1000, 'webp', 90, post.data.image.alt);
 
 // this player will be used more than once per page, so we need to generate unique IDs for each instance
-const playerID = 'id-' + Math.random().toString(36).substr(2, 9);
-// const audioPlayerID = `audio-${playerID}`; // Define a unique selector for the Plyr instance
-const encodedPageURL = encodeURIComponent(pageURL);
-const encodedDesc = encodeURIComponent(title +' - '+ description);
-// const waveID = `wave-${playerID}`; // Define a unique selector for the Plyr instance
+let playerID = 'id-podcast-player-' + Math.random().toString(36).substr(2, 9);
+let audPlayer = 'id-aud-'+ Math.random().toString(36).substr(2, 9);
+// let audioPlayerID = `audio-${playerID}`; // Define a unique selector for the Plyr instance
+let encodedPageURL = encodeURIComponent(pageURL);
+let encodedDesc = encodeURIComponent(title +' - '+ description);
 
 // social links to share this page
-const twitterLink = `https://twitter.com/intent/tweet?text=${encodedDesc}&url=${encodedPageURL}`;
-const facebookLink = `https://www.facebook.com/sharer/sharer.php?u=${encodedPageURL}`;
-const linkedinLink = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedPageURL}`;
-const emailLink = `mailto:?subject=Interesting%20Page&body=Check%20this%20out:%20${encodedPageURL}`;
+let twitterLink = `https://twitter.com/intent/tweet?text=${encodedDesc}&url=${encodedPageURL}`;
+let facebookLink = `https://www.facebook.com/sharer/sharer.php?u=${encodedPageURL}`;
+let linkedinLink = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedPageURL}`;
+let emailLink = `mailto:?subject=Interesting%20Page&body=Check%20this%20out:%20${encodedPageURL}`;
 
 // JSON-LD for this podcast episode
-const schema = {
+let schema = {
   '@context': "https://schema.org",
   '@type': "PodcastEpisode",
   '@id': `${pageURL}#${playerID}`,
   name: title,
   description: description,
-  image: img?.src,
+  image: img_podcast?.src,
   episodeNumber: episodeNumber,
   partOfSeries: {
     '@type': "PodcastSeries",
@@ -80,8 +72,7 @@ const schema = {
 ---
 
 <!-- JSON-LD  -->
-<script type="application/ld+json" set:html={JSON.stringify(schema)} />
-
+<script type="application/ld+json" set:html={JSON.stringify(schema)} data-astro-rerun is:inline/>
 
 <!-- Our Podcast player container -->
 <div id={playerID} class="podcast-player h-full sm:h-48 sm:min-h-48 sm:max-h-48 bg-gray-100 shadow-md rounded-lg w-full my-10
@@ -90,14 +81,7 @@ border-4 border-gray-300 p-1 noprint
 ">
   <!-- Image and play button, the left column  -->
   <div class="image-container sm:w-44 sm:max-h-44 sm:h-44 mb-2 sm:mb-0 min-w-[20%] cursor-pointer - group relative">
-
-    {!!img && (
-      <img src={img?.src} alt={img?.alt} format="jpg" quality="low"
-        class="rounded-md object-cover w-full sm:w-44 h-44 sm:h-44 m-0 p-0 min-w-[30%] border-2 border-gray-400 opacity-70"
-        widths={[120, 188, 300, 372, 788, 1000, 1280]}
-      />
-    )}
-
+    <img {...img_display} class="rounded-md object-cover w-full sm:w-44 h-44 sm:h-44 m-0 p-0 min-w-[30%] border-2 border-gray-400 opacity-70" />
     <!-- Player button centered over the image -->
     <div class="playerbutton absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
       <button aria-label="Podcast Play Button" title="Play Podcast"
@@ -116,7 +100,7 @@ border-4 border-gray-300 p-1 noprint
   </div>
 
   <!-- Descriptive content and wave scrubber, the right column -->
-  <div class="content-container pl-1 flex-grow - flex flex-col">
+  <div class="content-container px-2 flex-grow - flex flex-col">
     <!-- Top description section can expand if there's room  -->
     <div class="text-details flex flex-col justify-center flex-grow">
       <div class="playertext w-full overflow-hidden m-0 sm:pl-3">
@@ -126,11 +110,10 @@ border-4 border-gray-300 p-1 noprint
       </div>
     </div>
 
-
     <!-- Scrubber area, we're replacing wave with a custom solution -->
     <div class="waveform-wrapper h-14 sm:h-18 mb-0 overflow-hidden - relative">
       <!-- HTML5 Audio Player (used as source)  -->
-      <audio src={audioURL} class="mediaplayer hidden" preload="metadata"  crossorigin="anonymous"></audio>
+      <audio id={audPlayer} data-src={audioURL} src={audioURL} class="mediaplayer hidden" preload="metadata"  crossorigin="anonymous"></audio>
       <!-- Scrubber area with vertical gradient and overlapping sine waves -->
       <div class="audioscrubber w-full h-full relative">
         <!-- Transparent Background with vertical gradient and Waveform Patterns -->
@@ -237,16 +220,33 @@ svg#play:hover #triangle {
 }
 </style>
 
-<script type="text/javascript" data-playerID={playerID}>
-  const playerID = document.currentScript.dataset.playerid;
-  const podPlay = document.getElementById(playerID);
-  const playButton = podPlay.querySelector('.image-container');
-  const playIcon = playButton.querySelector('.play-icon');
-  const pauseIcon = playButton.querySelector('.pause-icon');
-  const playPositionElement = podPlay.querySelector('.play-position');
-  const totalLengthElement = podPlay.querySelector('.total-length');
-  const audioPlayer = podPlay.querySelector('.mediaplayer');
-  const scrubber = podPlay.querySelector('.scrubber');
+<script data-playerID={playerID} data-astro-rerun is:inline client:idle>
+
+console.log('* astro:rerun');
+
+  let playerID = document.currentScript.dataset.playerid;
+  let podPlay = document.getElementById(playerID);
+  let playButton = podPlay.querySelector('.image-container');
+  let playIcon = playButton.querySelector('.play-icon');
+  let pauseIcon = playButton.querySelector('.pause-icon');
+  let playPositionElement = podPlay.querySelector('.play-position');
+  let totalLengthElement = podPlay.querySelector('.total-length');
+  let audioPlayer = podPlay.querySelector('.mediaplayer');
+  let audioURL = audioPlayer.dataset.src;
+  let scrubber = podPlay.querySelector('.scrubber');
+
+  document.addEventListener('astro:page-load', () => {
+    console.log('*** astro:page-load');
+    // let audioElement = document.getElementById('aud');
+    audioPlayer.pause()
+    // let audioURL = audioPlayer.src; // = audioURL;
+    audioPlayer.src = '';
+    audioPlayer.src = audioURL;
+    console.log('=== set audioplayer url to ', audioURL);
+    // audioPlayer.play();
+    audioPlayer.play();
+  });
+
 
   scrubber.addEventListener('input', function () {
     var value = (this.value-this.min)/(this.max-this.min)*100;
@@ -254,7 +254,7 @@ svg#play:hover #triangle {
     audioPlayer.currentTime = audioPlayer.duration * (this.value / 100);
   });
 
-  const formatTime = (timeInSeconds) => {
+  let formatTime = (timeInSeconds) => {
     const hours = Math.floor(timeInSeconds / 3600);
     const minutes = Math.floor((timeInSeconds % 3600) / 60);
     const seconds = Math.floor(timeInSeconds % 60);
@@ -265,14 +265,14 @@ svg#play:hover #triangle {
     ]; // If less than an hour, return MM:SS, otherwise HH:MM:SS
     return hours > 0 ? parts.join(':') : parts.slice(1).join(':');
   };
-  const updateTimeDisplay = (currentTime, duration) => {
+  let updateTimeDisplay = (currentTime, duration) => {
     if (!isNaN(duration)) {
       playPositionElement.textContent = formatTime(currentTime);
       totalLengthElement.textContent = formatTime(duration);
     }
   };
   // Function to update the play/pause icons
-  const updatePlayPauseIcons = () => {
+  let updatePlayPauseIcons = () => {
     if (audioPlayer.paused || audioPlayer.ended) {
       playIcon.classList.remove('hidden');
       pauseIcon.classList.add('hidden');
@@ -282,7 +282,7 @@ svg#play:hover #triangle {
     }
   };
   // Toggle play/pause for audioPlayer
-  const togglePlayPause = () => {
+  let togglePlayPause = () => {
     if (audioPlayer.paused || audioPlayer.ended)  audioPlayer.play();
       else audioPlayer.pause();
   };

@@ -102,7 +102,7 @@ if (Astro.request.method === "POST") {
     const memberToSave = {
       ...formData,
       id: isNew ? slugify(formData.name) : Astro.params.slug,
-      url: formData.external ? formData.url : `${site.url}/author/${formData.id}`
+      url: formData.external ? formData.url : `${site.url}/authors/${formData.id}`
     };
     try {
       delete formData.delete;
