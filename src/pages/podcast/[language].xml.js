@@ -2,7 +2,7 @@ export const prerender = true;
 
 import site from '@data/site.json';
 import rss from '@astrojs/rss';
-import { getArticleAudioSize, getArticleAudioPath, getAllLanguages, getPublishedArticles, getTeamMember } from '@utils/utils.js';
+import { getArticleAudioSize, getArticleAudioPath, getAllLanguages, getPublishedArticles, getTeamMember, generateArticleImage } from '@utils/utils.js';
 import { getImage } from "astro:assets";
 
 const mainLanguages = {
@@ -63,12 +63,19 @@ export const processItems = async (articles, site, baseUrl) => {
     const audioURL = localAudio ? baseUrl + (await getArticleAudioPath(post.data.url, post.data.audio)) : post.data.audio;
     const audioSize = localAudio ? await getArticleAudioSize(post.data?.url, post.data.audio) :
        post.data.audio_length || iso8601DurToBytes(post.data.audio_duration);
-    const imagePath = !!post.data.audio_image ? (await getImage({src: post.data.audio_image, format: 'jpg'})).src : ''
-    const imageURL = baseUrl + imagePath
+
+
+    // const imagePath = !!post.data.audio_image ? (await getImage({src: post.data.audio_image, format: 'jpg'})).src : ''
+    // const imageURL = baseUrl + imagePath
+
+    const imgfile = post.data?.audio_image || post.data?.image?.src;
+    const alt = post.data?.image?.alt || post.data?.title;
+    const image = await generateArticleImage(imgfile, post, baseUrl, 1200, 1200, 'jpg', 90, alt);
 
     let author = await getTeamMember(post.data.author);
 
     const itunes_duration = ISO8601ToiTunes(post.data.audio_duration);
+
     return {
       title: post.data.title,
       pubDate: new Date(post.data.datePublished).toUTCString(),
@@ -82,7 +89,7 @@ export const processItems = async (articles, site, baseUrl) => {
       categories: post.data.topics,
       customData: [
         // `<image src="${ imageURL }" />`
-        `<itunes:image href="${ imageURL }" />`,
+        `<itunes:image href="${ image?.src }" />`,
         `<itunes:duration>${itunes_duration}</itunes:duration>`,
         `<itunes:explicit>no</itunes:explicit>`,
         `<itunes:subtitle>${post.data.desc_125}</itunes:subtitle>`,
