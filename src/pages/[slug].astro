@@ -123,7 +123,8 @@ const cover_image = await generateArticleImage(post.data.image?.src, post, base_
      }
 
      <div class="hidden md:block max-w-3xl mx-auto relative">
-       <PostComments slug={post.data?.url} />
+      <!-- commented out until we move comments to the db  -->
+       <!-- <PostComments slug={post.data?.url} /> -->
      </div>
 
   </Container>

@@ -2,6 +2,8 @@
 
  const asideLink = Astro.props.link
  const asideLinkText = Astro.props.linkText
+
+
 ---
 
 <aside class="articleAside">
@@ -14,6 +16,9 @@
 
 
 <style is:global>
+   aside img {
+     max-width:155px !important;
+   }
    p {
       margin-top: .25em;
    }

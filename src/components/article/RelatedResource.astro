@@ -1,10 +1,13 @@
 ---
-import { getArticleImageURL, getArticleSlugFromURL, getArticleURL, getPostFromSlug, getArticleAssetURL } from '@utils/utils.js';
+import { getArticleImageURL, getArticleURL, generateArticleImage, getPostFromSlug, getArticleAssetURL } from '@utils/utils.js';
 const {meta, type, link, title, image, description} = Astro.props
 
 
 const pageURL = getArticleURL(Astro);
 const siteURL = new URL(pageURL).origin;
+const post = Astro.props.post || await getPostFromSlug(meta.url);
+
+// console.log('related: ', post.id, meta.url);
 
 let downloadURL = link;
 if (!link.startsWith('http')) {
@@ -44,12 +47,10 @@ if (!link.startsWith('http')) {
 //  console.log('thumb:', thumb);
 
 if (image) {
-  let slug = await getArticleSlugFromURL(Astro.url.href)
-  let imageURL = await getArticleImageURL(slug, image);
-  if (imageURL) thumb = imageURL;
+  let imageURL = await generateArticleImage(image, post, Astro.url.href, 120, 0,'webp', 90, title);
+  if (imageURL.src) thumb = imageURL.src;
+  // console.log('relatedResource:', imageURL, thumb);
 }
-
-
 
 
 
@@ -58,6 +59,7 @@ if (image) {
  /* example markdoc usage:
 {% related-resource
     meta=$meta
+    post=$post
     type="Audio Narration"
     link="_reflections.mp3"
     title="Audio Narration by Bahiyyih Nakhjavani"

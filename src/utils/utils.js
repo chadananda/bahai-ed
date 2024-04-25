@@ -79,6 +79,7 @@ export const getPostFromSlug = async (slug) => {
   // return null;
   // console.log('getPostFromSlug - looking for post with slug:', slug);
   const post = (await getCollection('posts', (post)=>post.data?.url===slug))?.pop();
+  // console.log('getPostFromSlug - post found:', post);
   if (!post) console.error('getPostFromSlug - post not found:', slug);
   return post;
 }
@@ -138,29 +139,31 @@ export const baseURL = (Astro) => {
   return url?.split('/').slice(0,3)?.join('/');
 }
 
-export const generateArticleImage = async (imgfile, post, baseUrl="", width, height=100, format='webp', quality=80, alt="") => {
-  // console.log('generateArticleImage', { imgfile, post: post.id, baseUrl, width, height, format, quality, alt});
-  if (!imgfile) return null;
+export const generateArticleImage = async (imgfile, post=null, baseUrl="", width, height=100, format='webp', quality=80, alt="") => {
   alt = alt || post.data.title;
+  let empty ={src:'', width, height, alt}
+  if (!imgfile) return empty;
+  // http image
   if (imgfile.startsWith('http')) return displayImageObj(imgfile, alt, width, height, format, quality);
-  // local image
+  // local images need a post object to locate the asset file
   try {
+    if (!post || !post.id) { console.error('generateArticleImage: post not found'); return empty; }
     // console.log('base url', baseUrl);
     baseUrl = baseURL(baseUrl);
     // console.log('baseUrl', baseUrl);
     const asset = imgfile.replace('./', ''),
-          imageKey = `/src/content/posts/${post.id.split('/')[0]}/${asset}`,
+          imageKey = `/src/content/posts/${post?.id?.split('/')[0]}/${asset}`,
           images = await import.meta.glob('/src/content/posts/**/*.{jpeg,jpg,png,gif,webp,avif,svg}');
     const imageModule = images[imageKey];
     // failed to locate
-    if (!imageModule) { console.error(`Image not found: ${imageKey}`); return null; }
+    if (!imageModule) { console.error(`Image not found: ${imageKey}`); return empty; }
     // turn file into url
     const imageResult = await getImage({ src: imageModule(), width, height, format, quality });
     // console.log('generateArticleImage', { imageResult });
     const fullUrl = baseUrl + imageResult.src;
     // console.log('generateArticleImage', { fullUrl, width, height, format, quality, alt});
     return { src: fullUrl, width, height, alt };
-  } catch (e) { console.error('Error processing local image:', e); return null; }
+  } catch (e) { console.error('Error processing local image:', e); return empty; }
 };
 
 
