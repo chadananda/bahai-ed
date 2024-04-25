@@ -89,58 +89,29 @@ async function getArticlesList() {
   return list
 }
 
-// async function uploadArticleImages(path) {
-//   // given a folder named 'path', gather up all the image in that folder
-//   const pattern = `${path}/*.{jpg,jpeg,png,gif,webp,svg}`;
-//   const images = await fg(pattern);
-//    console.log(`Found images in "${collection}":`, images);
-//   // check if each one exists in our s3 bucket and upload it if not
-//   let urls = image.map( image => {
-//     // check if needs uploaded to s3 (can we compare file hash?)
-//     // upload to s3
-//     // either way create a lookup list:
-//     return {filename: path.filename(image), url: s3url};
-//   });
-//   // gather a list of all .mdoc files
-//   const pattern = `${path}/*.{mdic}`;
-//   const arFiles = await fg(pattern);
-//    console.log(`Found images in "${collection}":`, images);
-//   arFiles.forEach(articleFile => {
-//     // load file with matter
-//     const { data, content } = matter(fs.readFileSync(articleFile))
-//     // check for image.src and audio_image and replace them with the correct url
-
-//     // now search for all occurances of all images files in the markdoc content and replace each with url
-
-//     // save the file and log results
-//     saveArticleMdoc(articleFile, data, content);
-//     console.log(`updated ${updateCount} image references in "${path.filename(articleFile)}" to be S3 URLS`);
-//   });
-// }
-
 async function uploadArticleImages(folderPath) {
   const articleName = path.basename(folderPath);
   // console.log('uploadArticleImages:', articleName);
-  const imagesPattern = `${folderPath}/*.{jpg,jpeg,png,gif,webp,svg,pdf,mp3}`;
-  const images = await fg(imagesPattern);
-  console.log(`Found ${images.length} images in "${articleName}":`, images);
-  // Upload images to S3 and get their URLs
-  const imageMappings = await Promise.all(images.map(imagePath =>
+  const pattern = `${folderPath}/*.{jpg,jpeg,png,gif,webp,svg,pdf,mp3,pdf,zip,mp3}`;
+  const assets = await fg(pattern);
+  console.log(`Found ${assets.length} assets in "${articleName}":`, assets);
+  // Upload assets to S3 and get their URLs
+  const mapping = await Promise.all(assets.map(imagePath =>
     uploadImageIfNeeded(imagePath)
   ));
   // Create a map of filenames to S3 URLs
-  const imageUrlMap = imageMappings.reduce((acc, { filename, url }) => {
+  const urlMap = mapping.reduce((acc, { filename, url }) => {
     acc[filename] = url;
     return acc;
   }, {});
-  console.log(imageUrlMap);
+  // console.log(urlMap);
 
   // Process all .mdoc files in the folder
-  const mdocsPattern = `${folderPath}/*.mdoc`;
-  const mdocFiles = (await fg(mdocsPattern)).slice(0, 1);
-  console.log(`Found .mdoc files in "${folderPath}":`, mdocFiles);
+  const docPattern = `${folderPath}/*.mdoc`;
+  const mdocFiles = (await fg(docPattern));
+  // console.log(`Found .mdoc files in "${folderPath}":`, mdocFiles);s
   await Promise.all(mdocFiles.map(file =>
-    processMdocFile(file, imageUrlMap)
+    processMdocFile(file, urlMap)
   ));
 }
 
@@ -150,7 +121,7 @@ function generateS3URL(bucketName, s3key) {
   return `https://${bucketName}.s3.${process.env.AWS_BUCKET_REGION}.amazonaws.com/${encodedKey}`;
 }
 
-async function processMdocFile(filePath, imageUrlMap) {
+async function processMdocFile(filePath, urlMap) {
   const fileContents = fs.readFileSync(filePath, 'utf8');
   const { data, content } = matter(fileContents);
 
@@ -160,14 +131,14 @@ async function processMdocFile(filePath, imageUrlMap) {
   // Update YAML front matter for images, PDFs, and audio files
   if (data.image && data.image.src) {
     const filename = path.basename(normalizePath(data.image.src));
-    const newSrc = imageUrlMap[filename] || data.image.src;
+    const newSrc = urlMap[filename] || data.image.src;
     console.log(`Replacing image.src: ${data.image.src} with ${newSrc}`);
     data.image.src = newSrc;
   }
 
   if (data.audio_image) {
     const filename = path.basename(normalizePath(data.audio_image));
-    const newAudioImage = imageUrlMap[filename] || data.audio_image;
+    const newAudioImage = urlMap[filename] || data.audio_image;
     console.log(`Replacing audio_image: ${data.audio_image} with ${newAudioImage}`);
     data.audio_image = newAudioImage;
   }
@@ -175,7 +146,7 @@ async function processMdocFile(filePath, imageUrlMap) {
   // Special handling for the audio field if it points to a local file
   if (data.audio && /\.(mp3)$/i.test(data.audio)) {
     const filename = path.basename(normalizePath(data.audio));
-    const newAudio = imageUrlMap[filename] || data.audio;
+    const newAudio = urlMap[filename] || data.audio;
     console.log(`Replacing audio: ${data.audio} with ${newAudio}`);
     data.audio = newAudio;
   }
@@ -183,7 +154,7 @@ async function processMdocFile(filePath, imageUrlMap) {
   // Update Markdown image links and other file types in content
   const updatedContent = content.replace(/!\[.*?\]\((.*?)\)/g, (match, p1) => {
     const filename = path.basename(normalizePath(p1));
-    const newUrl = imageUrlMap[filename] || p1;
+    const newUrl = urlMap[filename] || p1;
     console.log(`Replacing Markdown link: ${p1} with ${newUrl}`);
     return match.replace(p1, newUrl);
   });
@@ -193,21 +164,27 @@ async function processMdocFile(filePath, imageUrlMap) {
     const attributePairs = p1.split(/\s+/).filter(attr => attr.includes('='));
     return attributePairs.reduce((updatedMatch, attr) => {
       const [key, value] = attr.split('=');
-      const trimmedValue = value.trim().replace(/^["']|["']$/g, '');
+      const trimmedValue = value.trim().replace(/^["']|["']$/g, ''); // Correctly trim quotes from the value
       if (/\.(jpg|jpeg|png|gif|svg|pdf|mp3)$/i.test(trimmedValue)) { // Check if the attribute value looks like a file path
-        const filename = path.basename(normalizePath(trimmedValue));
-        const newUrl = imageUrlMap[filename] || trimmedValue;
-        console.log(`Replacing Markdoc attribute file link: ${trimmedValue} with ${newUrl}`);
-        return updatedMatch.replace(value, `"${newUrl}"`);
+        if (!trimmedValue.startsWith('http')) { // Correct method name from 'startswith' to 'startsWith'
+          const filename = path.basename(normalizePath(trimmedValue));
+          const newUrl = urlMap[filename] || trimmedValue;
+          if (newUrl) {
+            console.log(`Replacing link: "${trimmedValue}" with: ${newUrl}`);
+            return updatedMatch.replace(value, `"${newUrl}"`); // Ensure values are replaced correctly
+          }
+        }
+        return updatedMatch;
       }
       return updatedMatch;
     }, match);
   });
 
+
   // Log final content without saving for verification
-  // console.log(`Final content for verification:\n${finalContent}`);
+  // console.log(`Final modified: \n${filePath}`);
   // Uncomment below to save changes when ready
-  saveArticleMdoc(`${filePath}__.mdoc`, { ...data }, finalContent);
+  saveArticleMdoc(filePath, { ...data }, finalContent);
 }
 
 
@@ -216,16 +193,16 @@ async function uploadImageIfNeeded(imagePath) {
   const baseDir = process.cwd() + '/src/content/';
   const s3key = imagePath.substring(baseDir.length);
   // const contentType = guessContentType(imagePath);
-  console.log('uploadImageIfNeeded:', s3key);
+  // console.log('uploadImageIfNeeded:', s3key);
   // Use the S3FileExists function to check file status
   const { exists, matches, url } = await S3FileExists(imagePath, s3key);
   if (exists && matches) {
-    console.log(`No need to upload ${s3key}; it already exists on S3 with the same content.`);
+    // console.log(`No need to upload ${s3key}; it already exists on S3 with the same content.`);
     return { filename: path.basename(imagePath), url };
   }
   // If the file does not exist or content differs, upload it
   const newUrl = await uploadS3(imagePath, s3key);
-  console.log(`Uploaded ${s3key} to S3 with URL: ${newUrl}`);
+  console.log(`Uploaded ${path.basename(imagePath)}: \n   ${newUrl}`);
     // Uploaded posts/1972-11-27_constitution-of-uhj/constitution.png to S3 with URL: https://blogw-assets.s3.us-west-1.amazonaws.com/posts/1972-11-27_constitution-of-uhj/constitution.png
   return { filename: path.basename(imagePath), url: newUrl };
 }
@@ -255,10 +232,11 @@ const streamFileHash = (filePath) => new Promise((resolve, reject) => {
 async function moveContentCollectionImages() {
   console.log(`Moving images in posts to S3.`);
   // Set up concurrency limit
-  const uploadThrottle = pLimit(5); // Limit the number of concurrent uploads
+  const uploadThrottle = pLimit(2); // Limit the number of concurrent uploads
   // test with only one folder
-  const articleFolders = (await getArticlesList()).slice(0, 1);
+  const articleFolders = (await getArticlesList());
   const tasks = articleFolders.map(arFolder => {
+    console.log('updating assets in folde: ', arFolder);
     return uploadThrottle(() => uploadArticleImages(arFolder));
   });
   await Promise.all(tasks);
@@ -271,9 +249,9 @@ async function moveContentCollectionImages() {
 // Call main function for categories
 console.log('===============');
 // await moveDataCollectionImages('categories').catch(console.error)
-console.log('===');
+// console.log('===');
 // await moveDataCollectionImages('team').catch(console.error)
-console.log('===');
+// console.log('===');
 await moveContentCollectionImages().catch(console.error)
 
 

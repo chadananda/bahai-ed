@@ -28,4 +28,5 @@ pnpm-debug.log*
 extra/
 public/posts/
 
-# content collection static asset files copied over to public
+# backup and research
+work/

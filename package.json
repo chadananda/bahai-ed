@@ -19,7 +19,7 @@
     "make_translations": "node ./src/scripts/_create_translations.js",
     "make_audio": "node ./src/scripts/_create_audio.js",
     "upload_audio": "node ./src/scripts/_upload_audio.js",
-    "moveimages": "node ./src/scripts/_moveimages_s3.js"
+    "move_s3": "node ./src/scripts/_moveassets_s3.js"
   },
   "dependencies": {
     "@astrojs/db": "^0.10.6",

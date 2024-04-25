@@ -7,6 +7,6 @@ const post = Astro.props.post || await getPostFromSlug(slug);
 const base_url = baseURL(Astro);
 
 // imgfile, post, baseUrl="", width, height=100, format='webp', quality=80, alt=""
-const img = await generateArticleImage(src, post, base_url, 750, 200, 'webp', 90, alt);
+const img = await generateArticleImage(src, post, base_url, 750, 0, 'webp', 90, alt);
 ---
 <img {...img} loading="lazy" />
