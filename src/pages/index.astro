@@ -8,7 +8,9 @@ import site from "@data/site.json";
 import ArticleSelector from '@components/article/articleSelector.astro';
 import { getPublishedArticles, displayImageObj, getTeam, getCategories } from '@utils/utils.js';
 
-const img = displayImageObj(site.author_image, 75,75, 'webp', 50);
+const img = displayImageObj(site.author_image, site.author, 75,75, 'webp', 90);
+// (url, alt='', width=0, height=0, format='webp', quality=80)
+
 // we pre-gather this information to avoid extra database queries within the template loop
 const articles = await getPublishedArticles();
 const authors = await getTeam();
@@ -21,8 +23,9 @@ const categories = await getCategories();
 <div class="text-center p-5 max-w-7xl mx-auto border rounded-lg shadow-md bg-slate-50">
   <h2 class="text-lg italic md:text-3xl font-bold text-gray-600"
       style="font-family: Merriweather">
-    <img src={img.src} width={img.width} height={img.height} alt={site.author}
-         class="rounded-full border-2 border-gray-200 float-left mr-5 opacity-85" />
+
+    <img {...img} class="rounded-full border-2 border-gray-200 float-left mr-5 opacity-85" />
+
     Welcome to my little Bahá’í education blog
   </h2>
   <p class="text-sm md:text-sm text-gray-700 dark:text-gray-400 mt-2">

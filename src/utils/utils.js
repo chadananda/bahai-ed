@@ -126,7 +126,7 @@ export const transformS3Url = (url, width = null, height = null, format = 'webp'
   params.push(`fm=${format}`, `q=${quality}`, `fit=crop`, `crop=faces`);
   return `${site.img_base_url}${imagePath}?${params.join('&')}`;
 }
-export const displayImageObj = (url, alt, width, height, format, quality=80) => {
+export const displayImageObj = (url, alt='', width=0, height=0, format='webp', quality=80) => {
   return {
     src: transformS3Url(url, width, height, format, quality),
     width, height, alt, isExternal: true
