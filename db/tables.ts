@@ -70,7 +70,6 @@ export const Sessions = defineTable({
  indexes: [ { on: ["id"], unique: true } ]
 })
 
-
 export const Comments = defineTable({
   columns: {
     id: column.number({ primaryKey: true }),       // comment id
@@ -79,12 +78,18 @@ export const Comments = defineTable({
     parentid: column.number({ optional: true }),    // comment parent id
     name: column.text({ optional: false }),         // commentator name
     content: column.text({ optional: false }),      // comment
-    // description: column.text({ optional: true }),   // article description (needed for ai moderation)
 
     moderated: column.boolean({ default: false }), //  moderated
     date: column.date({ default: NOW }),           // comment date
     starred: column.boolean({ default: false }),   //  starred
   },
   indexes: [ { on: ["id", "postid", "moderated", "date"], unique: false } ]
+})
+
+export const Cron = defineTable({
+  columns: {
+    task: column.text({ primaryKey: true }),
+    time: column.date({ default: NOW })
+  }
 })
 

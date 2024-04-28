@@ -7,7 +7,7 @@ import fs from 'fs';
 import matter from 'gray-matter';
 import site from '@data/site.json'
 import { getImage } from "astro:assets";
-import { db, Categories, eq, Team, Users, Topics, Comments, inArray } from 'astro:db';
+import { db, Categories, eq, Team, Users, Topics, Comments, inArray, NOW } from 'astro:db';
 import * as argon2 from 'argon2';
 import AWS from 'aws-sdk';
 import { Buffer } from 'buffer';
@@ -600,15 +600,18 @@ export const currentURL = (Astro) => {
   // Decode the URL to handle encoded characters
   return decodeURIComponent(cleanURL);
 }
-// returns a set of all languages found in published articles
-export const getAllLanguages = async () => {
-  // return new Set();
-  const isPublished = ({data}) => (!data.draft && data.datePublished<=new Date());
-  const isDev = import.meta.env.APP_ENV==='dev';
-  const publishedPosts = await getCollection("posts", (ar) => (isPublished(ar) || isDev));
-  // add all languages to a set
-  const languages = new Set();
-  publishedPosts.forEach((post) => languages.add(post.data.language));
+// export const langFlag(lang) {
+//   return mainLanguages[lang]?.flag;
+// }
+export const getUsedLanguages = async () => {
+  const articles = await getPublishedArticles()
+  const inLanguageList = (lang) => !!mainLanguages[lang];
+  const inSiteList = (lang) => !!site.languages.includes(lang);
+  let languages = new Set();
+  // add any found language
+  articles.forEach((post) => languages.add(post.data.language));
+  // now convert back to array
+  languages = Array.from(languages).filter(inLanguageList).filter(inSiteList)
   return languages;
 }
 export const mainLanguages = {
@@ -665,6 +668,28 @@ export const isValidEmail = (email) => {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+// server only
+
+export const crontasks = () => {
+  // this is based on the old poor man's cron, which let user requests trigger throttled tasks
+  // let lastCron = db.select().from(Cron)
+
+}
+export const poorMansCron = async () => {
+  // Call crontask by API if more than 5 minutes since last call
+  const lastcall = (await db.select().from(Cron).where(eq(Cron.task, 'cronjob')))[0];
+  const fiveMinutes = 5 * 60 * 1000; // 5 minutes in milliseconds
+  if (!lastcall) {
+    // If no last call time is recorded, insert a new record
+    await db.insert().into(Cron).values({ task: 'cronjob', time: new Date() });
+    // await crontasks();
+  } else if (lastcall && (new Date()-lastcall.time > fiveMinutes)) {
+    // If more than 5 minutes have passed since the last call
+    await crontasks();
+    // Update the time after tasks are done
+    await db.update(Cron).set({ time: new Date() }).where(eq(Cron.task, 'cronjob'));
+  }
+}
 
 // ***************** Deprecated
 

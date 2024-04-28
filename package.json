@@ -7,7 +7,7 @@
     "sync-assets": "node ./syncAssets.js",
     "dev": "npm run sync-assets && astro dev",
     "vercel-dev": "npm run sync-assets && node --max-old-space-size=10240 ./node_modules/.bin/vercel dev --listen 3000",
-    "build": "npm run sync-assets && astro build --remote",
+    "build": "astro build --remote",
     "preview": "npm run sync-assets && vercel preview",
     "astro": "astro",
     "vercel": "vercel",

@@ -2,7 +2,7 @@ export const prerender = true;
 
 import site from '@data/site.json';
 import rss from '@astrojs/rss';
-import { getArticleAudioSize, getArticleAudioPath, getAllLanguages, getPublishedArticles, getTeamMember, generateArticleImage } from '@utils/utils.js';
+import { getArticleAudioSize, getArticleAudioPath, getPublishedArticles, getTeamMember, generateArticleImage, getUsedLanguages } from '@utils/utils.js';
 
 const mainLanguages = {
   es: { flag: "🇪🇸", name: "Español", dir: "ltr", en_name: "Spanish" },
@@ -29,13 +29,8 @@ const mainLanguages = {
 
 
 export async function getStaticPaths() {
-  const hasAudio = ({data}) => !!data.audio;
-  const languages = await getAllLanguages();
-  const paths = Array.from(languages).map((language) => {
-    return {
-      params: { language: `${language}` },
-    };
-  });
+  const languageList = await getUsedLanguages();
+  const paths = languageList.map((language) =>  ({params: { language }}));
   return paths;
 }
 
@@ -138,17 +133,22 @@ export const generateRSSFeedObj = async (articles, language, site, baseUrl) => {
 
 // change of plans: now we need to generate the feed on the fly
 export async function GET({ params, request }) {
-  const baseUrl = new URL(request?.url).origin;
-  const hasAudio = ({data}) => !!data.audio;
-  const language = params.language;
-  const allArticles = (await getPublishedArticles()).filter(hasAudio);
-  const articles = allArticles.filter(({data}) => data.language === language);
-  // all articles matching language, filtered by having audio
-  // const articles = Astro.props.articles; // || await getPodcastArticles(language)
-  // console.log(`${articles.length} articles found with podcast audio in "${language}"`);
-  const feed = await generateRSSFeedObj(articles, language, site, baseUrl);
-  // console.log('rss feed', feed);
-  return rss(feed);
+  // console.log('hi mom');
+ try {
+    const baseUrl = new URL(request?.url).origin;
+    const language = params.language;
+    const hasAudio = ({data}) => !!data.audio;
+    const matchesLanguage = ({data}) => data.language===language;
+    // console.log('got here')
+    const articles = (await getPublishedArticles()).filter(hasAudio).filter(matchesLanguage);
+    // const articles = allArticles.filter(({data}) => data.language === language);
+    // all articles matching language, filtered by having audio
+    // const articles = Astro.props.articles; // || await getPodcastArticles(language)
+    // console.log(`${articles.length} articles found with podcast audio in "${language}"`);
+    const feed = await generateRSSFeedObj(articles, language, site, baseUrl);
+    // console.log('rss feed', feed);
+    return rss(feed);
+  } catch (error) { console.error(`Podcast build failed:`, error) }
 }
 
 

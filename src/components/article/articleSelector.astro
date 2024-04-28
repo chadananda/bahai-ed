@@ -1,8 +1,8 @@
 ---
 export const prerender = true;
 
-import { getAllLanguages, mainLanguages } from '@utils/utils.js'
-const langs = Array.from(await getAllLanguages());
+import { getUsedLanguages, mainLanguages } from '@utils/utils.js'
+const langs = await getUsedLanguages();
 ---
 
 <div class="flex justify-center my-5 sticky top-20 z-10">

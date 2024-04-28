@@ -86,8 +86,9 @@ const cover_image = await generateArticleImage(post.data.image?.src, post, base_
     </div>
 
     <div class="mx-auto max-w-10xl">
-      <div class="relative pt-[40%] rounded-xl mt-6 overflow-hidden shadow-xl border border-gray-200"
-          transition:name={`post-img-${post.data.url}`} >
+      <div class="relative pt-[40%] rounded-xl mt-6 overflow-hidden shadow-xl border border-gray-200" >
+
+        <!-- transition:name={`post-img-${post.data.url}`}  -->
 
         <img {...cover_image} class="cover-image absolute top-0 left-0 w-full h-full object-cover" />
 
