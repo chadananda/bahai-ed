@@ -670,9 +670,9 @@ export const isValidEmail = (email) => {
 
 // server only
 
-export const crontasks = () => {
-  // this is based on the old poor man's cron, which let user requests trigger throttled tasks
-  // let lastCron = db.select().from(Cron)
+export const crontasks = async () => {
+  // long running and expensive tasks on the server
+  await moderateComments_openai();
 
 }
 export const poorMansCron = async () => {
