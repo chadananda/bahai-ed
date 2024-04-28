@@ -1,9 +1,6 @@
 ---
-
  const asideLink = Astro.props.link
  const asideLinkText = Astro.props.linkText
-
-
 ---
 
 <aside class="articleAside">
@@ -16,7 +13,7 @@
 
 
 <style is:global>
-   aside img {
+   aside.articleAside img {
      max-width:155px !important;
    }
    p {
@@ -52,7 +49,7 @@
 
 
     /* article link should be a block floated right */
-   a.asideLink {
+   aside.articleAside a.asideLink {
       display: block;
       float: right;
       color: gray;

@@ -7,7 +7,7 @@ import fs from 'fs';
 import matter from 'gray-matter';
 import site from '@data/site.json'
 import { getImage } from "astro:assets";
-import { db, Categories, eq, Team, Users, Topics, Comments, inArray, NOW } from 'astro:db';
+import { db, Categories, eq, Team, Users, Topics, Comments, inArray, NOW, Cron } from 'astro:db';
 import * as argon2 from 'argon2';
 import AWS from 'aws-sdk';
 import { Buffer } from 'buffer';
@@ -677,17 +677,21 @@ export const crontasks = async () => {
 }
 export const poorMansCron = async () => {
   // Call crontask by API if more than 5 minutes since last call
-  const lastcall = (await db.select().from(Cron).where(eq(Cron.task, 'cronjob')))[0];
+  const previousCron = (await db.select().from(Cron).where(eq(Cron.task, 'cronjob')))[0];
   const fiveMinutes = 5 * 60 * 1000; // 5 minutes in milliseconds
-  if (!lastcall) {
+  const timeSince = (previousTime) => (new Date()-previousTime)
+  if (!previousCron) {
     // If no last call time is recorded, insert a new record
-    await db.insert().into(Cron).values({ task: 'cronjob', time: new Date() });
+    await db.insert(Cron).values({ task: 'cronjob' });
     // await crontasks();
-  } else if (lastcall && (new Date()-lastcall.time > fiveMinutes)) {
+  } else if (previousCron && (timeSince(previousCron.time) > fiveMinutes)) {
     // If more than 5 minutes have passed since the last call
-    await crontasks();
-    // Update the time after tasks are done
-    await db.update(Cron).set({ time: new Date() }).where(eq(Cron.task, 'cronjob'));
+    try {
+      await crontasks();
+    } finally {
+      // Update the time after tasks are done
+      await db.update(Cron).set({ time: new Date() }).where(eq(Cron.task, 'cronjob'));
+    }
   }
 }
 
