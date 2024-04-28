@@ -3,6 +3,7 @@ export const prerender = false;
 
 import { db, eq, Team } from 'astro:db';
 import Layout from '@layouts/AdminLayout.astro';
+import { moderateComments_openai } from '@utils/utils.js';
 
 const user = Astro.locals?.user;
 console.log('user', user);
