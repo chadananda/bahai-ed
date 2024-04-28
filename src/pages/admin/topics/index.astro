@@ -2,63 +2,72 @@
 export const prerender = false;
 
 import Layout from '@layouts/AdminLayout.astro';
-import site from '@data/site.json';
-import { getTeamMembers } from '@utils/utils.js';
+import { getTopics, getTopic, updateTopic } from '@utils/utils.js';
 
 const user  = Astro.locals?.user
 // this page is only for admins
 if (!['admin','superadmin'].includes(user?.role)) return Astro.redirect('/admin');
 
-const teamMembers  = await getTeamMembers();
+// Check for the 'importkey' parameter in the query
+const importkey = (new URL(Astro.request.url)).searchParams.get('importkey');
+if (importkey) {
+  console.log('importing topic: ', importkey);
+  let topic = await getTopic(importkey);
+  delete topic.type;
+  await updateTopic(topic);
+  // Redirect to clean the URL
+  const thisurl = (new URL(Astro.request.url)).toString().split('?')[0]; // remove params
+  return Astro.redirect(thisurl);
+}
 
-// console.log(JSON.stringify(teamMembers, null, 2))
 
+const topics  = await getTopics();
 ---
 <Layout user={user} >
   <div class="mx-20 w-full prose">
 
-    <h1> Site Planning: Topics / FAQs </h1>
+    <h1> Site Planning: Topics & FAQs </h1>
     <p class="ml-2 -mt-8"> <a href="/">home</a> / <a href="/admin">admin</a> / topics </p>
-
 
     <p> Similar content is conntected by topical tags. Topics are like any other kind of tags, which means they can span across categories. Each topic gets a generated FAQ page which lists all matching content.  </p>
 
     <p> Your website topics: </p>
 
-
-    <!-- Loop through teamMembers using a more compact card layout -->
-    {teamMembers.map(member => (
+    <!-- Loop through topics using a compact card layout -->
+    {topics.map(topic => (
       <div class="relative bg-white border not-prose border-gray-100 my-2 p-4 rounded-lg shadow-md hover:shadow-lg flex flex-col md:flex-row items-start md:items-center space-x-0 md:space-x-6">
 
         <div class="flex-shrink-0 flex flex-col justify-between text-center h-auto md:h-full">
-          <img src={member.image_src} alt={member.image_alt} class="rounded-full h-16 w-16 md:h-20 md:w-20 object-cover mx-auto" />
-          <span class="inline-block bg-gray-100 border text-xs text-gray-500 px-2 py-1 rounded-full mx-auto mt-2 md:mt-auto">{member.role}</span>
+          <img src={topic.image || `https://picsum.photos/seed/${Math.random()}/80`} alt="" class="rounded-full h-16 w-16 md:h-20 md:w-20 object-cover mx-auto mb-2" />
+
+          <span class={`inline-block text-xs px-2 py-1 rounded-full mx-auto mt-2 md:mt-auto
+              ${topic.type ? 'border bg-red-100 border-red-200 text-blue-800 underline' : 'border text-gray-500 bg-gray-100 '}`}>
+            {topic.type ?
+              <a href={`?importkey=${topic.id}`} title="Click to Import">{topic.type}</a>
+              : <span>data</span>}
+          </span>
+
+
         </div>
 
-        <div class="flex-grow"> <!-- Removed padding-top -->
-          <h2 class="text-md font-semibold">{member.name}</h2> <!-- Removed top margin -->
-          <p class="text-xs text-gray-600">{member.title}</p>
-          <p class="text-xs">
-            <a href={`mailto:${member.email}`} target="_blank" class="text-blue-600 hover:text-blue-800">{member.email}</a>
-          </p>
-          <p class="text-xs text-gray-600">{member.description}</p>
+        <div class="flex-grow">
+          <h2 class="text-md font-semibold">{topic.name}</h2>
+          <p class="text-xs text-gray-600 font-bold">{topic.title}</p>
+          <p class="text-xs text-gray-700">{topic.description}</p>
         </div>
 
-        <a href={`/admin/team/${member.id}`} class="absolute top-2 right-2 no-underline text-gray-400 hover:bg-blue-500 hover:text-white p-2 rounded-full">
-          <span class="sr-only">Edit</span> <!-- Screen-reader-only text -->
-          &#9998; <!-- Unicode pencil icon -->
+       {!topic.type && (
+        <a href={`/admin/topics/${topic.id}`} class="absolute top-2 right-2 no-underline text-gray-400 hover:bg-blue-500 hover:text-white p-2 rounded-full">
+          <span class="sr-only">Edit</span>
+          &#9998;
         </a>
+       )}
       </div>
     ))}
 
-<div class="flex justify-center mt-5">
-  <a href="/admin/team/adduser" class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition ease-in duration-200">+ Add Team Member</a>
-</div>
-
-
-
-
-
+  <div class="flex justify-center mt-5">
+    <a href="/admin/topic/add" class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition ease-in duration-200">+ Add Topic</a>
+  </div>
 
 
  </div>

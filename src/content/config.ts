@@ -59,14 +59,14 @@ const topics = defineCollection({
   schema: z.object({
     topic: z.string(),
     topic_slug: z.string(),
-    category: z.string(),
+    category: z.string().nullable().default(''),
     traffic: z.number().default(0),
-    description: z.string(),
-    subtopics: z.array(z.object({
-      name: z.string(),
-      slug: z.string(),
-      description: z.string(),
-    })),
+    description: z.string().nullable().default(''),
+    // subtopics: z.array(z.object({
+    //   name: z.string(),
+    //   slug: z.string(),
+    //   description: z.string(),
+    // })),
   }),
 });
 

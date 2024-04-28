@@ -1,0 +1,87 @@
+---
+export const prerender = false;
+
+import Layout from '@layouts/AdminLayout.astro';
+import { getComments, deleteComment, moderateComments_openai, getComment, updateComment } from '@utils/utils.js';
+
+const user  = Astro.locals?.user;  // this page is only for admins & edtitors
+if (!['admin','superadmin', 'editor'].includes(user?.role)) return Astro.redirect('/admin');
+
+// Check for the 'importkey' parameter in the query
+// Extract searchParams and IDs from URL
+const { searchParams } = new URL(Astro.request.url);
+const deleteCommentId = searchParams.get('deleteComment');
+const toggleStarId = searchParams.get('toggleStar');
+// Proceed only if there is an action to handle
+if (deleteCommentId || toggleStarId) {
+  if (deleteCommentId) {
+    await deleteComment(deleteCommentId);
+    searchParams.delete('deleteComment');
+  } else if (toggleStarId) {
+    let comment = await getComment(toggleStarId);
+    comment.starred = !comment.starred;
+    // console.log({comment});
+    await updateComment(comment);
+    searchParams.delete('toggleStar');
+  }
+  // Redirect to clean the URL
+  const thisurl = (new URL(Astro.request.url)).toString().split('?')[0]; // remove params
+  return Astro.redirect(thisurl);
+}
+
+// check to see if we need to processess any unmoderated comments
+await moderateComments_openai();
+
+// sort by date (most recent) then group by article (postid)
+const allComments  = await getComments();
+let comments = allComments.sort((a,b) => new Date(b.date) - new Date(a.date))
+  .reduce((acc, comment) => {
+    if (!acc[comment.postid]) acc[comment.postid] = [];
+    acc[comment.postid].push(comment);
+    return acc;
+  }, {});
+---
+<Layout user={user} >
+  <div class="mx-20 w-full prose">
+
+    <h1> Site Maintenance: Comments </h1>
+    <p class="ml-2 -mt-8"> <a href="/">home</a> / <a href="/admin">admin</a> / comments </p>
+
+    <p> Recent comments with unmoderated marked. Delete or respond to comments from this dashboard.  </p>
+
+    <p> Your recent website Comments: </p>
+
+    {Object.entries(comments).map(([postid, commentsGroup]) => (
+      <div key={postid} class="mb-8">
+        <h3 class="text-lg font-semibold mb-4">Comments for "{postid.replace(/-/g, ' ')}"</h3>
+        {commentsGroup.map(({ id, name, content, date, starred }) => (
+          <div key={id} class="relative bg-white border not-prose border-gray-100 my-2 p-4 rounded-lg shadow-md hover:shadow-lg flex flex-col md:flex-row items-start md:items-center space-x-0 md:space-x-6">
+
+            <div class="flex-grow">
+              <h4 class="text-md font-semibold">{name}</h4>
+              <p class="text-xs text-gray-600">{new Date(date).toLocaleDateString()} - {new Date(date).toLocaleTimeString()}</p>
+              <p class="text-sm text-gray-700">{content}</p>
+            </div>
+
+            <div class="absolute top-2 right-2 space-x-2">
+
+              <a href={`?toggleStar=${id}`} class={`no-underline ${starred ? 'text-yellow-500' : 'text-gray-400'} hover:bg-yellow-500 hover:text-white p-2 rounded-full`}>
+              <span class="sr-only">Star</span>&#9733;
+               </a>
+
+              <a href={`?deleteComment=${id}`} class="no-underline text-gray-400 hover:bg-red-500 hover:text-white p-2 rounded-full opacity-50">
+                <span class="sr-only">Delete</span>&#10060;
+              </a>
+
+            </div>
+
+          </div>
+        ))}
+      </div>
+    ))}
+
+
+ </div>
+</Layout>
+
+

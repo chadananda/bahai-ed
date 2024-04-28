@@ -78,7 +78,7 @@ export default defineConfig({
   },
   prefetch: {
     defaultStrategy: 'viewport',
-    prefetchAll: !isDev
+    prefetchAll: !isDev,
   },
   vite: {
     optimizeDeps: {

@@ -7,9 +7,9 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI });
 
 
 const MODERATION_PROMPT = {
- schema: object({ comments: array(object({ postid: string(), parentid: string().nullable(), approved: boolean(), name: string(), email: string().optional(),  content: string(), starred: boolean() })) }),
+ schema: object({ comments: array(object({ id: string(), parentid: string().nullable(), name: string(),  content: string(),  moderated: boolean(), starred: boolean() })) }),
 
- schema_str: `object({ comments: array(object({ postid: string(), parentid: string().nullable(), approved: boolean(), name: string(), email: string().optional(), content: string(), starred: boolean() })) })`,
+ schema_str: `object({ comments: array(object({ id: string(), parentid: string().nullable(), moderated: boolean(), name: string(), content: string(), starred: boolean() })) })`,
 
  system_instructions: "You are an expert moderator with years of experience moderating forum posts",
  model: 'gpt-3.5-turbo-1106', // might be too small, but must support JSON output
@@ -21,11 +21,11 @@ const MODERATION_PROMPT = {
 
    Your task is to review a list of comment posts and moderate them. You are an expert moderator with years of experience moderating forum posts. You have a deep understanding of the topic and are able to quickly and accurately moderate comments. You take great joy in keeping the conversation civil and non-abusive.
 
-   Approval: Some comments you will reject by setting the field "approved":false on the comment object. You will do this if the comment seems like spam, self-serving, overly critical, offensive or inappropriate. Otherwise, you will approve the comment by setting the field "approved":true on the comment object. Also, reject duplicate replies, that is if the same person posts the same comment to the same parentid. In that case, you should only approve the first instance of the comment and reject the rest.
+   Approval: You will reject comments by leaving the field "moderated":false on the comment object. You will do this if the comment seems like spam, self-serving, overly critical, offensive or inappropriate. Otherwise, you will approve the comment by setting the field "moderated":true on the comment object. Also, reject duplicate replies, that is if the same person posts the same comment to the same parentid. In that case, you might only approve the first instance of the comment and reject the rest.
 
    Starred: Occasionally, an approved comments is especially funny, insightful, or otherwise interesting, you will highlight by adding the field "starred":true to the comment object. Don't do this very often.
 
-   Format: Following is the list of comment objects you need to review and moderate for this article. You will return exactly the same array of objects without modification -- other than setting the "approved" and "starred" fields as described above.
+   Format: Following is the list of comment objects you need to review and moderate for this article. You will return exactly the same array of objects without modification -- other than setting the "moderated" and "starred" fields as described above. Do not return any text other than the JSON array of comment objects.
 
 ## Comments Array:
 
@@ -37,42 +37,34 @@ const MODERATION_PROMPT = {
 };
 
 export const moderateComments = async (comments, description) => {
-
-  console.log('comments to be moderated', comments);
+  // console.log('moderateComments:', comments.length, description);
+  if (!description) { throw new Error('missing description'); return false; }
   // the array into a lookup object
-  const lookup = comments.reduce((acc, obj) => ({ ...acc, [obj.postid]: obj }), {});
-
+  const lookup = comments.reduce((acc, obj) => ({ ...acc, [obj.id]: obj }), {});
   // simplify the objects to avoid confusing AI
-  let simpleComments = comments.map(({postid, parentid, email, name, content}) => ({postid, parentid, email, name, content, approved:false, starred: false}));
-
-  console.log('simpleComments', simpleComments);
-
+  let simpleComments = comments.map(({id, parentid, name, content, starred, moderated }) => ({id, parentid, name, content, moderated, starred}));
+  // console.log('simpleComments', simpleComments);
   // have the ai process the simplified list
   let moderatedList = await genericJSONPrompt(MODERATION_PROMPT, {comments:  JSON.stringify({comments: simpleComments}, null, 2), description});
-
-  console.log('moderatedList', moderatedList.comments);
-
+  // console.log('moderatedList', moderatedList.comments);
   if (comments.length != moderatedList.comments.length) console.error('moderated list has different number of comments than original');
-
+  // console.log('AI moderation returned:', moderatedList.comments);
   // don't trust AI -- use only the critical three fields
-  let finalList = moderatedList.comments.map(({postid, approved, starred}) => {
-    return {
-      postid, approved: !!approved, starred: !!starred,
-      email: lookup[postid].email,
-      name: lookup[postid].name,
-      content: lookup[postid].content,
-      parentid: lookup[postid].parentid,
-      date: lookup[postid].date
-    }
-  });
-
-  console.log('FinalList', finalList);
-
-  let filteredList = finalList.filter(c => c.approved);
-
-  console.log('filteredList', filteredList);
-
-  return filteredList;
+  const result = moderatedList.comments.map(({id, moderated, starred}) => {
+    if (lookup[id]) return {
+      id,
+      moderated: !!moderated,
+      starred: !!starred,
+      name: lookup[id].name,
+      content: lookup[id].content,
+      parentid: lookup[id].parentid,
+      postid: lookup[id].postid,
+      description: '' // we no longer need this data cluttering the DB
+    };
+    else { console.error('missing id:', id); return null; }
+  })
+  // console.log('moderateComments result:', result);
+  return result;
 }
 
 

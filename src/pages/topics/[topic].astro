@@ -6,11 +6,12 @@ import PostThumb from "@components/article/postThumb.astro";
 import Container from "@components/container.astro";
 import Sectionhead from "@components/sectionhead.astro";
 import TopicFAQ from '@components/article/topicFAQ.astro';
-import { getCategories, getDataCollection, getPublishedArticles, getTeam } from "@utils/utils.js";
+import { getCategories, getTopics, getPublishedArticles, getTeam } from "@utils/utils.js";
 
 export async function getStaticPaths() {
-  const allTopics = await getDataCollection("topics");
-  const allFAQs = await getDataCollection("faqs");
+  // const allTopics = await getDataCollection("topics");
+  // const allFAQs = await getDataCollection("faqs");
+  const allTopics = await getTopics();
   const allArticles = await getPublishedArticles();
   const authors = await getTeam()
   const categories = await getCategories();
@@ -20,7 +21,7 @@ export async function getStaticPaths() {
       params: {topic: topic.id},
       props: {
         topic,
-        faqs: allFAQs.find(faq => faq.id === topic.id),
+        // faqs: allFAQs.find(faq => faq.id === topic.id),
         posts: allArticles.filter(articleTopicsHasMatch),
         authors, categories
       }
@@ -30,12 +31,13 @@ export async function getStaticPaths() {
 
 
 const slug = Astro.params.topic;
-const { topic, faqs, posts, authors, categories } = Astro.props;
+const { topic, posts, authors, categories } = Astro.props;
 ---
 
-<Layout title={slug} description={topic?.data?.description}>
-   { !!faqs && (<TopicFAQ faqs={faqs} max=8 />)}
-   { !faqs && (
+<Layout title={slug} description={topic?.description}>
+  <div class="max-w-screen-xl mx-auto">
+   { !!topic?.faqs && (<TopicFAQ faqs={topic?.faqs} max=8 />)}
+   { !topic?.faqs && (
      <Sectionhead>
        <Fragment slot="title"> Article Topics </Fragment>
        <Fragment slot="desc"> Posts associated with “{slug}” </Fragment>
@@ -59,6 +61,7 @@ const { topic, faqs, posts, authors, categories } = Astro.props;
       })}
     </main>
   </Container>
+</div>
 </Layout>
 
 

@@ -1,16 +1,17 @@
 ---
 // import { Picture } from 'astro:assets';
-import { getArticleURL, displayImageObj } from '@utils/utils.js';
+import { currentURL, displayImageObj } from '@utils/utils.js';
 // console.log('authorCard author:', Astro.props.author);
 const author = Astro.props.author
 const name_slug = author.id
 var { image_src, image_alt, name, type, worksFor_type, worksFor_name, description, sameAs } = author.data;
 
-const pageURL = getArticleURL(Astro);
+const pageURL = currentURL(Astro);
 const siteURL = new URL(pageURL).origin.replace(/\/$/, '');
 const authorURL = author.data.url || `${siteURL}/authors/${name_slug}`;
 const size = Astro.props.size || 'sm';
 
+// (url, alt='', width=0, height=0, format='webp', quality=80)
 const bioImage = displayImageObj(image_src, image_alt, 1200, 600, 'jpg', 80);
 const imgSm = displayImageObj(image_src, image_alt, 180, 180, 'webp', 90);
 const imgMd = displayImageObj(image_src, image_alt, 120, 120, 'webp', 90);

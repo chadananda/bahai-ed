@@ -14,9 +14,9 @@ import Footer from "@components/footer.astro";
 import Navbar from "@components/navbar/navbar.astro";
 // import { Brandfolder } from "simple-icons-astro";
 import brand from "@data/site.json";
-import { getArticleURL } from '@utils/utils.js';
+import { currentURL } from '@utils/utils.js';
 
-const pageURL = getArticleURL(Astro);
+const pageURL = currentURL(Astro);
 
 
 // injectSpeedInsights();

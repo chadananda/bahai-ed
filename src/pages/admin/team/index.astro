@@ -3,13 +3,13 @@ export const prerender = false;
 
 import Layout from '@layouts/AdminLayout.astro';
 import site from '@data/site.json';
-import { getTeamMembers } from '@utils/utils.js';
+import { getTeamWithRole } from '@utils/utils.js';
 
 const user  = Astro.locals?.user
 // this page is only for admins
 if (!['admin','superadmin'].includes(user?.role)) return Astro.redirect('/admin');
 
-const teamMembers  = await getTeamMembers();
+const teamMembers  = await getTeamWithRole();
 
 // console.log(JSON.stringify(teamMembers, null, 2))
 

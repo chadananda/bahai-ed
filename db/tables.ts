@@ -3,16 +3,25 @@ import { defineTable, column, NOW } from "astro:db";
 
 
 export const Categories = defineTable({
- columns: {
-   id: column.text({ primaryKey: true }), // category name slug
-   category: column.text(),
-   image: column.text({ optional: true }),
-   description: column.text(),
- }
+  columns: {
+    id: column.text({ primaryKey: true }), // category name slug
+    category: column.text(),
+    image: column.text({ optional: true }),
+    description: column.text(),
+  }
 });
 
+export const Topics = defineTable({
+  columns: {
+    id: column.text({ primaryKey: true }), // topic slug
+    name: column.text(),
+    title: column.text({ optional: true }),
+    description: column.text({ optional: true }),
+    image: column.text({ optional: true }),
+    faqs: column.json({ optional: true }), //
+  }
+});
 
-// Define your tables
 export const Team = defineTable({
  // FYI, these are fields for populating the structured data for a person
   columns: {
@@ -59,5 +68,23 @@ export const Sessions = defineTable({
    fresh: column.boolean({ optional: true }),
  },
  indexes: [ { on: ["id"], unique: true } ]
+})
+
+
+export const Comments = defineTable({
+  columns: {
+    id: column.number({ primaryKey: true }),       // comment id
+
+    postid: column.text({ optional: false }),       // article slug
+    parentid: column.number({ optional: true }),    // comment parent id
+    name: column.text({ optional: false }),         // commentator name
+    content: column.text({ optional: false }),      // comment
+    // description: column.text({ optional: true }),   // article description (needed for ai moderation)
+
+    moderated: column.boolean({ default: false }), //  moderated
+    date: column.date({ default: NOW }),           // comment date
+    starred: column.boolean({ default: false }),   //  starred
+  },
+  indexes: [ { on: ["id", "postid", "moderated", "date"], unique: false } ]
 })
 

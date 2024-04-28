@@ -6,7 +6,7 @@ import site from '@data/site.json';
 import { getTeamMemberBySlug, transformS3Url, updateTeamMember, slugify, deleteTeamMember } from "@utils/utils";
 
 const sessionid = Astro.locals.session.id;
-// console.log('sessionid', sessionid, Astro.locals.session);
+console.log('sessionid', sessionid, Astro.locals.session);
 const user  = Astro.locals?.user
 // this page is only for admins
 if (!['admin','superadmin'].includes(user?.role)) return Astro.redirect('/admin');

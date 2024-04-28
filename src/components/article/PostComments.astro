@@ -1,32 +1,17 @@
 ---
 // PostComments.astro - Wrapper for the Svelte component which will render comments
-
 import PostCommentsWithReplies from './PostComments.svelte';
-import { getPostFromSlug, getDataCollectionEntry } from '@utils/utils.js';
+import { getCommentsForPost, baseURL } from '@utils/utils.js';
 
+const post = Astro.props.post;
+const comments = await getCommentsForPost(post.data.url); // fetch from db
+const commentsApi = `${baseURL(Astro)}/api/post_comment`;
 
-// Props
-const slug = Astro.props.slug;
-
-// Fetch article by slug
-const articleEntry = await getPostFromSlug(slug);
-const context = articleEntry?.data?.description; // Accessing the description field
-
-// Fetch comments
-const commentsEntry = await getDataCollectionEntry('comments', slug);
-const comments = commentsEntry?.data?.comments || [];
-
-// API endpoint
-// just domain and port, no trailing slash
-const fullUrl = new URL(Astro.url.href);
-const apiEndpoint = `${fullUrl.protocol}//${fullUrl.host}/api/post_comment`;
-// console.log('apiEndpoint', apiEndpoint)
-
-// Generate a unique ID for the comments wrapper for stability
+// Generate a unique ID for the comments wrapper
 const commentsID = `comments-${Math.random().toString(36).substr(2, 9)}`;
+const context = { post, comments, commentsApi }
+// console.log(context);
 ---
-
 <div id={commentsID} dir="ltr">
-  <PostCommentsWithReplies client:visible
-   slug={slug} context={context} posts={comments} apiEndpoint={apiEndpoint} />
+  <PostCommentsWithReplies {...context} client:visible />
 </div>

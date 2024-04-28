@@ -1,9 +1,9 @@
 ---
-import { getArticleImageURL, getArticleURL, generateArticleImage, getPostFromSlug, getArticleAssetURL } from '@utils/utils.js';
+import { getArticleImageURL, currentURL, generateArticleImage, getPostFromSlug, getArticleAssetURL } from '@utils/utils.js';
 const {meta, type, link, title, image, description} = Astro.props
 
 
-const pageURL = getArticleURL(Astro);
+const pageURL = currentURL(Astro);
 const siteURL = new URL(pageURL).origin;
 const post = Astro.props.post || await getPostFromSlug(meta.url);
 

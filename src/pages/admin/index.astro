@@ -9,6 +9,9 @@ console.log('user', user);
 const member = !!(await db.select().from(Team).where(eq(Team.email, user.email)))[0];
 console.log('member', member);
 
+// let's do this in the background so that we don't get delays when going to comments
+moderateComments_openai();
+
 // user must be a team member in order to use admin area
 if (!member) return Astro.redirect('/login');
 ---

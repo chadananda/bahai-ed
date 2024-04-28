@@ -1,7 +1,7 @@
 ---
 // Import Simple Icons
 import { Twitter, Facebook, Linkedin } from 'simple-icons-astro';
-import { getArticleAudioPath, getArticleURL, getTeamMember, getPostFromSlug, baseURL, generateArticleImage } from '@utils/utils.js';
+import { getArticleAudioPath, currentURL, getTeamMember, getPostFromSlug, baseURL, generateArticleImage } from '@utils/utils.js';
 import site from '@data/site.json';
 
 const meta = Astro.props.meta;
@@ -12,7 +12,7 @@ const episodeNumber = meta.episode_number || 1;
 const post = Astro.props.post || await getPostFromSlug(slug);
 let author = Astro.props.author || (await getTeamMember(meta.author));
 let authorName = !!author ? author?.data?.name : site.site;
-const pageURL = getArticleURL(Astro);
+const pageURL = currentURL(Astro);
 const baseUrl = new URL(pageURL).origin.replace(/\/$/, '');
 
 let audioURL = `${audio}`;

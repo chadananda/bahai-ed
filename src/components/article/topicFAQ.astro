@@ -1,23 +1,24 @@
 ---
 
  const max = Astro.props.max || 10;
- const faqs   = Astro.props.faqs.data;
- faqs.faqs = faqs.faqs.slice(0, max); //  console.log('faqs length', faqs.faqs.length, max);
+ const faqs = Astro.props.faqs?.slice(0,max) || [];
+
+//  console.log(Astro.props.faqs);
 
  import brand from "../../data/site.json";
  import { Image } from 'astro:assets';
  import faqimage from '../../assets/faq.jpg';
  import q from '../../assets/q.png';
- import { getArticleURL} from '../../utils/utils.js';
+ import { currentURL} from '../../utils/utils.js';
 
-const pageURL = getArticleURL(Astro);
+const pageURL = currentURL(Astro);
 const siteURL = new URL(pageURL).origin.replace(/\/$/, '');
 const uniqueID = 'id-' + Math.random().toString(36).slice(2, 11);
 const datePublished = new Date()
 const dateModified = new Date()
 
-// change faqs.faqs.resources array to absolute links if they are relative
-faqs.faqs.forEach(faq => {
+// change faqs.resources array to absolute links if they are relative
+faqs.forEach(faq => {
   if (faq.resources && faq.resources.length > 0) {
     faq.resources = faq.resources.map(resource => {
       if (resource.startsWith('/')) {
@@ -35,7 +36,7 @@ faqs.faqs.forEach(faq => {
   '@id': `${pageURL}#${uniqueID}`,
   name: faqs.title,
   description: faqs.description,
-  mainEntity: faqs.faqs.map(faq => {
+  mainEntity: faqs.map(faq => {
     let answerText = faq.answer;
     // Append resources to the answer text, if available
     if (faq.resources && faq.resources.length > 0) {
@@ -79,7 +80,7 @@ faqs.faqs.forEach(faq => {
  />
  <h1 class="text-2xl font-bold text-center">{faqs.title}</h1>
  <p class="text-gray-600 text-center">{faqs.description}</p>
- {faqs.faqs.map((faq, index) => (
+ {faqs.map((faq, index) => (
    <div class="p-4 bg-gray-100 rounded-lg mt-4">
      <h2 class="faq-question text-lg font-semibold text-blue-600 cursor-pointer relative" data-target={`faq-answer-${index}`}>
       <Image class="qimage absolute -top-2 -left-6 opacity-50" src={q} alt=""

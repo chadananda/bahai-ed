@@ -8,13 +8,15 @@ import PodcastPlayer from "@components/article/PodcastPlayer.astro";
 import PostComments from "@components/article/PostComments.astro";
 import RelatedArticles from "@components/article/relatedArticles.astro";
 import AuthorBio from "@components/article/authorCard.astro";
-import { getPublishedArticles, getDataCollection, getCategories, getTeam, mainLanguages, generateArticleImage, baseURL  } from "@utils/utils.js";
+import { getPublishedArticles, getTopics, getCategories, getTeam, mainLanguages, generateArticleImage, baseURL  } from "@utils/utils.js";
 import TOC from "@components/article/TOC.astro";
 
 export async function getStaticPaths() {
   const articles = (await getPublishedArticles()).filter((post) => post.data?.url);
   const allAuthors = await getTeam();
-  const allTopics = await getDataCollection("topics");
+  // const allTopics = await getDataCollection("topics");
+  const allTopics = await getTopics();
+
   const allCategories = await getCategories();
   const relatedArticles = (post) => articles.filter((ar) => {
     let langmatch = (post.data.language) === (ar.data.language);
@@ -76,7 +78,7 @@ const cover_image = await generateArticleImage(post.data.image?.src, post, base_
         <div class="w-full md:w-auto flex flex-wrap justify-center gap-1 p-0 m-0 !line-clamp-2">
           {topics && topics.map((topic) => (
             <span class="text-sm text-slate-500">
-              #<a href={`/topics/${topic.id}`} aria-label={topic.data?.topic}>{topic.data?.topic}</a>
+              #<a href={`/topics/${topic.id}`} aria-label={topic.name}>{topic.name}</a>
             </span>
           ))}
         </div>
@@ -124,7 +126,7 @@ const cover_image = await generateArticleImage(post.data.image?.src, post, base_
 
      <div class="hidden md:block max-w-3xl mx-auto relative">
       <!-- commented out until we move comments to the db  -->
-       <!-- <PostComments slug={post.data?.url} /> -->
+       <PostComments post={post} />
      </div>
 
   </Container>

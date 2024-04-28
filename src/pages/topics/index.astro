@@ -4,10 +4,11 @@ export const prerender = true;
 import Layout from "@layouts/Layout.astro";
 import Container from "@components/container.astro";
 import Sectionhead from "@components/sectionhead.astro";
-import { getDataCollection, getPublishedArticles } from "@utils/utils.js";
+import { getPublishedArticles, getTopics } from "@utils/utils.js";
 
 const allPosts = await getPublishedArticles();
-const allTopics = await getDataCollection("topics");
+// const allTopics = await getDataCollection("topics");
+const allTopics = await getTopics();
 
 const usedTopics = new Map();
 allPosts.forEach(({data}) => {
@@ -15,9 +16,9 @@ allPosts.forEach(({data}) => {
 });
 
 const topicLinks = allTopics.map((topic) => ({
-  name: topic.data.topic,
+  name: topic.name,
   href: `/topics/${topic.id}`,
-  text: topic.data.topic,
+  text: topic.name,
   id: topic.id,
   used: !!usedTopics.get(topic.id),
   classes: usedTopics.get(topic.id) ? 'underline text-blue-700' : 'text-gray-300'

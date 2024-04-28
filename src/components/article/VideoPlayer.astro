@@ -1,6 +1,6 @@
 ---
 const {author, datePublished} = Astro.props.meta;
-import { getArticleURL } from '@utils/utils.js';
+import { currentURL } from '@utils/utils.js';
 // const {videoURL, title, description, duration, transcript } = Astro.props.video;
 
 // {% video-player  meta=$meta
@@ -24,7 +24,7 @@ const videoid = ((videoURL.match(/(?:youtu.be\/|youtube(-nocookie)?.com\/(?:watc
 const imageURL = `https://img.youtube.com/vi/${videoid}/mqdefault.jpg`
 const embedURL = `https://www.youtube.com/embed/${videoid}`
 
-const pageURL = getArticleURL(Astro);
+const pageURL = currentURL(Astro);
 const transcriptURL = pageURL+transcript;
 
 // this player will be used more than once per page, so we need to generate unique IDs for each instance

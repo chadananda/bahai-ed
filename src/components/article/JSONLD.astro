@@ -2,7 +2,7 @@
 // JSONLD.astro - a component to generate structured data for an article
 import brand from '@data/site.json';
 import { SEO, TwitterCardType } from "astro-seo";
-import { getArticleAudioPath, getArticleTranslations, getArticleURL, generateArticleImage } from '@utils/utils.js';
+import { getArticleAudioPath, getArticleTranslations, currentURL, generateArticleImage } from '@utils/utils.js';
 
 // type Props = CollectionEntry<'article'>['data'];
 const { post, title, description, desc_125, keywords, language, video_main, post_type, audio, audio_duration, url:slug, image } = Astro.props;
@@ -29,7 +29,7 @@ function toIsoStringWithTimezone(d) {
 datePublished = toIsoStringWithTimezone(datePublished);
 dateModified = toIsoStringWithTimezone(dateModified);
 
-const pageURL = getArticleURL(Astro);
+const pageURL = currentURL(Astro);
 const siteURL = new URL(pageURL).origin.replace(/\/$/, '');
 
 const authorSlug = author?.data?.name ? author.id : brand.siteName;
