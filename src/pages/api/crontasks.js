@@ -9,5 +9,5 @@ import { poorMansCron } from '@utils/utils.js';
 // 3. poorMansCron() calls crontasks() -- throttled down to once in five minutes
 // 4. crontasks() does expensive server-side processing
 
-export const POST = async ({ request }) => { await poorMansCron() }
+export const GET = async ({ request }) => { await poorMansCron() }
 
