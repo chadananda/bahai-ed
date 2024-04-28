@@ -3,7 +3,7 @@
  const asideLinkText = Astro.props.linkText
 ---
 
-<aside class="articleAside ">
+<aside class="articleAside text-gray-600 italic float-right pl-4 pr-0 mr-0 ml-4 border-0 border-l-4 border-blue-300 text-left w-1/3 rtl:float-left rtl:border-l-0 rtl:border-r-4 rtl:pl-0 rtl:pr-4 rtl:ml-0 rtl:mr-1.5 rtl:text-right">
    <center>
    <slot />
    {asideLink && (<a class="asideLink" target="_blank" href={asideLink}>{asideLinkText}</a>)}
