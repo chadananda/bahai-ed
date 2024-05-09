@@ -48,7 +48,6 @@ const categories = await getCategories();
             <div className={`flex-none articlePost ${notEnglish ? 'hidden' : ''}`}
               style={{ width: '300px' }}
               data-title={post.data.title}
-              data-tags={post.data.tags.join(',')}
               data-language={post.data.language}>
               <PostThumb post={post} author={author} category={category} />
             </div>

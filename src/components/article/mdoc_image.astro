@@ -2,7 +2,7 @@
 import { baseURL, getArticleSlugFromURL, generateArticleImage, getPostFromSlug } from '@utils/utils.js';
 
 const { src, alt } = Astro.props;
-const slug = await getArticleSlugFromURL(Astro.url.href)
+const slug = getArticleSlugFromURL(Astro.url.href)
 const post = Astro.props.post || await getPostFromSlug(slug);
 const base_url = baseURL(Astro);
 

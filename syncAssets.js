@@ -20,11 +20,11 @@ function syncAssets() {
         const destStat = fs.statSync(destPath);
         if (srcStat.mtime > destStat.mtime) {
           fs.copySync(file, destPath);
-          console.log(`Copied: ${file} to ${destPath}`);
+         // console.log(`Copied: ${file} to ${destPath}`);
         }
       } catch (err) {
         fs.copySync(file, destPath);
-        console.log(`Copied: ${file} to ${destPath}`);
+        //console.log(`Copied: ${file} to ${destPath}`);
       }
     });
   } catch (err) {

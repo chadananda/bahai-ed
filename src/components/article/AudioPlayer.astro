@@ -5,12 +5,12 @@ const src = Astro.props.src
 
 const pageURL = currentURL(Astro);
 const siteURL = new URL(pageURL).origin.replace(/\/$/, '');
-const slug = await getArticleSlugFromURL(pageURL);
+const slug = getArticleSlugFromURL(pageURL);
 
  // convert file path to URL
 if (!slug) console.error('AudioPlayer.astro error: Slug empty');
 
-console.log('AudioPlayer.astro slug', slug);
+//console.log('AudioPlayer.astro slug', slug);
 const audioPath = await getArticleAudioPath(slug, src);
 const audioURL = siteURL + audioPath;
 

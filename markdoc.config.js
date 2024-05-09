@@ -9,13 +9,7 @@ export default defineMarkdocConfig({
     paragraph: {
       ...nodes.paragraph,
       render: component('./src/components/article/textPreprocessor.astro'),
-      // attributes: { content: { type: String } },
     },
-    // blockquote: {
-    //   ...nodes.blockquote,
-    //   render: component('./src/components/article/textPreprocessor.astro'),
-    //   attributes: { content: { type: String } },
-    // }
   },
 
   tags: {

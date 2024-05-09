@@ -1,13 +1,13 @@
 ---
 const {author, datePublished} = Astro.props.meta;
-import { currentURL } from '@utils/utils.js';
+import { currentURL, hashstr } from '@utils/utils.js';
 // const {videoURL, title, description, duration, transcript } = Astro.props.video;
 
-// {% video-player  meta=$meta
+// <VideoPlayer  meta=$meta
 //   videoURL="https://www.youtube.com/embed/Og_QKUf3QQk?si=aksl3-OUze9gtohd"
 //   title="Dawn-Breakers: The story of Nabíl"
 //   description="Storytelling Sundays #19: Dawn-Breakers: The story of Nabíl"
-//   duration="" image="" transcript="" /%}
+//   duration="" image="" transcript="" />
 
 const {videoURL, title, description, duration, transcript } = Astro.props;
 
@@ -28,7 +28,7 @@ const pageURL = currentURL(Astro);
 const transcriptURL = pageURL+transcript;
 
 // this player will be used more than once per page, so we need to generate unique IDs for each instance
-const uniqueID = Math.random().toString(36).slice(2, 11);
+const uniqueID = hashstr(videoid + pageURL) ;//Math.random().toString(36).slice(2, 11);
 const playerID = 'id-' + uniqueID;
 const encodedPageURL = encodeURIComponent(pageURL);
 const encodedDesc = encodeURIComponent(title +' - '+ description);
@@ -71,7 +71,7 @@ const schema = {
 
 // example markdoc usage:
 //
-//     {% video-player  meta=$meta  video=$meta.main_video /%}
+//     <VideoPlayer  meta=$meta  video=$meta.main_video />
 ---
 
 <div id={playerID} class="video-player w-full my-20 border-4  border-gray-400 p-3 relative overflow-hidden shadow-lg rounded-xl noprint" style="padding-top: 56%">

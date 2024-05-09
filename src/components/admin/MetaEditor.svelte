@@ -1,0 +1,512 @@
+<script>
+import slugger from 'slugify';
+import { createEventDispatcher } from 'svelte';
+const dispatch = createEventDispatcher();
+
+// should be lowercase, no spaces, not accents or special characters
+const slugify = (text) => slugger(text, { lower: true, strict: true, });
+
+export let post, sessionid, authors, site, categories, topics, classes, visible;
+
+// console.log('MetaEditor: ', {audio: post?.data?.audio, audio_image: post?.data?.audio_image });
+
+export const POST_TYPES = [
+  "Article", "WebPage", "Event", "Organization", "Person", "LocalBusiness",
+  "Product", "Recipe", "Review", "BreadcrumbList", "Course", "JobPosting",
+  "Movie", "MusicAlbum", "QAPage", "SearchResultsPage", "SoftwareApplication",
+  "VideoObject", "BookReview", "VideoReview",
+];
+
+// let formData = {
+//  image: post.data.image?.src || '',
+//  title: post.data.title || '',
+//  url: post.data.url || '',
+//  description: post.data.description || '',
+//  post_type: post.data.post_type || 'Article',
+//  characterDescription: post.data.characterDescription || '',
+//  abstract: post.data.abstract || '',
+//  desc_125: post.data.desc_125 || '',
+//  audio: null,
+//  narrator: post.data.narrator || 'auto',
+//  author: post.data.author || '',
+//  editor: post.data.editor || '',
+//  category: post.data.category || '',
+//  topics: post.data.topics || [],
+//  keywords: post.data.keywords || [],
+//  draft: post.data.draft || false,
+//  datePublished: post.data.datePublished || '',
+// };
+
+let formData = {};
+
+
+
+$: if (post) {
+  // Update formData whenever post changes
+  formData = {
+    image: post.data.image?.src || '',
+    title: post.data.title || '',
+    url: post.data.url || '',
+    description: post.data.description || '',
+    post_type: post.data.post_type || 'Article',
+    characterDescription: post.data.characterDescription || '',
+    abstract: post.data.abstract || '',
+    desc_125: post.data.desc_125 || '',
+    audio: post.data.audio || null,
+    audio_image: post.data.audio_image || '',
+    narrator: post.data.narrator || 'auto',
+    author: post.data.author || '',
+    editor: post.data.editor || '',
+    category: post.data.category || '',
+    topics: post.data.topics || [],
+    keywords: post.data.keywords || [],
+    draft: post.data.draft || false,
+    datePublished: post.data.datePublished || '',
+    visible
+  };
+}
+
+// function handleInputChange(field, value) {
+//   formData[field] = value;
+// }
+
+$: simplified = !(language==='en')
+let hiddenFields = [ "image", "post_type", "author", "editor", "category", "topics", "keywords", "draft", "audio_image", "datePublished"];
+$: showField = (field) => !simplified || !hiddenFields.includes(field);
+
+$: imagePreviewUrl = formData.image || '';
+let inputKeyword = '',
+ inputTopic = '';
+let suggestedKeywords = [],
+ suggestedTopics = [];
+
+$: language = post.data.language || 'en';
+$: slug = (post.data.url && !post.data.draft) ? post.data.url : slugify(formData.title);
+$: id = post.id ? post.id : genPostID(formData.title)
+$: suggestedKeywords = inputKeyword.trim() ? topics.filter(tag => tag.includes(inputKeyword) && !formData.keywords.includes(tag)) : [];
+$: suggestedTopics = inputTopic.trim() ? topics.filter(tag => tag.includes(inputTopic) && !formData.topics.includes(tag)) : [];
+$: isFormValid = formData.title.trim() && formData.description.trim() && formData.url.trim();
+
+const handleFileUpload = async (event, key) => {
+  const file = event.target.files[0];
+  if (!file) {
+    console.error('No file selected');
+    return;
+  }
+  if (!formData.title) return alert('An article title is required to upload any file.');
+  if (file) {
+   const reader = new FileReader();
+   reader.onload = async e => {
+    try {
+     // console.log('trying to upload file:', file.name);
+     const s3URL = await upload_s3(e.target.result, generateS3Key(file.name));
+     formData[key] = s3URL;
+     if (key === 'image') imagePreviewUrl = s3URL;
+    } catch (error) {
+     console.error('Failed to upload media:', error);
+    }
+   };
+   reader.readAsDataURL(file);
+  }
+};
+
+function genPostID(title) {
+  const stopWords = 'a the and or of in on at to for with by'.split(' '); // add common words to exclude from slug
+  if (language!='en') return console.error('updatePost_DB: completely new post must be in English');
+  let namePart = slugify(title).split('-').filter(w => !stopWords.includes(w)).slice(0, 4).join('-');
+  let datePart = (new Date()).toLocaleDateString('en-CA'); // YYYY-MM-DD
+  return `${datePart}-${namePart}/${language}.md`;
+}
+
+const upload_s3 = async (dataURL, s3key) => {
+   const base64Data = dataURL.split(',')[1]; // Extract the Base64 encoded data
+   const mimeType = dataURL.substring(5, dataURL.indexOf(';base64')); // Extract MIME type
+   const res = await fetch('/api/upload_s3', {
+    method: 'POST',
+    headers: {
+     'Content-Type': 'application/json',
+     'Authorization': `Bearer ${sessionid}`
+    },
+    body: JSON.stringify({
+     filedata: base64Data,
+     mimeType,
+     s3key,
+     sessionid
+    })
+   });
+   const data = await res.json();
+   if (!res.ok) throw new Error(data.message || 'Failed to upload to S3');
+   //console.log('Upload successful:', data.s3url);
+   return data.s3url;
+};
+
+const saveForm = async () => {
+   if (isFormValid) dispatch('save', { formData,  sessionid });
+     else alert('Please fill all required fields before submitting.');
+   // completed post is posted to /api/article
+   const { title, post_type, description, desc_125, abstract, language, audio, audio_image,
+           draft, author, editor, category, topics, keywords} = formData;
+   const updatedPost = {
+    id, slug, collection: "posts",
+    data: {
+     title,post_type,description,desc_125,abstract,language,audio,audio_image,draft,author,editor,category,topics,keywords,
+     url: slug,
+     language: post.data.language || 'en',
+     image: {
+      src: formData.image,
+      alt: formData.title
+     },
+     datePublished: new Date(post.data.datePublished),
+     dateModified: new Date(),
+     narrator: post.data.narrator || '',
+     audio_duration: post.data.audio_duration | '', //formData.audio ? getS3AudioDuration(formData.audio) : '',
+    },
+    body: post.body
+   };
+   //console.log('saving post:', updatedPost);
+   if (await updatePostAPI(updatedPost, sessionid)) {
+    alert('Post saved successfully');
+   } else {
+    alert('Failed to save post');
+   }
+};
+
+const updatePostAPI = async (post, sessionid) => {
+  try {
+  const response = await fetch(`/api/article`, { // Adjusted to match your API endpoint
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ post, sessionid }), // Include slug, meta, and content
+  });
+  if (response.ok) {
+    let data = await response.json();
+    //console.log("Article saved successfully: ", data);
+    return true
+  } else {
+    const errorBody = await response.json();
+   // console.error("Failed to save article. Status code: ", response.status, errorBody);
+    return false
+  }
+  } catch (error) {
+  console.error("Error saving article:", error);
+  return false
+  }
+}
+
+const handleInputChange = (type, value) => type === 'keyword' ? inputKeyword = value : inputTopic = value;
+const modifyList = (list, item, add = true, index = -1) => add ? [...list, slugify(item)] : list.filter((_, i) => i !== index);
+const generateS3Key = (filename) => `uploads/${post.id.split('/')[0] || slug}/${slugify(filename)}`;
+const wordCount = text => `Words: ${text.trim().split(/\s+/).filter(Boolean).length} | Characters: ${text.length}`;
+const unSlugify = (slug) => slug.split('-').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(' ');
+const filterKeywords = (event) => inputKeyword = event.target.value;
+
+function addKeyword(keyword) {
+  keyword = slugify(keyword);
+  if (keyword && !formData.keywords.includes(keyword)) {
+    formData.keywords = [...formData.keywords, keyword];
+    inputKeyword = ''; // Clear input field after adding the keyword
+    suggestedKeywords = []; // Clear suggestions after adding the keyword
+  }
+}
+function removeKeyword(index) {
+  formData.keywords = formData.keywords.filter((_, i) => i !== index);
+}
+function addTopic(topic) {
+   topic = slugify(topic);
+   if (topic && !formData.topics.includes(topic)) {
+     formData.topics = [...formData.topics, topic];
+     inputTopic = ''; // Clear input field after adding the topic
+     suggestedTopics = []; // Clear suggestions after adding the topic
+   }
+}
+function removeTopic(index) {
+  formData.topics = formData.topics.filter((_, i) => i !== index);
+}
+
+</script>
+
+
+<style>
+.delete-btn {
+ background: none;
+ border: none;
+ color: inherit;
+ /* Inherit the text color from the parent */
+ font-size: 0.75rem;
+ /* Smaller font size */
+ cursor: pointer;
+ margin-left: 8px;
+}
+
+.form-container {
+ display: grid;
+ grid-template-columns: 1fr 1fr;
+ gap: 20px;
+ padding: 20px;
+ background-color: #f9f9f9;
+}
+
+.form-container.simplified {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  padding: 20px;
+  background-color: #f9f9f9;
+
+}
+
+.input-group {
+ display: flex;
+ flex-direction: column;
+ margin-bottom: 10px;
+}
+
+.input-row {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+}
+
+label {
+ margin-right: 10px;
+}
+
+input,
+textarea,
+select {
+ flex-grow: 1;
+ padding: 8px;
+ border: 1px solid #ccc;
+ border-radius: 4px;
+}
+
+button {
+ width: 100%;
+ padding: 10px;
+ background-color: #007BFF;
+ color: white;
+ border: none;
+ border-radius: 5px;
+ cursor: pointer;
+}
+
+button:hover {
+ background-color: #0056b3;
+}
+</style>
+
+<div class={` ${visible ? 'block' : 'hidden'} `} >
+
+<p class="error-message">
+  {#if !isFormValid}
+  Some required fields are missing.
+  {/if}
+</p>
+
+<div class={`form-container   ${language==='en' ? '' : 'simplified'}`}>
+
+{#if showField('image')}
+<div class="input-group w-full">
+    <label for="Main Image">Main Image</label>
+    <img src={imagePreviewUrl} alt="Main image" style="width: 100%; height: auto; max-height: 300px; margin-bottom: 10px;">
+    {#if imagePreviewUrl === ''}
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="100" height="100" style="display: block; margin: auto;">
+        <path fill="none" d="M0 0h24v24H0z"/>
+            <path d="M12 2c-3.75 0-7.5 3.75-7.5 7.5S8.25 17 12 17s7.5-3.75 7.5-7.5S15.75 2 12 2zm0 12.5c-2.75 0-5-2.25-5-5s2.25-5 5-5 5 2.25 5 5-2.25 5-5 5zM4.25 3.5h2.5v2.5h-2.5V3.5zm15 12.5H4.75c-1.25 0-2.25-1-2.25-2.25V8c0-1.25 1-2.25 2.25-2.25h14.5c1.25 0 2.25 1 2.25 2.25v6c0 1.25-1 2.25-2.25 2.25zM5.5 12.5c0 .75.5 1.25 1.25 1.25s1.25-.5 1.25-1.25-.5-1.25-1.25-1.25S5.5 11.75 5.5 12.5zm12.5 0c0 .75.5 1.25 1.25 1.25s1.25-.5 1.25-1.25-.5-1.25-1.25-1.25-1.25.5-1.25 1.25z"/>
+    </svg>
+    {/if}
+    <div style="display: flex; align-items: center;">
+        <input type="text" id="image-url" bind:value={formData.image} placeholder="Paste or upload an image URL" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500" style="margin-right: 10px;">
+        <label for="image-upload" class="cursor-pointer">
+            <span style="font-size: 1.25rem;">📁</span>
+            <input type="file" id="image-upload" on:change="{e => handleFileUpload(e, 'image', true)}" style="display: none;">
+        </label>
+    </div>
+  </div>
+{/if}
+
+
+<div class="input-group mt-4">
+  <label for="abstract" class="block text-sm font-medium text-gray-700">Article Abstract (target 500 chars) </label>
+  <textarea bind:value={formData.abstract} id="abstract" placeholder="Abstract" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500"></textarea>
+  <p class="text-xs text-gray-500 mt-1 ml-2">{ wordCount(formData.abstract) }</p>
+</div>
+
+
+<!--  -->
+
+{#if showField('title')}
+  <div class="input-group">
+      <label for="title">Title</label>
+      <input bind:value={formData.title} id="title" placeholder="Title" class="max-h-10">
+      <p class="text-xs text-gray-500 mt-1 ml-2">{slug}</p>
+  </div>
+{/if}
+
+{#if showField('post_type')}
+  <div class="input-group">
+      <label for="post_type" class="block text-sm font-medium text-gray-700">Post Type</label>
+      <select bind:value={formData.post_type} id="post_type" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md max-h-10">
+          {#each POST_TYPES as type}
+          <option>{type}</option>
+          {/each}
+      </select>
+  </div>
+{/if}
+
+<!--  -->
+
+{#if showField('author')}
+  <div class="input-group">
+      <label for="author" class="block text-sm font-medium text-gray-700">Author</label>
+      <select bind:value={formData.author} id="author" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md max-h-10">
+          <option value="">None</option>
+          {#each authors as author}
+          <option value={author}>{unSlugify(author)}</option>
+          {/each}
+      </select>
+  </div>
+{/if}
+
+{#if showField('editor')}
+  <div class="input-group">
+    <label for="editor" class="block text-sm font-medium text-gray-700">Editor</label>
+    <select bind:value={formData.editor} id="editor" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md max-h-10">
+        <option value="">None</option>
+        {#each authors as author}
+        <option value={author}>{unSlugify(author)}</option>
+        {/each}
+    </select>
+  </div>
+{/if}
+
+<!--  -->
+
+{#if showField('description')}
+  <div class="input-group">
+    <label for="description" class="block text-sm font-medium text-gray-700">Description (target 160 chars)</label>
+    <textarea bind:value={formData.description} id="description" placeholder="Description"
+        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm h-24"></textarea>
+    <p class="text-xs text-gray-500 mt-1 ml-2">{ wordCount(formData.description) }</p>
+  </div>
+{/if}
+
+{#if showField('desc_125')}
+  <div class="input-group">
+    <label for="desc_125" class="block text-sm font-medium text-gray-700">Shorter Description  (target 125 chars)</label>
+    <textarea bind:value={formData.desc_125} id="desc_125" placeholder="Shorter Desc"
+        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm h-24"></textarea>
+    <p class="text-xs text-gray-500 mt-1 ml-2">{ wordCount(formData.desc_125) }</p>
+  </div>
+{/if}
+
+<!--  -->
+
+{#if showField('audio')}
+  <div class="input-group mt-4">
+    <label for="audio" class="block text-sm font-medium text-gray-700">Audio File</label>
+    <div style="display: flex; align-items: center;">
+      <input type="text" id="audio" bind:value={formData.audio} placeholder="Paste or upload an audio URL" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500" style="margin-right: 10px;">
+      <label for="audio-upload" class="cursor-pointer">
+        <span style="font-size: 1.25rem;">📁</span>
+        <input type="file" id="audio-upload" on:change="{e => handleFileUpload(e, 'audio')}" accept="audio/*" style="display: none;" class="max-h-12">
+      </label>
+    </div>
+  </div>
+{/if}
+
+{#if showField('audio_image')}
+  <div class="input-group mt-4">
+    <label for="audio_image" class="block text-sm font-medium text-gray-700">Audio Image</label>
+    <div style="display: flex; align-items: center;">
+      <input type="text" id="audio_image" bind:value={formData.audio_image} placeholder="Paste or upload an audio image URL" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500" style="margin-right: 10px;">
+      <label for="audio-image-upload" class="cursor-pointer">
+        <span style="font-size: 1.25rem;">📁</span>
+        <input type="file" id="audio-image-upload" on:change="{e => handleFileUpload(e, 'audio_image')}" style="display: none;">
+      </label>
+    </div>
+  </div>
+{/if}
+
+<!--  -->
+
+{#if showField('category')}
+  <div class="input-group">
+      <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
+      <select bind:value={formData.category} id="category" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md max-h-10">
+          {#each categories as category}
+          <option value={category}>{unSlugify(category)}</option>
+          {/each}
+      </select>
+  </div>
+{/if}
+
+{#if showField('draft')}
+  <div class="input-group">
+      <label for="draft">Still a Draft</label>
+      <input type="checkbox" id="draft" bind:checked={formData.draft} class="max-h-6">
+  </div>
+{/if}
+
+{#if showField('topics')}
+  <div class="input-group relative mt-4">
+      <label for="topics" class="block text-sm font-medium text-gray-700">Topics</label>
+      <input type="text" id="topics" class="w-full px-3 py-2 border border-blue-500 rounded-full focus:outline-none focus:border-blue-700 max-h-10"
+          placeholder="Add topic..." bind:value={inputTopic} on:input={() => {}} on:keydown={event => event.key === 'Enter' && addTopic(inputTopic)} autocomplete="off">
+      {#if suggestedTopics.length > 0}
+      <div class="absolute w-full mt-16 z-10">
+          <ul class="bg-white border border-blue-300 rounded-md shadow-lg max-h-60 overflow-auto">
+              {#each suggestedTopics as suggestion}
+              <li class="px-4 py-2 hover:bg-blue-100 cursor-pointer" on:click={() => addTopic(suggestion)}>
+                  {suggestion}
+              </li>
+              {/each}
+          </ul>
+      </div>
+      {/if}
+      <div class="flex flex-wrap gap-2 mt-2">
+          {#each formData.topics as topic, index}
+          <div class="flex items-center bg-blue-500 text-white text-xs rounded-full px-2 py-1">
+              {topic}
+              <div class="bg-transparent text-white ml-2 text-xs hover:cursor-pointer" on:click={() => removeTopic(index)}>×</div>
+          </div>
+          {/each}
+      </div>
+  </div>
+{/if}
+
+{#if showField('keywords')}
+  <div class="input-group relative mt-4">
+      <label for="keywords" class="block text-sm font-medium text-gray-700">Keywords</label>
+      <input type="text" id="keywords" class="w-full px-3 py-2 border border-blue-500 rounded-full focus:outline-none focus:border-blue-700 max-h-10"
+          placeholder="Add keyword..." bind:value={inputKeyword} on:input={filterKeywords} on:keydown={event => event.key === 'Enter' && addKeyword(inputKeyword)} autocomplete="off">
+      {#if suggestedKeywords.length > 0}
+      <div class="absolute w-full mt-16 z-10">
+          <ul class="bg-white border border-blue-300 rounded-md shadow-lg max-h-60 overflow-auto">
+              {#each suggestedKeywords as suggestion}
+              <li class="px-4 py-2 hover:bg-blue-100 cursor-pointer" on:click={() => addKeyword(suggestion)}>
+                  {suggestion}
+              </li>
+              {/each}
+          </ul>
+      </div>
+      {/if}
+      <div class="flex flex-wrap gap-2 mt-2">
+          {#each formData.keywords as keyword, index}
+          <div class="flex items-center bg-blue-500 text-white text-xs rounded-full px-2 py-1">
+              {keyword}
+              <div class="bg-transparent text-white ml-2 text-xs hover:cursor-pointer" on:click={() => removeKeyword(index)}>×</div>
+          </div>
+          {/each}
+      </div>
+  </div>
+{/if}
+
+
+</div>
+
+  <div class="w-full mb-20 mt-10 text-center">
+      <button on:click={saveForm} disabled={!isFormValid} class="max-w-2xl mx-auto">Save Post</button>
+  </div>
+
+</div>

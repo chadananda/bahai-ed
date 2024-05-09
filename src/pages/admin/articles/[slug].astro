@@ -1,0 +1,111 @@
+---
+// src/pages/admin/articles/[slug].astro
+export const prerender = false;  // Forces SSR so we can process form submission
+
+import Layout from '@layouts/AdminLayout.astro';
+import site from '@data/site.json'; // site info
+import { getPostFromSlug, newPost, getArticleTranslationAll, getTeam, getTopics, getCategories,
+  mainLanguages as langs } from "@utils/utils";
+import PostEditor from '@components/admin/PostEditor.svelte';
+
+// console.log('sessionid', sessionid, Astro.locals.session);
+const user = Astro.locals?.user;
+if (!['admin', 'superadmin', 'editor', 'author'].includes(user?.role)) return Astro.redirect('/admin');
+
+const slug = Astro.params.slug;
+const post = (!slug || slug === 'add') ? newPost() : (await getPostFromSlug(slug)) || newPost();
+const isNew = !post.id;
+
+// console.log('editing post:', slug, {audio: post.data.audio, audio_image: post.data.audio_image });
+
+// props include: post, site, translations (all matching posts, author_list, topics_list, keywords_list
+const translations  = isNew ? [] : await getArticleTranslationAll(slug, true);
+const authorList = (await getTeam()).map(tm => tm.id);
+const topicList =  (await getTopics()).map(tp => tp.id);
+const categoryList = (await getCategories()).map(ct => ct.id);
+const languages = site.languages.map(ln => ({ ...langs[ln], id:ln }));
+const sessionid = Astro.locals.session.id;
+const language = post.data.language || 'en'
+// const allKeywords = (await getKeywords()).map(kw => kw.id); // not implemented yet
+
+// console.log('somehow we are losing audio fields:', translations.map(tr => ({audio: tr.data.audio, audio_image: tr.data.audio_image})));
+
+const editorObjects = { site, translations, authorList, topicList, categoryList, language, languages, sessionid };
+
+// console.log('translations: ', slug, {translations: translations.length, post: post.id, authorList, topicList, categoryList, sessionid });
+
+// console.log({authorList, topicList, categoryList, languages, post:post.id, translations:translations.length });
+
+
+
+
+
+
+
+
+// this is a wrapper screen for editing an article.
+// the actual article will be edited with a svelte component
+// we will muster all the data needed in Astro and pass it as props to the svelte component
+// the svelte component can access a number of read-only APIs as well as a CRUD API for Articles
+
+// props include: post, site, translations (all matching posts, author_list, topics_list, keywords_list
+
+
+// console.log('!!! at least we got this far!');
+
+// const formFields = [
+//   { name: 'name', label: 'Topic Name', placeholder: 'Enter topic name', type: 'text', optional: false, pattern:'^[a-zA-Z0-9\s\-_]{5,100}$', title:"Enter a full topic name", colspan:1 },
+//   { name: 'title', label: 'Topic Title', placeholder: 'Enter topic title', type: 'text', optional: true, colspan:3 },
+//   { name: 'description', label: 'Description', placeholder: 'Enter description', type: 'textarea', optional: true, colspan:3 },
+//   { name: 'image', label: 'Image URL', placeholder: 'Enter image URL', type: 'url', optional: true, pattern:'^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?(#.*)?$', title:"Enter a valid URL", colspan:3 }
+// ];
+
+
+// const topic = await getTopic(Astro.params.slug) || {};
+
+// let formData = { ...topic };
+// let errorMsg;
+// const isNew = Astro.params.slug === 'add';
+
+// if (Astro.request.method === "POST") {
+//     const requestBody = await Astro.request.formData();
+//     // Update formData directly from requestBody to keep user inputs on validation errors
+//     formData = { ...formData, ...Object.fromEntries(requestBody) };
+
+//     // Assume 'faqs' from formData is already an array due to Drizzle parsing
+//     formData.faqs = formData.faqs.filter(faq => faq.question.trim() && faq.answer.trim());
+//     formData.faqs.push(...Array.from({length: 5}, () => ({question: '', answer: ''})));
+
+//     if (!errorMsg) {
+//         const topicToSave = {
+//             ...formData,
+//             id: isNew ? slugify(formData.name) : formData.id,
+//             faqs: formData.faqs // 'faqs' should already be an array and doesn't need stringifying
+//         };
+//         try {
+//             if (await updateTopic(topicToSave, isNew)) return Astro.redirect('/admin/topics');
+//         } catch (error) {
+//             errorMsg = `Error: ${error.message}`;
+//         }
+//     }
+// }
+
+// Ensure we have at least 5 blank FAQs
+// formData.faqs = formData.faqs.filter(faq => faq.question.trim() && faq.answer.trim());
+// formData.faqs.push(...Array.from({length: 5}, () => ({question: '', answer: ''})));
+
+// console.log('formData faqs:', formData.faqs);
+
+// const displayImage = formData.image ? transformS3Url(formData.image, 800, 0, 'webp', 80) : '';
+---
+
+<Layout menu="compact">
+
+<div class="w-full mx-5 -ml-2 mr-10 no-prose">
+  <PostEditor {...editorObjects} client:load client:only="svelte" />
+</div>
+
+</Layout>
+
+
+

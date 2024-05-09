@@ -4,13 +4,13 @@ import { Twitter, Facebook, Linkedin } from 'simple-icons-astro';
 import { getArticleAudioPath, currentURL, getTeamMember, getPostFromSlug, baseURL, generateArticleImage } from '@utils/utils.js';
 import site from '@data/site.json';
 
-const meta = Astro.props.meta;
-const {datePublished, audio, title, description, audio_duration: duration, title: seriesName } = meta;
+const post = Astro.props.post;
+// const meta = post.data;
+const {datePublished, audio, title, description, audio_duration: duration, title: seriesName, url: slug } = post.data;
+// const slug = meta.url;
+const episodeNumber = post.data.episode_number || 1;
 
-const slug = meta.url;
-const episodeNumber = meta.episode_number || 1;
-const post = Astro.props.post || await getPostFromSlug(slug);
-let author = Astro.props.author || (await getTeamMember(meta.author));
+let author = Astro.props.author || (await getTeamMember(post.data.author));
 let authorName = !!author ? author?.data?.name : site.site;
 const pageURL = currentURL(Astro);
 const baseUrl = new URL(pageURL).origin.replace(/\/$/, '');
@@ -22,8 +22,8 @@ if (!audioURL.startsWith('http')) {  // convert file path to URL
 }
 
 const src = post?.data?.audio_image || post?.data?.image;
-const img_display = await generateArticleImage(src, post, baseURL(Astro), 172, 172, 'webp', 90, post.data.image.alt);
-const img_podcast = await generateArticleImage(src, post, baseURL(Astro), 1200, 1000, 'webp', 90, post.data.image.alt);
+const img_display = await generateArticleImage(src, post, baseURL(Astro), 172, 172, 'webp', 90, post.data.image?.alt);
+const img_podcast = await generateArticleImage(src, post, baseURL(Astro), 1200, 1000, 'webp', 90, post.data.image?.alt);
 
 // this player will be used more than once per page, so we need to generate unique IDs for each instance
 let playerID = 'id-podcast-player-' + Math.random().toString(36).substr(2, 9);
@@ -222,7 +222,7 @@ svg#play:hover #triangle {
 
 <script data-playerID={playerID} data-astro-rerun is:inline client:idle>
 
-console.log('* astro:rerun');
+//console.log('* astro:rerun');
 
   let playerID = document.currentScript.dataset.playerid;
   let podPlay = document.getElementById(playerID);
@@ -236,13 +236,13 @@ console.log('* astro:rerun');
   let scrubber = podPlay.querySelector('.scrubber');
 
   document.addEventListener('astro:page-load', () => {
-    console.log('*** astro:page-load');
+    //console.log('*** astro:page-load');
     // let audioElement = document.getElementById('aud');
     audioPlayer.pause()
     // let audioURL = audioPlayer.src; // = audioURL;
     audioPlayer.src = '';
     audioPlayer.src = audioURL;
-    console.log('=== set audioplayer url to ', audioURL);
+    //console.log('=== set audioplayer url to ', audioURL);
     // audioPlayer.play();
     audioPlayer.play();
   });

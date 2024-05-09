@@ -1,6 +1,6 @@
 ---
 // import { Picture } from 'astro:assets';
-import { currentURL, displayImageObj } from '@utils/utils.js';
+import { currentURL, displayImageObj, hashstr } from '@utils/utils.js';
 // console.log('authorCard author:', Astro.props.author);
 const author = Astro.props.author
 const name_slug = author.id
@@ -20,7 +20,7 @@ const imgBio = displayImageObj(image_src, image_alt, 188, 188, 'webp', 90);
 const imgFull = displayImageObj(image_src, image_alt, 800, 800, 'webp', 90);
 
 // const imageURL = '';
-const uniqueID = 'id-' + Math.random().toString(36).slice(2, 11);
+const uniqueID = 'id-' + hashstr(pageURL + authorURL + size) //Math.random().toString(36).slice(2, 11);
 const AuthorBioIDURL = `${pageURL}#${uniqueID}`;
 
 var schema = {

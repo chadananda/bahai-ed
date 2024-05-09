@@ -9,11 +9,11 @@
  import { Image } from 'astro:assets';
  import faqimage from '../../assets/faq.jpg';
  import q from '../../assets/q.png';
- import { currentURL} from '../../utils/utils.js';
+ import { currentURL, hashstr} from '../../utils/utils.js';
 
 const pageURL = currentURL(Astro);
 const siteURL = new URL(pageURL).origin.replace(/\/$/, '');
-const uniqueID = 'id-' + Math.random().toString(36).slice(2, 11);
+const uniqueID = 'id-' + hashstr(pageURL) ;//Math.random().toString(36).slice(2, 11);
 const datePublished = new Date()
 const dateModified = new Date()
 

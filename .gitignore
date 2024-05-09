@@ -30,3 +30,6 @@ public/posts/
 
 # backup and research
 work/
+
+# local test db
+tmpdata.db

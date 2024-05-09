@@ -1,0 +1,83 @@
+---
+import site from '@data/site.json';
+const author = Astro.props || site.author;
+const datePublished = Astro.props.datePublished || new Date().toISOString();
+import { currentURL, hashstr } from '@utils/utils.js';
+// const {videoURL, title, description, duration, transcript } = Astro.props.video;
+
+// <VideoPlayer  meta=$meta
+//   videoURL="https://www.youtube.com/embed/Og_QKUf3QQk?si=aksl3-OUze9gtohd"
+//   title="Dawn-Breakers: The story of Nabíl"
+//   description="Storytelling Sundays #19: Dawn-Breakers: The story of Nabíl"
+//   duration="" image="" transcript="" />
+
+const {videoURL, title, description, duration, transcript } = Astro.props;
+
+
+// https://youtu.be/j-pxaf-DJKk?si=sewCAM7yyUHVZ6pE
+// https://www.youtube.com/embed/gHcPWsg75CI?si=RZKpwkNPyHgriPzr
+// https://youtu.be/j-pxaf-DJKk?si=sewCAM7yyUHVZ6pE
+// https://www.youtube-nocookie.com/embed/gHcPWsg75CI
+// https://www.youtube.com/watch?v=dQw4w9WgXcQ
+
+// extract out video id from any youtube url:
+const videoid = ((videoURL.match(/(?:youtu.be\/|youtube(-nocookie)?.com\/(?:watch\?v=|embed\/|v\/|shorts\/))([a-zA-Z0-9_-]{11})/)) || [null, null, null])[2];
+
+const imageURL = `https://img.youtube.com/vi/${videoid}/mqdefault.jpg`
+const embedURL = `https://www.youtube.com/embed/${videoid}`
+
+const pageURL = currentURL(Astro);
+const transcriptURL = pageURL+transcript;
+
+const playerID = 'id-' + hashstr(videoURL);
+const encodedPageURL = encodeURIComponent(pageURL);
+const encodedDesc = encodeURIComponent(title +' - '+ description);
+
+// console.log('uniqueID', uniqueID);
+
+// social links to share this page
+const twitterLink = `https://twitter.com/intent/tweet?text=${encodedDesc}&url=${encodedPageURL}`;
+const facebookLink = `https://www.facebook.com/sharer/sharer.php?u=${encodedPageURL}`;
+const linkedinLink = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedPageURL}`;
+const emailLink = `mailto:?subject=Interesting%20Page&body=Check%20this%20out:%20${encodedPageURL}`;
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": 'VideoObject',
+  "@id": `${pageURL}#${playerID}`,
+  name: title,
+  description: description,
+  thumbnailUrl: imageURL,
+  uploadDate: new Date(datePublished).toISOString(), // "2015-02-05T08:00:00+08:00",
+  duration: duration, // "PT1M33S",
+  contentUrl: videoURL,
+  embedUrl: videoURL,
+  transcript: transcriptURL,
+  mainEntityOfPage: {
+    "@type": "WebPageElement",
+    id: `${pageURL}#${playerID}`
+  },
+  author: {
+    "@type": "Person",
+    name: author
+  },
+  isPartOf: {
+    "@type": "WebPage",
+    "@id": pageURL
+  },
+  audience: {
+    "@type": "EducationalAudience",
+    audienceType: "General Education"
+  },
+};
+
+// example markdoc usage:
+//
+//     <VideoPlayer  meta=$meta  video=$meta.main_video />
+---
+
+<div id={playerID} class="video-player w-full my-20 border-4  border-gray-400 p-3 relative overflow-hidden shadow-lg rounded-xl noprint" style="padding-top: 56%">
+  <iframe class="absolute top-0 left-0 w-full h-full" src={embedURL} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture;" allowfullscreen></iframe>
+</div>
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />
+

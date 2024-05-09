@@ -1,5 +1,6 @@
 ---
 export const prerender = true;
+
 // all the article-specific styling should go here or in article.css;
 import "@styles/article.css";
 import "@styles/global.css";
@@ -8,17 +9,16 @@ import  SpeedInsights  from "@vercel/speed-insights/astro"
 import Footer from "@components/footer.astro";
 import Navbar from "@components/navbar/navbar.astro";
 import JSONLD  from "@components/article/JSONLD.astro"; // validate at https://validator.schema.org/
-// fyi, check your opengraph here:  https://www.opengraph.xyz/
+       // fyi, check your opengraph here:  https://www.opengraph.xyz/
 
 const {footerMargin = true, post, author, category, language } = Astro.props;
-const meta = post.data;
 ---
 <!doctype html>
 <html lang={language}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <JSONLD {...meta} author={author} category={category} post={post} />
+    <JSONLD {author} {category} {post} />
   </head>
   <body>
     <Navbar />

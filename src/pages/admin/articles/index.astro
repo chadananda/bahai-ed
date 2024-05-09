@@ -1,0 +1,81 @@
+---
+export const prerender = false;
+
+import Layout from '@layouts/AdminLayout.astro';
+import { getAllArticles, importPost2DB } from '@utils/utils.js';
+
+const user  = Astro.locals?.user  // this page is only for admins
+if (!['admin','superadmin'].includes(user?.role)) return Astro.redirect('/admin');
+
+// Check for the 'importkey' parameter in the query
+const importkey = (new URL(Astro.request.url)).searchParams.get('importkey');
+if (importkey) {
+  // console.log('importing article: ', importkey);
+  await importPost2DB(importkey);
+  // Redirect to clean the URL
+  const thisurl = (new URL(Astro.request.url)).toString().split('?')[0]; // remove params
+  return Astro.redirect(thisurl);
+}
+
+const articles  = await getAllArticles('en');
+---
+<Layout user={user} >
+  <div class="mx-20 w-full prose">
+
+    <h1> Edit Content: Articles </h1>
+    <p class="ml-2 -mt-8"> <a href="/">home</a> / <a href="/admin">admin</a> / articles </p>
+
+    <div class="flex float-right mt-5">
+      <a href="/admin/articles/add" class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition ease-in duration-200 m-2">+ Add New Post</a>
+    </div>
+
+    <p> Base articles are translated and narrated in multiple languages. Make sure your articles are unique and rich with resources that will win backlinks. Draft articles are in gray, unpublished in green. </p>
+
+    <!-- Loop through using a compact card layout -->
+    {articles.map(ar => {
+     // format article values like image and authorName
+     const {id} = ar;
+     const {title, image, url, draft, description} = ar.data
+     const {isPublished, authorName, datePublishedStr, imgSmall } = ar.helpers;
+
+     return (
+      <div class={`relative bg-white border not-prose my-2 p-4 rounded-lg shadow-md hover:shadow-lg flex flex-col md:flex-row items-start md:items-center space-x-0 md:space-x-6 mb-5
+        ${draft ? 'border-4 border-green-200 border-dashed' : 'border-gray-100'} `}>
+
+        <div class={`flex-shrink-0 flex flex-col justify-between text-center h-auto md:h-full`}>
+
+          <img src={imgSmall || `https://picsum.photos/seed/${Math.random()}/80`} alt={image.alt} class="rounded-md h-24 w-32 md:h-32 md:w-44 object-cover mx-auto mb-2 shadow-md" />
+
+          <span class={`inline-block text-xs px-2 py-1 rounded-full mx-auto mt-2 md:mt-auto
+              ${!ar.db ? 'border bg-red-100 border-red-200 text-blue-800 underline' : 'border text-gray-500 bg-gray-100 '}`}>
+            {!ar.db ? <a href={`?importkey=${ar.id}`} title="Click to Import">local</a> : <span>data</span> }
+          </span>
+
+        </div>
+
+        <div class="flex-grow">
+          <h2 class="text-md font-semibold">{title}</h2>
+          <p class="text-xs text-gray-400 font-bold font-mono ml-1">{url}</p>
+          {isPublished && (<p class="text-xs text-gray-400 font-mono ml-1"> {datePublishedStr} </p> )}
+          {id && (<p class="text-xs text-gray-400 font-mono ml-1"> {id} </p> )}
+          {authorName && ( <p class="text-sm text-gray-400 font-mono ml-1 mb-1">by {authorName}</p>  )}
+
+          <p class="text-base text-gray-700">{description}</p>
+        </div>
+
+       {ar.db && (
+        <a href={`/admin/articles/${ar.data.url}`}
+           class="absolute -top-4 -right-2 no-underline border bg-white p-2 px-4 text-gray-600 hover:bg-blue-200 hover:text-black p-2 rounded-full">
+            <span class="sr-only">Edit</span>&#9998;</a>
+       )}
+      </div>
+    );
+  })}
+
+
+
+
+ </div>
+</Layout>
+
+

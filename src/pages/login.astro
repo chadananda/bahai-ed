@@ -26,7 +26,7 @@ if (Astro.request.method === "POST") {
       seedSuperUser();
       const user = (await db.select().from(Users).where(eq(Users.email, email)))[0];
       if (!user) {
-        console.log('Failed to load user from: ', email);
+       // console.log('Failed to load user from: ', email);
         let users = await db.select().from(Users);
         // console.error('all users: ', JSON.stringify(users));
       }

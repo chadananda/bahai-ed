@@ -1,31 +1,8 @@
 ---
+import { buildToc } from '@utils/utils.js';
 
-const headings = Astro.props.headings;
-const toc = buildToc(headings);
-
-// function buildToc(headings) {
-//   const toc = [], parentHeadings = new Map();
-//   headings.forEach(h => {
-//     const heading = { ...h, subheadings: [] };
-//     parentHeadings.set(heading.depth, heading);
-//     heading.depth === 3 ? toc.push(heading) : parentHeadings.get(heading.depth - 1)?.subheadings.push(heading);
-//   });
-//   return toc;
-// }
-
-function buildToc(headings) {
-  const toc = [], parentHeadings = new Map();
-  headings.forEach(h => {
-    const heading = { ...h, subheadings: [] };
-    parentHeadings.set(heading.depth, heading);
-    if (heading.depth === 2 || heading.depth === 3) {
-      toc.push(heading);
-    } else if (heading.depth > 3) {
-      parentHeadings.get(heading.depth - 1)?.subheadings.push(heading);
-    }
-  });
-  return toc;
-}
+const { post } = Astro.props;
+const toc = buildToc(post);
 
 const largelist = toc && toc.length > 8
 const textsize = largelist ? 'text-xs lg:text-sm' : 'text-sm lg:text-base'

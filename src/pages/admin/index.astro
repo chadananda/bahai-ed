@@ -6,9 +6,9 @@ import Layout from '@layouts/AdminLayout.astro';
 import { moderateComments_openai } from '@utils/utils.js';
 
 const user = Astro.locals?.user;
-console.log('user', user);
+//console.log('user', user);
 const member = !!(await db.select().from(Team).where(eq(Team.email, user.email)))[0];
-console.log('member', member);
+//console.log('member', member);
 
 // let's do this in the background so that we don't get delays when going to comments
 moderateComments_openai();

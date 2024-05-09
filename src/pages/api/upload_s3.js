@@ -41,7 +41,9 @@ export const POST = async ({ request }) => {
   if (request.headers.get("Content-Type").includes("application/json")) {
     try {
       const body = await request.json();
-      const { filedata, s3key, sessionid } = body;
+      const {filedata, mimeType, s3key, sessionid} = body;
+
+      //console.log('Attempting to upload: ', s3key, sessionid, filedata.length);
       // verify session and role
       const { user } = await lucia.validateSession(sessionid);
       if (!user || !['superadmin', 'admin', 'editor', 'writer'].includes(user.role)) {
@@ -52,10 +54,10 @@ export const POST = async ({ request }) => {
       // make sure we have file data
       if (!filedata) return new Response('No filedata provided', { status: 400 });
 
-      console.log('uploading to s3:', s3key);
-      const s3url = await uploadS3(filedata, s3key);
+      //console.log('uploading to s3:', s3key, mimeType, filedata.length);
+      const s3url = await uploadS3(filedata, s3key, mimeType);
 
-      console.log('s3url:', s3url);
+      //console.log('s3url:', s3url);
       return s3url ? new Response(JSON.stringify({s3url}), { status: 200 })
                    : new Response('S3 upload failed', { status: 500 });
 

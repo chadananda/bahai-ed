@@ -1,40 +1,22 @@
 ---
 // JSONLD.astro - a component to generate structured data for an article
-import brand from '@data/site.json';
+import site from '@data/site.json';
 import { SEO, TwitterCardType } from "astro-seo";
-import { getArticleAudioPath, getArticleTranslations, currentURL, generateArticleImage } from '@utils/utils.js';
+import { getArticleAudioPath, getArticleTranslations, currentURL, generateArticleImage, toIsoStringWithTimezone, baseURL } from '@utils/utils.js';
 
 // type Props = CollectionEntry<'article'>['data'];
-const { post, title, description, desc_125, keywords, language, video_main, post_type, audio, audio_duration, url:slug, image } = Astro.props;
-
-const category = Astro.props.category;
-const author = Astro.props.author;
-// const topics = await getEntries(Astro.props.topics);
-const topics = Astro.props.topics; // || await filterTopics(Astro.props.topics); // because topics are no longer references
+const {category, author, post, topics} = Astro.props;
+const { title, description, desc_125, keywords, language, video_main, post_type, audio, audio_duration, url:slug, image } = post.data;
 
 // for some reason dateModified is not always rendering correctly in Astro
-let datePublished = Astro.props.datePublished;
-let dateModified = Astro.props.dateModified;
-if (!dateModified || isNaN(dateModified.getTime())) dateModified = new Date();
-function toIsoStringWithTimezone(d) {
-    let z = n => ('0' + n).slice(-2),
-        off = d.getTimezoneOffset(),
-        sign = off < 0 ? '+' : '-',
-        padHours = z(Math.floor(Math.abs(off) / 60)),
-        padMinutes = z(Math.abs(off) % 60);
-    return d.getFullYear() + '-' + z(d.getMonth() + 1) + '-' + z(d.getDate()) +
-           'T' + z(d.getHours()) + ':' + z(d.getMinutes()) + ':' + z(d.getSeconds()) +
-           sign + padHours + ':' + padMinutes;
-}
-datePublished = toIsoStringWithTimezone(datePublished);
-dateModified = toIsoStringWithTimezone(dateModified);
+let datePublished = toIsoStringWithTimezone(post.data.datePublished);
+let dateModified = toIsoStringWithTimezone(post.data.dateModified || new Date());
 
 const pageURL = currentURL(Astro);
-const siteURL = new URL(pageURL).origin.replace(/\/$/, '');
+const siteURL = baseURL(Astro);
 
-const authorSlug = author?.data?.name ? author.id : brand.siteName;
+const authorSlug = author?.data?.name ? author.id : site.siteName;
 const authorURL = `${siteURL}/authors/${authorSlug}`;
-
 
 var video = video_main ? {
   url: video_main.videoURL, title: video_main.title, description: video_main.description,
@@ -61,7 +43,7 @@ if (audio) {
     description,
     duration: audio_duration,
     episodeNumber: 1,
-    seriesName: brand.siteName,
+    seriesName: site.siteName,
     imageURL: coverImage?.src
   }
 };
@@ -75,15 +57,15 @@ const schema = {
   keywords: keywords,
   author: {
     "@type": author?.data?.type || 'editor',
-    name: author?.data?.name || brand.author,
+    name: author?.data?.name || site.author,
     url: authorURL,
   },
   publisher: {
     "@type": "Organization", //Organization, Corporation, GovernmentOrganization, NGO, EducationalOrganization, SportsTeam, MusicGroup, PerformingGroup, NewsMediaOrganization, FundingScheme, LibrarySystem, MedicalOrganization, WorkersUnion, Consortium, Airline, Brand
-    name: brand.siteName, // like "Ocean 2.0 Reader"
+    name: site.siteName, // like "Ocean 2.0 Reader"
     logo: {
       "@type": "ImageObject",
-      url: brand.logo,
+      url: site.logo,
     },
   },
   headline: title,
@@ -126,8 +108,8 @@ const metaHeaders = {
 };
 
 const twitterHeaders = twitLargeImage ? {
-  creator: brand.twitter.creator,
-  site: brand.twitter.site,
+  creator: site.twitter.creator,
+  site: site.twitter.site,
   card: "summary_large_image" as TwitterCardType,
   title: title, // max 55 characters
   description: desc_125, // max 125 characters

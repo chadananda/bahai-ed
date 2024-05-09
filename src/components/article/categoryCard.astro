@@ -1,5 +1,5 @@
 ---
-import { getDataCollectionImage, getCategory } from '@utils/utils';
+import { getDataCollectionImage, getCategory, hashstr } from '@utils/utils';
 
 const { slug, size='sm', editmode=false } = Astro.props;
 const categoryURL = editmode ? `/admin/categories/${slug}` : `/categories/${slug}`;
@@ -13,7 +13,7 @@ if (size === "sm") imageSize = {width: 400, height: 400, format: 'webp'}
 let image = await getDataCollectionImage(category, category.data.image, imageSize);
 
 const categoryName = category.data.category;
-const uniqueID = 'id-' + Math.random().toString(36).slice(2, 11);
+const uniqueID = 'id-' + hashstr(categoryURL + size) //  Math.random().toString(36).slice(2, 11);
 ---
 
 {(size==="sm" && image) && (

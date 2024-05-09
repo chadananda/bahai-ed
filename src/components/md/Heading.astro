@@ -1,0 +1,11 @@
+---
+import { slugify, renderMarkdown } from '@utils/utils.js';
+const { as: Component, text } = Astro.props;
+const id = slugify(text);
+//let html = renderMarkdown(text); // renders any markdown and processes text
+// remove <p> from the beginning and </p> from the end
+// html = html.replace(/^<p>/, '').replace(/<\/p>$/, '');
+//console.log(`${text}`);
+
+---
+<Component {id} >{text}</Component>

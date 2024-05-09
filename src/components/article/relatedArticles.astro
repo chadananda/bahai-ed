@@ -3,12 +3,11 @@
 import PostThumb from "@components/article/postThumb.astro";
 import { mainLanguages } from '@utils/utils.js';
 
-const relatedPosts = Astro.props.related;
-
-const translations =  Astro.props.translations;
+// const related = Astro.props.related;
+const { post, translations, related } = Astro.props;
 ---
  <ul id="carouselTargetList">
-   {relatedPosts.map((post) => (
+   {related.map((post) => (
     <li class:list={["carousel__slide"]}>
       <PostThumb post={post} small vertical />
     </li>
@@ -16,10 +15,10 @@ const translations =  Astro.props.translations;
  </ul>
 
  <ul id="languageList" class="mt-20">
-  {translations.map(({data: m}) => (
-    <li class="px-5 text-sm mb-10"><a class="" href={`/${m?.url}`}>
-      <div class="text-8xl opacity-50 -mb-3">{mainLanguages[m.language].flag}</div>
-      <h4 class="text-blue-900 underline">{m.title}</h4></a>
+  {translations.map(({data}) => (
+    <li class="px-5 text-sm mb-10"><a class="" href={`/${data.url}`}>
+      <div class="text-8xl opacity-50 -mb-3">{mainLanguages[data.language].flag}</div>
+      <h4 class="text-blue-900 underline">{data.title}</h4></a>
     </li>
   ))}
 </ul>

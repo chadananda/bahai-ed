@@ -1,0 +1,31 @@
+---
+// render markdown content with internal components
+import { Markdown } from 'astro-remote';
+
+// custom components
+import aside from "@components/md/Aside.astro"
+import Aside from "@components/md/Aside.astro"
+import RelatedResource from "@components/md/RelatedResource.astro"
+import BookQuote from "@components/md/BookQuote.astro"
+import Heading from "@components/md/Heading.astro"
+import VideoPlayer from "@components/md/VideoPlayer.astro" // has bugs
+// tag overrides
+import img from "@components/md/img.astro"
+// marked extenstions
+import { markedExt_TextCleanup } from "@components/md/textCleanup.js"
+
+const { post } = Astro.props;
+const InternalComponents = {Aside, RelatedResource, BookQuote, Heading, VideoPlayer, img, aside}
+---
+{post.data?.language==='en' ? (
+<Markdown content={post.body} sanitize={{ allowComponents: true }}
+   components={{ ...InternalComponents }}
+   marked={{ extensions: [markedExt_TextCleanup()] }} />
+) : (
+<Markdown content={post.body} sanitize={{ allowComponents: true }}
+   components={{ ...InternalComponents }}
+   marked={{ extensions: [] }} />
+)}
+
+
+

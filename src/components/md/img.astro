@@ -1,0 +1,7 @@
+---
+import { transformS3Url } from '@utils/utils.js';
+
+const { src, alt } = Astro.props;
+const imgObj = { src: transformS3Url(src, 700,0, 'webp', 90), alt}
+---
+<img {...imgObj} loading="lazy" class="mx-auto" />

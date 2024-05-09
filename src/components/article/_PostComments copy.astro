@@ -45,7 +45,7 @@ const commentsID = 'comments-' + Math.random().toString(36).substr(2, 9);
   document.querySelectorAll('.comment-action.reply').forEach(button => {
     button.addEventListener('click', (event) => {
       const id = event.target.getAttribute('data-id');
-      console.log('id', id);
+      //console.log('id', id);
       const form = document.getElementById(`reply-form-${id}`);
       form.classList.toggle('hidden');
     });

@@ -95,7 +95,7 @@ export const genericJSONPrompt = async (PROMPT, args={}) => {
      ]
     }
 
-console.log('FULL_REQUEST: ', FULL_REQUEST.messages[1].content);
+//console.log('FULL_REQUEST: ', FULL_REQUEST.messages[1].content);
 
     // step one, generate the JSON
     const VALIDATOR = PROMPT.schema;
@@ -106,7 +106,7 @@ console.log('FULL_REQUEST: ', FULL_REQUEST.messages[1].content);
       try {
         const resJSON = JSON.parse(response.choices[0].message.content); // openai returns JSON
 
- console.log('raw response', JSON.stringify(resJSON, null, 2));
+ //console.log('raw response', JSON.stringify(resJSON, null, 2));
 
         validJSON = VALIDATOR.parse( resJSON) // zod validates the object
       } catch (error) {

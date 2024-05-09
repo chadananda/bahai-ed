@@ -93,3 +93,41 @@ export const Cron = defineTable({
   }
 })
 
+export const Posts = defineTable({
+  columns: {
+    id: column.text({ primaryKey: true }), // like collection id: [some article base name]/[lang].mdoc
+    baseid: column.text({ default: "" }), // the part of the id shared by all translations
+    title: column.text({ default: "" }),
+    url: column.text({ default: "" }),
+    post_type: column.text({ default: "Article" }),
+    description: column.text({ default: "" }),
+    desc_125: column.text({ default: "" }),
+    abstract: column.text({ default: "" }),
+    language: column.text({ default: "en" }),
+
+    audio: column.text({ optional: true }),
+    audio_duration: column.text({ default: "" }),
+    audio_image: column.text({ optional: true }),
+    narrator: column.text({ default: "auto" }),
+
+    draft: column.boolean({ default: true }),
+    author: column.text({ optional: true }),
+    editor: column.text({ optional: true }),
+    category: column.text({ optional: true }),
+    // the following are arrays of strings
+    topics: column.json({ optional: true }), // JSON column for array data
+    // tags: column.json({ optional: true }),
+    keywords: column.json({ optional: true }),
+    // js date object
+    datePublished: column.date({ default: NOW }),
+    dateModified: column.date({ default: NOW}),
+    // only image -- alt is dereved from description
+    image: column.text({ optional: true }),
+    /// oops, forgot the meat
+    body: column.text({ default: '' }),
+  },
+  indexes: [
+    { on: ["id", "url"], unique: true }, // unique index
+    { on: "baseid" } // non-unique index
+  ]
+});

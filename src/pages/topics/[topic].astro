@@ -53,7 +53,7 @@ const { topic, posts, authors, categories } = Astro.props;
         return (
           <div className={`flex-none articlePost ${notEnglish ? 'hidden' : ''}`}
               data-title={post.data.title}
-              data-tags={post.data.tags.join(',')}
+              data-topics={post.data.topics.join(',')}
               data-language={post.data.language}>
             <PostThumb post={post} author={author} category={category} />
           </div>

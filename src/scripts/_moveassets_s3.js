@@ -121,71 +121,124 @@ function generateS3URL(bucketName, s3key) {
   return `https://${bucketName}.s3.${process.env.AWS_BUCKET_REGION}.amazonaws.com/${encodedKey}`;
 }
 
+
 async function processMdocFile(filePath, urlMap) {
   const fileContents = fs.readFileSync(filePath, 'utf8');
   const { data, content } = matter(fileContents);
 
-  // Function to normalize image and file paths
-  const normalizePath = (path) => path.replace(/^\.\/|^\/|^\.\//g, '');
-
-  // Update YAML front matter for images, PDFs, and audio files
-  if (data.image && data.image.src) {
-    const filename = path.basename(normalizePath(data.image.src));
-    const newSrc = urlMap[filename] || data.image.src;
-    console.log(`Replacing image.src: ${data.image.src} with ${newSrc}`);
-    data.image.src = newSrc;
+  function replacementFound(src) {
+    const normalizePath = (path) => path.replace(/^\.\/|^\/|^\.\//g, ''); // Normalize path
+    if (src && !src.startsWith('http')) {
+      const filename = path.basename(normalizePath(src));
+      const newUrl = urlMap[filename] || src;
+      return newUrl !== src ? newUrl : null;
+    }
+    return null;
   }
 
-  if (data.audio_image) {
-    const filename = path.basename(normalizePath(data.audio_image));
-    const newAudioImage = urlMap[filename] || data.audio_image;
-    console.log(`Replacing audio_image: ${data.audio_image} with ${newAudioImage}`);
-    data.audio_image = newAudioImage;
-  }
-
-  // Special handling for the audio field if it points to a local file
-  if (data.audio && /\.(mp3)$/i.test(data.audio)) {
-    const filename = path.basename(normalizePath(data.audio));
-    const newAudio = urlMap[filename] || data.audio;
-    console.log(`Replacing audio: ${data.audio} with ${newAudio}`);
-    data.audio = newAudio;
-  }
-
-  // Update Markdown image links and other file types in content
-  const updatedContent = content.replace(/!\[.*?\]\((.*?)\)/g, (match, p1) => {
-    const filename = path.basename(normalizePath(p1));
-    const newUrl = urlMap[filename] || p1;
-    console.log(`Replacing Markdown link: ${p1} with ${newUrl}`);
-    return match.replace(p1, newUrl);
+  // Updating all HTML-like and markdown link attributes
+  const updatedContent = content.replace(/(\b(src|href|data|action|image)=["'])([^"']*?)(["'])/gi, (match, prefix, attr, url, suffix) => {
+    const newUrl = replacementFound(url);
+    if (newUrl) {
+      console.log(`Replacing ${attr} URL: ${url} with ${newUrl}`);
+      return `${prefix}${newUrl}${suffix}`;
+    }
+    return match;
   });
 
-  // Dynamic file attribute handling in Markdoc content for all file types
-  const finalContent = updatedContent.replace(/{%.*?(\b\w+\s*=\s*["'].*?["'])[\s\S]*?%}/g, (match, p1) => {
-    const attributePairs = p1.split(/\s+/).filter(attr => attr.includes('='));
-    return attributePairs.reduce((updatedMatch, attr) => {
-      const [key, value] = attr.split('=');
-      const trimmedValue = value.trim().replace(/^["']|["']$/g, ''); // Correctly trim quotes from the value
-      if (/\.(jpg|jpeg|png|gif|svg|pdf|mp3)$/i.test(trimmedValue)) { // Check if the attribute value looks like a file path
-        if (!trimmedValue.startsWith('http')) { // Correct method name from 'startswith' to 'startsWith'
-          const filename = path.basename(normalizePath(trimmedValue));
-          const newUrl = urlMap[filename] || trimmedValue;
-          if (newUrl) {
-            console.log(`Replacing link: "${trimmedValue}" with: ${newUrl}`);
-            return updatedMatch.replace(value, `"${newUrl}"`); // Ensure values are replaced correctly
-          }
-        }
-        return updatedMatch;
-      }
-      return updatedMatch;
-    }, match);
+  // Update fields using a loop for compactness
+  ['src', 'audio_image', 'audio'].forEach(field => {
+    if (data.image && field === 'src') {
+      data.image.src = updateUrl(data.image.src, 'image.src');
+    } else if (data[field]) {
+      data[field] = updateUrl(data[field], `${field}`);
+    }
   });
 
+  function updateUrl(source, description) {
+    const newUrl = replacementFound(source);
+    if (newUrl) {
+      console.log(`Replacing ${description}: "${source}" with "${newUrl}"`);
+      return newUrl;
+    }
+    return source;
+  }
 
   // Log final content without saving for verification
-  // console.log(`Final modified: \n${filePath}`);
+  // console.log(`Final modified content for ${filePath}: \n${updatedContent}`);
+
   // Uncomment below to save changes when ready
-  saveArticleMdoc(filePath, { ...data }, finalContent);
+  saveArticleMdoc(filePath, { ...data }, updatedContent);
 }
+
+
+
+
+// async function processMdocFile(filePath, urlMap) {
+//   const fileContents = fs.readFileSync(filePath, 'utf8');
+//   const { data, content } = matter(fileContents);
+
+//   // Function to normalize image and file paths
+//   const normalizePath = (path) => path.replace(/^\.\/|^\/|^\.\//g, '');
+
+//   // Update YAML front matter for images, PDFs, and audio files
+//   if (data.image && data.image.src) {
+//     const filename = path.basename(normalizePath(data.image.src));
+//     const newSrc = urlMap[filename] || data.image.src;
+//     console.log(`Replacing image.src: ${data.image.src} with ${newSrc}`);
+//     data.image.src = newSrc;
+//   }
+
+//   if (data.audio_image) {
+//     const filename = path.basename(normalizePath(data.audio_image));
+//     const newAudioImage = urlMap[filename] || data.audio_image;
+//     console.log(`Replacing audio_image: ${data.audio_image} with ${newAudioImage}`);
+//     data.audio_image = newAudioImage;
+//   }
+
+//   // Special handling for the audio field if it points to a local file
+//   if (data.audio && /\.(mp3)$/i.test(data.audio)) {
+//     const filename = path.basename(normalizePath(data.audio));
+//     const newAudio = urlMap[filename] || data.audio;
+//     console.log(`Replacing audio: ${data.audio} with ${newAudio}`);
+//     data.audio = newAudio;
+//   }
+
+//   // Update Markdown image links and other file types in content
+//   const updatedContent = content.replace(/!\[.*?\]\((.*?)\)/g, (match, p1) => {
+//     const filename = path.basename(normalizePath(p1));
+//     const newUrl = urlMap[filename] || p1;
+//     console.log(`Replacing Markdown link: ${p1} with ${newUrl}`);
+//     return match.replace(p1, newUrl);
+//   });
+
+//   // Dynamic file attribute handling in Markdoc content for all file types
+//   const finalContent = updatedContent.replace(/{%.*?(\b\w+\s*=\s*["'].*?["'])[\s\S]*?/>/g, (match, p1) => {
+//     const attributePairs = p1.split(/\s+/).filter(attr => attr.includes('='));
+//     return attributePairs.reduce((updatedMatch, attr) => {
+//       const [key, value] = attr.split('=');
+//       const trimmedValue = value.trim().replace(/^["']|["']$/g, ''); // Correctly trim quotes from the value
+//       if (/\.(jpg|jpeg|png|gif|svg|pdf|mp3)$/i.test(trimmedValue)) { // Check if the attribute value looks like a file path
+//         if (!trimmedValue.startsWith('http')) { // Correct method name from 'startswith' to 'startsWith'
+//           const filename = path.basename(normalizePath(trimmedValue));
+//           const newUrl = urlMap[filename] || trimmedValue;
+//           if (newUrl) {
+//             console.log(`Replacing link: "${trimmedValue}" with: ${newUrl}`);
+//             return updatedMatch.replace(value, `"${newUrl}"`); // Ensure values are replaced correctly
+//           }
+//         }
+//         return updatedMatch;
+//       }
+//       return updatedMatch;
+//     }, match);
+//   });
+
+
+//   // Log final content without saving for verification
+//   // console.log(`Final modified: \n${filePath}`);
+//   // Uncomment below to save changes when ready
+//   saveArticleMdoc(filePath, { ...data }, finalContent);
+// }
 
 
 
@@ -236,7 +289,7 @@ async function moveContentCollectionImages() {
   // test with only one folder
   const articleFolders = (await getArticlesList());
   const tasks = articleFolders.map(arFolder => {
-    console.log('updating assets in folde: ', arFolder);
+    console.log('updating assets in folder: ', arFolder);
     return uploadThrottle(() => uploadArticleImages(arFolder));
   });
   await Promise.all(tasks);

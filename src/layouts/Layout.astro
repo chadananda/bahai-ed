@@ -12,8 +12,8 @@ import  SpeedInsights  from "@vercel/speed-insights/astro"
 import { SEO } from "astro-seo";
 import Footer from "@components/footer.astro";
 import Navbar from "@components/navbar/navbar.astro";
-// import { Brandfolder } from "simple-icons-astro";
-import brand from "@data/site.json";
+
+import site from "@data/site.json";
 import { currentURL } from '@utils/utils.js';
 
 const pageURL = currentURL(Astro);
@@ -32,8 +32,8 @@ const resolvedImageWithDomain = new URL( "/favicon.svg", Astro.site, ).toString(
 // console.log ('resolvedImageWithDomain', resolvedImageWithDomain);
 const { title, footerMargin = true, description } = Astro.props;
 
-const makeTitle = title +' | '+ brand.site;
-const makeDesc = description || brand.description;
+const makeTitle = title +' | '+ site.site;
+const makeDesc = description || site.description;
 
 
 /*
@@ -78,8 +78,8 @@ const { title, footerMargin = true } = Astro.props;
       description={makeDesc}
       canonical={pageURL}
       twitter={{
-        creator: "@surjithctly",
-        site: "@web3templates",
+        creator: site.twitter.creator,
+        site: site.twitter.site,
         card: "summary_large_image",
       }}
       openGraph={{

@@ -10,13 +10,12 @@ import RelatedArticles from "@components/article/relatedArticles.astro";
 import AuthorBio from "@components/article/authorCard.astro";
 import { getPublishedArticles, getTopics, getCategories, getTeam, mainLanguages, generateArticleImage, baseURL  } from "@utils/utils.js";
 import TOC from "@components/article/TOC.astro";
+import MarkDownRenderer from "@components/md/MarkDownRenderer.astro";
 
 export async function getStaticPaths() {
-  const articles = (await getPublishedArticles()).filter((post) => post.data?.url);
+  const articles = await getPublishedArticles();
   const allAuthors = await getTeam();
-  // const allTopics = await getDataCollection("topics");
   const allTopics = await getTopics();
-
   const allCategories = await getCategories();
   const relatedArticles = (post) => articles.filter((ar) => {
     let langmatch = (post.data.language) === (ar.data.language);
@@ -28,31 +27,31 @@ export async function getStaticPaths() {
       params: { slug: post.data?.url },
       props: {
         post,
+        isDB: !!post.db,
         author: allAuthors.find((author) => author.id === post.data?.author),
         category: allCategories.find((cat) => cat.id === post.data?.category),
         topics: allTopics.filter((topic) => post.data?.topics?.includes(topic.id)),
         related: relatedArticles(post),
         translations: translations(post),
-       } };
+       }};
   });
 }
 
-const { post } = Astro.props; // Get the post directly from the prop on render
-const { Content, headings } = await post.render();
-const { author, category, topics, related, translations } = Astro.props;
+// console.log({postdb: !!post.db});
+// console.log('post isDB prop:', Astro.props.isDB);
 
+const { post, author, category, topics, related, translations } = Astro.props;
 const language = post.data.language || "en";
 const dir = mainLanguages[language].dir;
 const base_url = baseURL(Astro);
 
 const cover_image = await generateArticleImage(post.data.image?.src, post, base_url, 957,384,'webp',90);
-
 ---
-<Layout post={post} author={author} category={category} language={language}>
+<Layout {post} {author} {category} {language}>
 
 <div class="grid grid-cols-[5px_auto_5px] md:grid-cols-[240px_auto_5px] lg:grid-cols-[240px_auto_220px] relative ">
 <div class="left-column relative ">
-  <TOC headings={headings}/>
+  <TOC {post}/>
 </div>
 <div class="content relative " lang={language} dir={dir}>
 
@@ -92,43 +91,32 @@ const cover_image = await generateArticleImage(post.data.image?.src, post, base_
 
         <img {...cover_image} class="cover-image absolute top-0 left-0 w-full h-full object-cover" />
 
-        <!-- {!!post.data?.image && (
-        <Picture class="cover-image absolute top-0 left-0 w-full h-full object-cover"
-          formats={["webp", "jpg"]}
-          src={post.data?.image?.src}
-          alt={post.data?.image?.alt}
-          width="760" quality="low"
-          // transition:name={`post-img-${post.slug}`}
-          widths={[120, 188, 300, 372, 788, 1000, 1280]}
-         /> )} -->
       </div>
      </div>
 
      <div class="max-w-3xl mx-auto">
-       <TLDR meta={post.data}  />
+       <TLDR {post}  />
      </div>
 
      <div class="max-w-3xl mx-auto">
-       {!!post.data?.audio &&
-         <PodcastPlayer meta={post.data} slug={post.data?.url} author={author} />  }
+       {!!post.data?.audio && <PodcastPlayer {post} {author} />  }
      </div>
 
-     <div class="prose mx-auto mt-6 max-w-3xl prose-headings:mb-2 prose-headings:mt-8"
-     >
+     <div class="prose-lg mx-auto mt-6 max-w-3xl prose-headings:mb-2 prose-headings:mt-8">
 
-     <Content meta={post.data} />
+     <MarkDownRenderer {post} />
+
     </div>
 
-     {!!author &&
-      <div class="max-w-3xl mx-auto">
-       <AuthorBio slug={post.data?.author} size="bio" author={author} />
-      </div>
-     }
+    {!!author && (
+    <div class="max-w-3xl mx-auto">
+      <AuthorBio size="bio" {author} />
+    </div>
+    )}
 
-     <div class="hidden md:block max-w-3xl mx-auto relative">
-      <!-- commented out until we move comments to the db  -->
-       <PostComments post={post} />
-     </div>
+    <div class="hidden md:block max-w-3xl mx-auto relative">
+      <PostComments {post} />
+    </div>
 
   </Container>
 
@@ -136,7 +124,7 @@ const cover_image = await generateArticleImage(post.data.image?.src, post, base_
 </div>
 <div class="right-column text-center relative ">
   <div class="hidden lg:block ">
-    <RelatedArticles slug={post.data.url} related={related} translations={translations} />
+    <RelatedArticles slug={post.data.url} {post}  {related} {translations} />
   </div>
 </div>
 </div>

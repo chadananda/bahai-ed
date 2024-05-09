@@ -1,6 +1,6 @@
 ---
 // import { Picture } from 'astro:assets';
-import { generateArticleImage, baseURL } from '@utils/utils.js';
+import { generateArticleImage, baseURL, hashstr } from '@utils/utils.js';
 
 const { post, small, class: customClasses } = Astro.props
 const articleLink = `/${post.data?.url}`;
@@ -19,7 +19,7 @@ const image = small ? await generateArticleImage(post.data.image?.src, post, sit
 
 // const image = await generateArticleImage(post.data.image?.src, post, siteURL, 198,131,'webp',90);
 
-const uniqueID = 'id-' + Math.random().toString(36).slice(2, 11);
+const uniqueID = 'id-' + hashstr(siteURL + post.id + author_name) ;// Math.random().toString(36).slice(2, 11);
 const authorURL = authorid ? `${siteURL}/authors/${authorid}` : '';
 const pubdate = new Date(post.data.datePublished);
 const datePublished = pubdate.toLocaleDateString('en-US', {year:'numeric', month:'short', day:'numeric'});

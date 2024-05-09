@@ -1,5 +1,5 @@
 ---
- import { getPublishedArticles } from '@utils/utils.js';
+ import { getAllArticles } from '@utils/utils.js';
 
  const user  = Astro.locals?.user
 //  const { user } = Astro.props;
@@ -8,7 +8,7 @@
  const isAuthor = ['author', 'editor', 'admin', 'superadmin'].includes(user?.role);
  //console.log('user', user);
  //console.log(user?.name, user?.role, isAdmin, isEditor, isAuthor);
- const articles = await getPublishedArticles("en");
+ const articles = (await getAllArticles("en")).map(post => ({...post, editLink: `/admin/articles/${post.data.url}` }));
  // sort articles array by data.draft then article.data.datePublished
  articles.sort((a, b) => {
    if (a.data.draft && !b.data.draft) return 1;
@@ -60,11 +60,11 @@ class="z-40 bg-white border border-gray-300 rounded-full shadow-lg p-2 absolute 
 
 
 {isAuthor && (
-  <li><h3><a href="/admin/edit/">Edit content</a></h3>
+  <li><h3><a href="/admin/articles/">Edit content</a></h3>
     <ul>
       {Array.isArray(articles) && articles.map((ar) => (
         <li class={`${ar.data.draft?'draft':'published'}`}>
-          <span href={`/admin/edit/${ar.slug}`}>{ar.data.title}</span>
+          <a href={ar.editLink}>{ar.data.title}</a>
         </li>
       ))}
     </ul>
