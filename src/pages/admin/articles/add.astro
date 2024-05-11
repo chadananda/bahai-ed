@@ -1,0 +1,67 @@
+---
+// src/pages/admin/articles/add.astro
+export const prerender = false;  // Forces SSR for form submissions
+
+import Layout from '@layouts/AdminLayout.astro';
+import { newPostObj, updatePost_DB } from "@utils/utils";
+
+const sessionid = Astro.locals.session.id;
+const user = Astro.locals?.user;
+if (!['admin', 'superadmin'].includes(user?.role)) return Astro.redirect('/admin');
+
+let errorMsg;
+let formData = {};
+
+const formFields = [
+  { name: 'title', label: 'Title', placeholder: 'Enter post title', type: 'text', optional: false, pattern:'^[a-zA-Z0-9\s\-_]{5,100}$', title:"Title must be 5-100 characters long" },
+
+  { name: 'description', label: 'Description', placeholder: 'Enter short description', type: 'text', optional: false, pattern:'.{10,160}', title:"Target 160 characters" },
+
+  { name: 'abstract', label: 'Abstract', placeholder: 'Enter abstract', type: 'textarea', optional: false, pattern:'.{300,}', title:"Abstract must be at least 300 characters" },
+
+  { name: 'outline', label: 'Outline', placeholder: 'Enter outline (optional)', type: 'textarea', optional: true }
+];
+
+if (Astro.request.method === "POST") {
+  const requestBody = await Astro.request.formData();
+  formData = { ...formData, ...Object.fromEntries(requestBody) };
+
+  if (!errorMsg) {
+    let {title, description, abstract, outline} = formData;
+    const post = newPostObj(title, description, abstract, description.slice(0,125), outline)
+    try {
+      if (await updatePost_DB(post)) return Astro.redirect(`/admin/articles/${post.baseid}`);
+    } catch (error) {
+      errorMsg = `Error: ${error.message}`;
+    }
+  }
+}
+---
+
+<Layout user={user}>
+ <div class="w-full">
+  <!-- Error Message Display -->
+  {errorMsg && <div class="bg-red-100 text-red-700 p-3 rounded">{errorMsg}</div>}
+
+  <!-- Post Form -->
+  <form action="" method="POST" class="space-y-4 bg-white shadow rounded p-4 w-full">
+    {formFields.map((field) => (
+      <div key={field.name}>
+        <label for={field.name} class="block text-sm font-medium text-gray-700">{field.label}{!field.optional && '*'}</label>
+        {field.type === 'textarea' ?
+          <textarea id={field.name} name={field.name} placeholder={field.placeholder}
+          class="mt-1 w-full rounded-md border-gray-300 border-2 p-4 shadow-sm"
+          pattern={field.pattern} title={field.title} rows="10">{formData[field.name]}</textarea>
+          :
+          <input id={field.name} type={field.type} name={field.name} placeholder={field.placeholder}
+          class="mt-1 w-full rounded-md border-gray-300 border-2 p-2 shadow-sm "
+          pattern={field.pattern} title={field.title} />
+        }
+      </div>
+    ))}
+    <div class="w-full text-center">
+      <button type="submit" class="w-full px-4 py-2 max-w-80 mx-auto bg-blue-600 text-white rounded-md hover:bg-blue-700">Create Post</button>
+    </div>
+  </form>
+ </div>
+</Layout>

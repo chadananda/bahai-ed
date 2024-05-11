@@ -12,7 +12,7 @@ import { Underline } from '@tiptap/extension-underline';
 import { CustomImage } from './CustomImageExtension.js';
 
 
-import MenuItems from "./Menu.svelte";
+import MenuItems from "./_Menu.svelte";
 
 export let content, meta, slug;
 

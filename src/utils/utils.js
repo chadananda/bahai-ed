@@ -21,12 +21,12 @@ import { date } from "zod";
 
 // ***************** POSTS
 
-export const genPostID = (title) => {
+export const genPostID = (title, datePublished) => {
   const stopWords = 'a the and or of in on at to for with by'.split(' '); // add common words to exclude from slug
-  if (language!='en') return console.error('updatePost_DB: completely new post must be in English');
+  // if (language!='en') return console.error('updatePost_DB: completely new post must be in English');
   let namePart = slugify(title).split('-').filter(w => !stopWords.includes(w)).slice(0, 4).join('-');
-  let datePart = (new Date()).toLocaleDateString('en-CA'); // YYYY-MM-DD
-  return `${datePart}-${namePart}/${language}.md`;
+  let datePart = (new Date(datePublished)).toLocaleDateString('en-CA'); // YYYY-MM-DD
+  return `${datePart}-${namePart}/en.md`;
 }
 
 // updatePost requires a full post object with data and body, not a partial update
@@ -36,7 +36,7 @@ export const updatePost_DB = async (entry) => {
   language = language || 'en';
 
   // basic validation
-  if (!title || !description || !abstract || !image) {
+  if (!title || !description || !abstract ) {
     console.error('updatePost_DB: missing some required fields');
     return false;
   }
@@ -45,7 +45,7 @@ export const updatePost_DB = async (entry) => {
   if (typeof image === 'object') image = image.src;
 
   // replace index.mdoc with en.id  and  *.mdoc with *.md
-  id = id || genPostID(title);
+  id = id || genPostID(title, datePublished);
   if (id.endsWith('.mdoc')) id = id.replace('.mdoc', '.md');
   if (id.endsWith('index.md')) id = id.replace('index.md', 'en.md');
   let baseid = id.split('/')[0];
@@ -150,36 +150,40 @@ export const normalizePost_DB = (dbpost) =>  {
   return entry;
 };
 
-export const newPost = (lang='en') => ({
+export const newPostObj = (title, description, abstract='', desc_125='', body='') => {
+  const datePublished = new Date(Date.now() + 604800000); // 604800000ms = 7 days
+  const language = 'en';
+  const id = genPostID(title, datePublished);
+  const slug = slugify(title);
+  const url = slug;
+  const baseid = id.split('/')[0];
+ return {
   id: '',
   slug: '',
   collection: 'posts',
+  baseid,
   data: {
-    title: 'placeholder-title',
-    url: '',
-    post_type: 'placeholder-type',
-    description: 'placeholder-description',
-    desc_125: 'placeholder-short-desc',
-    abstract: 'placeholder-abstract',
-    post_type: 'article',
-    language: lang,
-    audio: '',
-    audio_duration: '',
-    audio_image: '',
+    title, url,
+    post_type: 'Article',
+    description, desc_125, abstract, language,
+    audio: '', audio_duration: '', audio_image: '',
     narrator: 'auto',
     draft: true,
-    author: '',
-    editor: '',
-    category: '',
-    topics: [],
-    keywords: [],
-    datePublished: 'YYYY-MM-DD',
-    dateModified: 'YYYY-MM-DD',
-    image: { src: '', alt: 'placeholder-description' }
+    author: '', editor: '',
+    category: '', topics: [], keywords: [],
+    datePublished, dateModified: new Date(),
+    image: { src: '', alt: title }
   },
-  body: 'placeholder-body-text',
-  db: true
-});
+  body,
+  db: true };
+};
+
+export const deletePost = async (postid) => {
+  // we should not actually delete but turn the post into a redirect
+  // but for now we will delete
+   await db.delete(Posts).where(eq(Posts.id, postid));
+   console.log('deleted post', postid);
+}
 
 
 export const getPosts_DB = async (lang = '', filter = () => true) => {

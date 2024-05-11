@@ -1,5 +1,5 @@
 // ImageNodeViewAdapter.js
-import ImageNodeView from './ImageNodeView.svelte';
+import ImageNodeView from './_ImageNodeView.svelte';
 
 export default class ImageNodeViewAdapter {
   constructor({ node, view, getPos, slug, editor }) { // Include slug in the parameters

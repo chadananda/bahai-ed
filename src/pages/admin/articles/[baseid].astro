@@ -4,7 +4,7 @@ export const prerender = false;  // Forces SSR so we can process form submission
 
 import Layout from '@layouts/AdminLayout.astro';
 import site from '@data/site.json'; // site info
-import { getPostFromSlug, newPost, getArticleTranslationAll, getTeam, getTopics, getCategories,
+import { getPostFromID_DB, newPost, getArticleTranslationAll, getTeam, getTopics, getCategories,
   mainLanguages as langs } from "@utils/utils";
 import PostEditor from '@components/admin/PostEditor.svelte';
 
@@ -12,18 +12,24 @@ import PostEditor from '@components/admin/PostEditor.svelte';
 const user = Astro.locals?.user;
 if (!['admin', 'superadmin', 'editor', 'author'].includes(user?.role)) return Astro.redirect('/admin');
 
-const slug = Astro.params.slug;
-const post = (!slug || slug === 'add') ? newPost() : (await getPostFromSlug(slug)) || newPost();
+const baseid = Astro.params.baseid;
+const post = (await getPostFromID_DB(baseid+'/en.md'));
+// console.log('found post from baseid:', baseid, post);
+if (!post) return Astro.redirect('/admin/articles');
+const slug = post.slug;
 const isNew = !post.id;
 
 // console.log('editing post:', slug, {audio: post.data.audio, audio_image: post.data.audio_image });
 
 // props include: post, site, translations (all matching posts, author_list, topics_list, keywords_list
-const translations  = isNew ? [] : await getArticleTranslationAll(slug, true);
+const translations = await getArticleTranslationAll(slug, true);
 const authorList = (await getTeam()).map(tm => tm.id);
 const topicList =  (await getTopics()).map(tp => tp.id);
 const categoryList = (await getCategories()).map(ct => ct.id);
-const languages = site.languages.map(ln => ({ ...langs[ln], id:ln }));
+
+// add id field to language and then sort by id with en first
+const languages = site.languages.map(ln => ({ ...langs[ln], id:ln }))
+  .sort((a,b) => a.id === 'en' ? -1 : b.id === 'en' ? 1 : a.id.localeCompare(b.id));
 const sessionid = Astro.locals.session.id;
 const language = post.data.language || 'en'
 // const allKeywords = (await getKeywords()).map(kw => kw.id); // not implemented yet

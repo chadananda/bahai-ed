@@ -4,7 +4,7 @@ import PostThumb from "@components/article/postThumb.astro";
 import { mainLanguages } from '@utils/utils.js';
 
 // const related = Astro.props.related;
-const { post, translations, related } = Astro.props;
+const { translations, related } = Astro.props;
 ---
  <ul id="carouselTargetList">
    {related.map((post) => (

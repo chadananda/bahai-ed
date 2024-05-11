@@ -21,13 +21,14 @@ export async function getStaticPaths() {
     let langmatch = (post.data.language) === (ar.data.language);
     return langmatch && ar.id!=post.id && ar.data.topics && ar.data.topics.some((topic) => post.data?.topics?.includes(topic))
   });
-  const translations = (post) => articles.filter((ar) => ar.id.split('/')[0] === post.id.split('/')[0]);
+  // const translations = (post) => articles.filter((ar) => ar.id.split('/')[0] === post.id.split('/')[0]);
+  const translations = (post) => articles.filter(ar => ar.baseid === post.baseid && ar.id !== post.id);
   return articles.map((post) => {
     return {
       params: { slug: post.data?.url },
       props: {
         post,
-        isDB: !!post.db,
+        // isDB: !!post.db,
         author: allAuthors.find((author) => author.id === post.data?.author),
         category: allCategories.find((cat) => cat.id === post.data?.category),
         topics: allTopics.filter((topic) => post.data?.topics?.includes(topic.id)),
@@ -124,7 +125,7 @@ const cover_image = await generateArticleImage(post.data.image?.src, post, base_
 </div>
 <div class="right-column text-center relative ">
   <div class="hidden lg:block ">
-    <RelatedArticles slug={post.data.url} {post}  {related} {translations} />
+    <RelatedArticles {related} {translations} />
   </div>
 </div>
 </div>

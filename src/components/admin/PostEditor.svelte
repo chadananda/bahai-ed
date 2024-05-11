@@ -4,6 +4,7 @@
 
 import Editor from './easymde/Editor.svelte'; // markdown editor
 import MetaEditor from './MetaEditor.svelte'; // meta data editor
+import Preview from './Preview.svelte'; // preview component
 import TabSwitcher from './TabSwitcher.svelte';
 import LanguageSwitcher from './LanguageSwitcher.svelte';
 
@@ -13,7 +14,6 @@ export let topicList;
 export let categoryList;
 export let languages;
 export let language;
-export let client;
 export let sessionid;
 export let translations;
 
@@ -25,8 +25,9 @@ languages.sort((a, b) => a.id === language ? -1 : b.id === language ? 1 : a.enab
 
 let activeTab = 'content'; // Default to showing the content editor
 const tabs = [
-  { id: 'content', title: 'Edit Content' },
-  { id: 'metadata', title: 'Edit Details' }
+  { id: 'content', title: 'Content' },
+  { id: 'metadata', title: 'Details' },
+  { id: 'preview', title: 'Preview' }
 ];
 
 function handleTabSwitch(event) { activeTab = event.detail.tabId; }
@@ -71,6 +72,7 @@ let meta_props = {
         <!-- {#key language} -->
           <Editor bind:post={post} {sessionid} visible={activeTab === 'content'} />
           <MetaEditor bind:post={post} {...meta_props} visible={activeTab === 'metadata'} />
+          <Preview bind:post={post} {...meta_props} visible={activeTab === 'preview'} />
          <!-- {/key} -->
       {/if}
     </div>

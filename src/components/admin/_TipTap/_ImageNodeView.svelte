@@ -1,8 +1,7 @@
 <script>
  import { createEventDispatcher, onMount } from 'svelte';
- import ImageEditModal from './ImageEditModal.svelte';
- import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
- import { faPen } from '@fortawesome/free-solid-svg-icons';
+ import ImageEditModal from './_ImageEditModal.svelte';
+ import { FontAwesomeIcon } from '@fortawesome/./_ImageEditModal.sveltemport { faPen } from '@fortawesome/free-solid-svg-icons';
 
  // export let editor;
  export let editor;

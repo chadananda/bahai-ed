@@ -2,10 +2,12 @@
 export const prerender = false;
 
 import Layout from '@layouts/AdminLayout.astro';
-import { getAllArticles, importPost2DB } from '@utils/utils.js';
+import { getAllArticles, importPost2DB, deletePost } from '@utils/utils.js';
 
 const user  = Astro.locals?.user  // this page is only for admins
-if (!['admin','superadmin'].includes(user?.role)) return Astro.redirect('/admin');
+if (!['admin','superadmin', 'editor', 'author'].includes(user?.role)) return Astro.redirect('/admin');
+
+const isAdmin = ['admin','superadmin'].includes(user?.role);
 
 // Check for the 'importkey' parameter in the query
 const importkey = (new URL(Astro.request.url)).searchParams.get('importkey');
@@ -17,7 +19,27 @@ if (importkey) {
   return Astro.redirect(thisurl);
 }
 
+const deletekey = (new URL(Astro.request.url)).searchParams.get('deletekey');
+if (deletekey) {
+  // console.log('importing article: ', deletekey);
+  await deletePost(deletekey);
+  // Redirect to clean the URL
+  const thisurl = (new URL(Astro.request.url)).toString().split('?')[0]; // remove params
+  return Astro.redirect(thisurl);
+}
+
+
+
 const articles  = await getAllArticles('en');
+// sort articles by draft first and then by datePublished
+articles.sort((a,b) => {
+  if (a.data.draft && !b.data.draft) return -1;
+  if (!a.data.draft && b.data.draft) return 1;
+  if (a.data.datePublished > b.data.datePublished) return -1;
+  if (a.data.datePublished < b.data.datePublished) return 1;
+  return 0;
+});
+
 ---
 <Layout user={user} >
   <div class="mx-20 w-full prose">
@@ -63,11 +85,17 @@ const articles  = await getAllArticles('en');
           <p class="text-base text-gray-700">{description}</p>
         </div>
 
-       {ar.db && (
-        <a href={`/admin/articles/${ar.data.url}`}
-           class="absolute -top-4 -right-2 no-underline border bg-white p-2 px-4 text-gray-600 hover:bg-blue-200 hover:text-black p-2 rounded-full">
+        <a href={`/admin/articles/${ar.baseid}`}
+           class="absolute -top-4 -right-2 no-underline border bg-white px-4 text-gray-600 hover:bg-blue-200 hover:text-black p-2 rounded-full">
             <span class="sr-only">Edit</span>&#9998;</a>
-       )}
+
+        {!isPublished && (
+          <a href={`?deletekey=${ar.id}`}
+            class="absolute -top-4 -left-10 no-underline border bg-white p-0 px-3 text-red-600 hover:bg-red-200 hover:text-black rounded-full">
+              <span class="sr-only">Delete</span>x</a>
+        )}
+
+
       </div>
     );
   })}

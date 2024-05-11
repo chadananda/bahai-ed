@@ -8,7 +8,7 @@
  const isAuthor = ['author', 'editor', 'admin', 'superadmin'].includes(user?.role);
  //console.log('user', user);
  //console.log(user?.name, user?.role, isAdmin, isEditor, isAuthor);
- const articles = (await getAllArticles("en")).map(post => ({...post, editLink: `/admin/articles/${post.data.url}` }));
+ const articles = (await getAllArticles("en")).map(post => ({...post, editLink: `/admin/articles/${post.baseid}` }));
  // sort articles array by data.draft then article.data.datePublished
  articles.sort((a, b) => {
    if (a.data.draft && !b.data.draft) return 1;

@@ -1,5 +1,5 @@
 import { Node } from '@tiptap/core';
-import ImageNodeViewAdapter from './ImageNodeViewAdapter.js';
+import ImageNodeViewAdapter from './_ImageNodeViewAdapter.js';
 
 export const CustomImage = Node.create({
   name: 'image',
